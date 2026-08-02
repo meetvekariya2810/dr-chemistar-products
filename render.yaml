@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: dr-chemist-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    rootDir: server
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: PORT
+        value: 5001
