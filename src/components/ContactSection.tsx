@@ -89,8 +89,8 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
                     <Phone className="w-5 h-5 text-amber-400 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-white block">Customer Care Hotline:</span>
-                      <a href="tel:+918780663808" className="text-amber-300 font-bold hover:underline">
-                        +91 87806 63808
+                      <a href="tel:+916351250285" className="text-amber-300 font-bold hover:underline">
+                        +91 6351 250 285
                       </a>
                     </div>
                   </div>
@@ -117,13 +117,13 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
 
               {/* Direct WhatsApp CTA */}
               <a
-                href="https://wa.me/918780663808?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry."
+                href="https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 px-4 rounded-2xl text-xs transition-colors flex items-center justify-center gap-2 shadow-glow-green"
               >
                 <MessageCircle className="w-5 h-5 fill-current" />
-                <span>Chat Directly on WhatsApp (+91 87806 63808)</span>
+                <span>Chat Directly on WhatsApp (+91 6351 250 285)</span>
               </a>
 
             </div>
@@ -263,7 +263,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
                   </button>
 
                   <a
-                    href="https://wa.me/918780663808?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry."
+                    href="https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry."
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 px-6 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"

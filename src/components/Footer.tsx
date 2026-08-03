@@ -39,15 +39,15 @@ export const Footer: React.FC<FooterProps> = ({
 
           <div className="flex items-center gap-3">
             <a
-              href="tel:+918780663808"
+              href="tel:+916351250285"
               className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-colors shadow-glow-green"
             >
               <Phone className="w-4 h-4" />
-              <span>Helpline: +91 87806 63808</span>
+              <span>Helpline: +91 6351 250 285</span>
             </a>
 
             <a
-              href="https://wa.me/918780663808?text=Hello%20Dr.%20CHEMISTAR,%20I%20want%20to%20enquire"
+              href="https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR,%20I%20want%20to%20enquire"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 border border-white/20 transition-colors"
@@ -161,8 +161,8 @@ export const Footer: React.FC<FooterProps> = ({
 
             <div className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-amber-400 flex-shrink-0" />
-              <a href="tel:+918780663808" className="hover:text-white font-bold text-amber-300">
-                +91 87806 63808
+              <a href="tel:+916351250285" className="hover:text-white font-bold text-amber-300">
+                +91 6351 250 285
               </a>
             </div>
 

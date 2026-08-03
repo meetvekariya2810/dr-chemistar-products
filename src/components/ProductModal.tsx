@@ -55,7 +55,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({
     }
   };
 
-  const whatsAppUrl = `https://wa.me/918780663808?text=Hello%20Dr.%20CHEMISTAR%20Team,%20I%20want%20to%20buy%20or%20enquire%20about%20${encodeURIComponent(product.name)}%20(${encodeURIComponent(product.commonName)}).%20My%20Required%20Dose%20for%20${acreage}%20Acres%20is%20approx%20${calculateTotalQuantity()}.`;
+  const whatsAppUrl = `https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR%20Team,%20I%20want%20to%20buy%20or%20enquire%20about%20${encodeURIComponent(product.name)}%20(${encodeURIComponent(product.commonName)}).%20My%20Required%20Dose%20for%20${acreage}%20Acres%20is%20approx%20${calculateTotalQuantity()}.`;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">

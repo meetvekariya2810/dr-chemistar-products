@@ -328,7 +328,7 @@ export const DealerPortal: React.FC<DealerPortalProps> = ({
                       </td>
                       <td className="p-3 text-right">
                         <a
-                          href={`https://wa.me/918780663808?text=Dealer%20Stock%20Enquiry%20for%20${encodeURIComponent(product.name)}`}
+                          href={`https://wa.me/916351250285?text=Dealer%20Stock%20Enquiry%20for%20${encodeURIComponent(product.name)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-3 py-1.5 rounded-lg text-[11px]"

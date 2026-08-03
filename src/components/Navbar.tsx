@@ -61,11 +61,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right: Contact details & Language Switcher */}
           <div className="flex items-center gap-4 text-[11px]">
             <a 
-              href="tel:+918780663808" 
+              href="tel:+916351250285" 
               className="flex items-center gap-1 text-slate-200 hover:text-emerald-400 transition-colors"
             >
               <Phone className="w-3 h-3 text-emerald-400" />
-              <span className="font-semibold">+91 87806 63808</span>
+              <span className="font-semibold">+91 6351 250 285</span>
             </a>
             
             <a 
@@ -103,6 +103,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Logo className="h-12 sm:h-14" />
           </button>
+
+          {/* Mobile & Tablet Tagline (Centered Slogan) */}
+          <div className="hidden min-[460px]:flex xl:hidden flex-1 justify-center px-2 text-center">
+            <span className="text-[10px] sm:text-xs font-black italic bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 bg-clip-text text-transparent tracking-tight">
+              "{t.tagline}"
+            </span>
+          </div>
 
           {/* Desktop Nav Links */}
           <div className="hidden xl:flex items-center gap-1 font-medium text-xs text-slate-700">
@@ -213,7 +220,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* WhatsApp Direct Enquiry */}
             <a
-              href="https://wa.me/918780663808?text=Hello%20Dr.%20CHEMISTAR%20Team,%20I%20would%20like%20to%20enquire%20about%20your%20products."
+              href="https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR%20Team,%20I%20would%20like%20to%20enquire%20about%20your%20products."
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition-all shadow-sm"

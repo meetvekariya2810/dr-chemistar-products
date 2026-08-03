@@ -60,7 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  const whatsAppUrl = `https://wa.me/918780663808?text=Hello%20Dr.%20CHEMISTAR,%20I%20am%20interested%20in%20${encodeURIComponent(product.name)}%20(${encodeURIComponent(product.commonName)}).%20Please%20send%20details%20and%20dealer%20price.`;
+  const whatsAppUrl = `https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR,%20I%20am%20interested%20in%20${encodeURIComponent(product.name)}%20(${encodeURIComponent(product.commonName)}).%20Please%20send%20details%20and%20dealer%20price.`;
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden hover:-translate-y-1">

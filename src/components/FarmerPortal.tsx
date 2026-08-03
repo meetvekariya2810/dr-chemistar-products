@@ -196,15 +196,15 @@ export const FarmerPortal: React.FC<FarmerPortalProps> = ({ currentLang }) => {
 
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <a
-                  href="tel:+918780663808"
+                  href="tel:+916351250285"
                   className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-6 py-3.5 rounded-2xl text-sm transition-all flex items-center gap-2 shadow-glow-green"
                 >
                   <PhoneCall className="w-5 h-5" />
-                  <span>Call: +91 87806 63808</span>
+                  <span>Call: +91 6351 250 285</span>
                 </a>
 
                 <a
-                  href="https://wa.me/918780663808?text=Hello%20Agri%20Doctor,%20I%20need%20crop%20advice"
+                  href="https://wa.me/916351250285?text=Hello%20Agri%20Doctor,%20I%20need%20crop%20advice"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-3.5 rounded-2xl text-sm border border-white/20 transition-all flex items-center gap-2"
