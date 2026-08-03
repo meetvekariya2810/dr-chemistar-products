@@ -21,6 +21,7 @@ exports.validateDealerRequest = [
 exports.validateEnquiry = [
   body('name').trim().notEmpty().withMessage('Name is required'),
   body('phone').trim().notEmpty().withMessage('Phone number is required'),
+  body('email').optional({ checkFalsy: true }).trim().isEmail().withMessage('Valid email is required if provided'),
   body('user_type').trim().notEmpty().withMessage('User type is required'),
   body('message').trim().notEmpty().withMessage('Message is required'),
   body('city').trim().notEmpty().withMessage('City is required'),

@@ -31,7 +31,18 @@ import {
 
 export function App() {
   const [currentLang, setCurrentLang] = useState<Language>('en');
-  const [activeSection, setActiveSection] = useState<string>('home');
+  const [activeSection, setActiveSection] = useState<string>(() => {
+    const path = window.location.pathname;
+    const hash = window.location.hash;
+    if (path === '/admin' || hash === '#/admin' || hash === '#admin') {
+      return 'admin';
+    }
+    const cleanHash = hash.replace('#', '').replace('/', '');
+    if (cleanHash && ['home', 'products', 'crop-solutions', 'disease-library', 'crop-doctor', 'farmer-portal', 'dealer-portal', 'gallery', 'about', 'contact', 'admin'].includes(cleanHash)) {
+      return cleanHash;
+    }
+    return 'home';
+  });
   const [productsList, setProductsList] = useState<Product[]>(PRODUCTS_DATA);
   
   // Product filtering states
@@ -82,8 +93,39 @@ export function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleLocationChange = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      if (path === '/admin' || hash === '#/admin' || hash === '#admin') {
+        setActiveSection('admin');
+      } else {
+        const cleanHash = hash.replace('#', '').replace('/', '');
+        if (cleanHash && ['home', 'products', 'crop-solutions', 'disease-library', 'crop-doctor', 'farmer-portal', 'dealer-portal', 'gallery', 'about', 'contact', 'admin'].includes(cleanHash)) {
+          setActiveSection(cleanHash);
+        } else if (path === '/' || path === '/index.html') {
+          setActiveSection('home');
+        }
+      }
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
   const handleNavigate = (sectionId: string) => {
     setActiveSection(sectionId);
+    if (sectionId === 'admin') {
+      window.history.pushState(null, '', '/admin');
+    } else if (sectionId === 'home') {
+      window.history.pushState(null, '', '/');
+    } else {
+      window.history.pushState(null, '', `/#${sectionId}`);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

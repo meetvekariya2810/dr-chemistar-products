@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Test Lead",
+    "phone": "+919999988888",
+    "email": "testlead@example.com",
+    "user_type": "Farmer",
+    "message": "Storing lead data direct to admin panel test.",
+    "city": "Rajkot",
+    "id": "enq_1785739653962_a5gpps9yv",
+    "created_at": "2026-08-03T06:47:33.962Z"
+  },
+  {
+    "name": "harsh",
+    "phone": "99999",
+    "email": "harsgh@gmail.com",
+    "user_type": "Farmer",
+    "message": "kdf",
+    "city": "a",
+    "id": "enq_1785740228610_ieddo7zv4",
+    "created_at": "2026-08-03T06:57:08.610Z"
+  }
+]

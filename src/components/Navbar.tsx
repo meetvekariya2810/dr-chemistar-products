@@ -222,19 +222,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>WhatsApp</span>
             </a>
 
-            {/* Admin CMS Button */}
-            <button
-              onClick={() => handleNavClick('admin')}
-              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-lg transition-all border ${
-                activeSection === 'admin'
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'border-slate-300 text-slate-700 hover:bg-slate-900 hover:text-white'
-              }`}
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>{t.navAdmin}</span>
-            </button>
-
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

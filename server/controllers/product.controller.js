@@ -1,4 +1,27 @@
 const Product = require('../models/product.model');
+const fs = require('fs');
+const path = require('path');
+
+const productsFilePath = path.join(__dirname, '../data/products.json');
+
+const getLocalProducts = () => {
+  const dir = path.dirname(productsFilePath);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  if (fs.existsSync(productsFilePath)) {
+    try {
+      return JSON.parse(fs.readFileSync(productsFilePath, 'utf8'));
+    } catch (e) {
+      return [];
+    }
+  }
+  return [];
+};
+
+const saveLocalProducts = (productsList) => {
+  fs.writeFileSync(productsFilePath, JSON.stringify(productsList, null, 2), 'utf8');
+};
 
 // @desc    Seed products database
 // @route   POST /api/products/seed
@@ -8,11 +31,6 @@ exports.seedProducts = async (req, res, next) => {
     const products = req.body;
     if (!Array.isArray(products) || products.length === 0) {
       return res.status(400).json({ error: 'Invalid products list' });
-    }
-
-    const count = await Product.countDocuments();
-    if (count > 0) {
-      return res.status(200).json({ message: 'Products already exist. Skipping seed.' });
     }
 
     const formatted = products.map(p => ({
@@ -37,8 +55,21 @@ exports.seedProducts = async (req, res, next) => {
       pdfPage: p.pdfPage || null
     }));
 
-    await Product.insertMany(formatted);
-    res.status(201).json({ message: `Successfully seeded ${products.length} products to MongoDB.` });
+    if (global.isMongoConnected) {
+      const count = await Product.countDocuments();
+      if (count > 0) {
+        return res.status(200).json({ message: 'Products already exist. Skipping seed.' });
+      }
+      await Product.insertMany(formatted);
+    } else {
+      const localProducts = getLocalProducts();
+      if (localProducts.length > 0) {
+        return res.status(200).json({ message: 'Products already exist. Skipping seed.' });
+      }
+      saveLocalProducts(formatted);
+    }
+
+    res.status(201).json({ message: `Successfully seeded ${products.length} products.` });
   } catch (err) {
     next(err);
   }
@@ -49,8 +80,12 @@ exports.seedProducts = async (req, res, next) => {
 // @access  Public
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find({}).sort({ name: 1 });
-    res.status(200).json(products);
+    if (global.isMongoConnected) {
+      const products = await Product.find({}).sort({ name: 1 });
+      res.status(200).json(products);
+    } else {
+      res.status(200).json(getLocalProducts().sort((a, b) => a.name.localeCompare(b.name)));
+    }
   } catch (err) {
     next(err);
   }
@@ -62,9 +97,18 @@ exports.getProducts = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await Product.deleteOne({ id });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ error: 'Product not found' });
+    if (global.isMongoConnected) {
+      const result = await Product.deleteOne({ id });
+      if (result.deletedCount === 0) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+    } else {
+      const productsList = getLocalProducts();
+      const newProductsList = productsList.filter(p => p.id !== id);
+      if (productsList.length === newProductsList.length) {
+        return res.status(404).json({ error: 'Product not found' });
+      }
+      saveLocalProducts(newProductsList);
     }
     res.status(200).json({ message: 'Product deleted successfully.' });
   } catch (err) {

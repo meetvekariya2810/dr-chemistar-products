@@ -59,8 +59,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
 
   // Mock leads
   const [leadsList, setLeadsList] = useState([
-    { id: 'l1', name: 'Rameshbhai K', phone: '+91 98765 11111', type: 'Farmer', query: 'Required MALIKA dose for 10 acres cotton', date: 'Today' },
-    { id: 'l2', name: 'Gita Agro Traders', phone: '+91 98765 22222', type: 'Dealer', query: 'Price list for 100 boxes ALL TAKATAK', date: 'Yesterday' }
+    { id: 'l1', name: 'Rameshbhai K', phone: '+91 98765 11111', email: '', type: 'Farmer', query: 'Required MALIKA dose for 10 acres cotton', date: 'Today' },
+    { id: 'l2', name: 'Gita Agro Traders', phone: '+91 98765 22222', email: '', type: 'Dealer', query: 'Price list for 100 boxes ALL TAKATAK', date: 'Yesterday' }
   ]);
 
   useEffect(() => {
@@ -96,6 +96,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
             id: e.id,
             name: e.name,
             phone: e.phone,
+            email: e.email || '',
             type: e.user_type,
             query: e.message,
             date: new Date(e.created_at).toLocaleDateString()
@@ -436,7 +437,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
                     <span className="bg-slate-800 text-emerald-400 px-2 py-0.5 rounded font-bold">{l.type}</span>
                   </div>
                   <p className="text-slate-300 font-semibold mb-1">Phone: {l.phone}</p>
-                  <p className="text-slate-400">"{l.query}"</p>
+                  {l.email && <p className="text-slate-300 font-semibold mb-1">Email: {l.email}</p>}
+                  <p className="text-slate-400 mt-1">"{l.query}"</p>
                 </div>
               ))}
             </div>

@@ -74,6 +74,7 @@ export async function approveDealer(id: string | number): Promise<any> {
 export async function createEnquiry(enquiry: {
   name: string;
   phone: string;
+  email: string;
   userType: string;
   message: string;
   city: string;
@@ -81,6 +82,7 @@ export async function createEnquiry(enquiry: {
   const body = {
     name: enquiry.name,
     phone: enquiry.phone,
+    email: enquiry.email,
     user_type: enquiry.userType,
     message: enquiry.message,
     city: enquiry.city

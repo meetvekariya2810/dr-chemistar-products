@@ -27,6 +27,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
         await createEnquiry({
           name,
           phone,
+          email,
           userType,
           message,
           city
@@ -252,13 +253,25 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
                   ></textarea>
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-emerald-500 to-sky-600 hover:from-emerald-600 hover:to-sky-700 text-white font-black py-3.5 px-6 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"
-                >
-                  <Send className="w-4 h-4" />
-                  <span>Submit Inquiry Form</span>
-                </button>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-emerald-500 to-sky-600 hover:from-emerald-600 hover:to-sky-700 text-white font-black py-3.5 px-6 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>Submit Inquiry Form</span>
+                  </button>
+
+                  <a
+                    href="https://wa.me/918780663808?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 px-6 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <MessageCircle className="w-4 h-4 fill-current" />
+                    <span>Chat on WhatsApp</span>
+                  </a>
+                </div>
 
               </form>
             )}
