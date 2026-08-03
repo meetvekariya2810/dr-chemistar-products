@@ -101,7 +101,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavClick('home')} 
             className="text-left focus:outline-none group"
           >
-            <Logo className="h-11" />
+            <Logo className="h-12 sm:h-14" />
           </button>
 
           {/* Desktop Nav Links */}
