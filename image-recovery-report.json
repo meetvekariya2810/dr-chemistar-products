@@ -1,0 +1,258 @@
+{
+  "totals": {
+    "totalProducts": 101,
+    "previouslyWorking": 71,
+    "recovered": 19,
+    "stillMissing": 11
+  },
+  "recovered": [
+    {
+      "product": "KALWAR-40",
+      "productId": "kalwar-40",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.08 PM (6).jpeg",
+      "evidence": "Kalwar-40 / Paclobutrazol 40% SC / Plant Growth Regulator",
+      "mainImage": "/uploads/kalwar-40.webp",
+      "thumbnail": "/uploads/thumbnails/kalwar-40.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "HEXON PLUS",
+      "productId": "hexon-plus",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.08 PM.jpeg",
+      "evidence": "Hexon Plus / Hexaconazole 5% SC / Systemic Fungicide",
+      "mainImage": "/uploads/hexon-plus.webp",
+      "thumbnail": "/uploads/thumbnails/hexon-plus.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "NUTRIVA 3.50.50",
+      "productId": "nutriva-35050",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (12).jpeg",
+      "evidence": "NUTRIVA 3.50.50",
+      "mainImage": "/uploads/nutriva-35050.webp",
+      "thumbnail": "/uploads/thumbnails/nutriva-35050.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "PENIL EXTRA",
+      "productId": "penil-extra",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (15).jpeg",
+      "evidence": "Penil Extra / Pendimethalin 38.7% CS / Herbicide",
+      "mainImage": "/uploads/penil-extra.webp",
+      "thumbnail": "/uploads/thumbnails/penil-extra.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "PRIMIUM",
+      "productId": "primium",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (19).jpeg",
+      "evidence": "Primium / Azadirachtin 0.15% EC (1500 ppm) / Insecticide",
+      "mainImage": "/uploads/primium.webp",
+      "thumbnail": "/uploads/thumbnails/primium.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "DR. RAPIDO",
+      "productId": "dr-rapido",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (22).jpeg",
+      "evidence": "RAPIDO / Protein Hydrolysates 25% (Plant Source) Liquid",
+      "mainImage": "/uploads/dr-rapido.webp",
+      "thumbnail": "/uploads/thumbnails/dr-rapido.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "TAGAR SUPER",
+      "productId": "tagar-super",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (34).jpeg",
+      "evidence": "Tagar Super / Quizalofop Ethyl 5% EC / Herbicide",
+      "mainImage": "/uploads/tagar-super.webp",
+      "thumbnail": "/uploads/thumbnails/tagar-super.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "DR. UJJAS-32",
+      "productId": "dr-ujjas-32",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (41).jpeg",
+      "evidence": "Dr. Ujjas-32 / Urea Ammonium Nitrate 32% Nitrogen",
+      "mainImage": "/uploads/dr-ujjas-32.webp",
+      "thumbnail": "/uploads/thumbnails/dr-ujjas-32.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "UJJVALA",
+      "productId": "ujjvala",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (42).jpeg",
+      "evidence": "Ujjvala / Dinotefuran 20% SG / Insecticide",
+      "mainImage": "/uploads/ujjvala.webp",
+      "thumbnail": "/uploads/thumbnails/ujjvala.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "NUTRI POWER 00:52:34",
+      "productId": "nutri-power-005234",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (49).jpeg",
+      "evidence": "NUTRI POWER / NPK 00:52:34",
+      "mainImage": "/uploads/nutri-power-005234.webp",
+      "thumbnail": "/uploads/thumbnails/nutri-power-005234.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "NUTRI POWER 13:00:45",
+      "productId": "nutri-power-130045",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (51).jpeg",
+      "evidence": "NUTRI POWER / NPK 13:00:45",
+      "mainImage": "/uploads/nutri-power-130045.webp",
+      "thumbnail": "/uploads/thumbnails/nutri-power-130045.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "ACPRIME",
+      "productId": "acprime",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (55).jpeg",
+      "evidence": "ACPRIME / Acetamiprid 20% SP / Insecticide",
+      "mainImage": "/uploads/acprime.webp",
+      "thumbnail": "/uploads/thumbnails/acprime.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "CARE PHOS",
+      "productId": "care-phos",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (64).jpeg",
+      "evidence": "Care Phos / Chlorpyriphos 20% EC / Insecticide",
+      "mainImage": "/uploads/care-phos.webp",
+      "thumbnail": "/uploads/thumbnails/care-phos.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "NUTRI POWER CBZ",
+      "productId": "nutri-power-cbz",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (65).jpeg",
+      "evidence": "NUTRI POWER CBZ / Fortified Calcium Suspension",
+      "mainImage": "/uploads/nutri-power-cbz.webp",
+      "thumbnail": "/uploads/thumbnails/nutri-power-cbz.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "MALIKA",
+      "productId": "malika",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (7).jpeg",
+      "evidence": "MALIKA / Thiamethoxam 12.6% + Lambda Cyhalothrin 9.5% ZC",
+      "mainImage": "/uploads/malika.webp",
+      "thumbnail": "/uploads/thumbnails/malika.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "TOMMY",
+      "productId": "tommy",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (76).jpeg",
+      "evidence": "Tommy / Potash Derived from Rhodophytes",
+      "mainImage": "/uploads/tommy.webp",
+      "thumbnail": "/uploads/thumbnails/tommy.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "EMATIN-5",
+      "productId": "ematin-5",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (78).jpeg",
+      "evidence": "EMATIN / Emamectin Benzoate 5% SG / Insecticide",
+      "mainImage": "/uploads/ematin-5.webp",
+      "thumbnail": "/uploads/thumbnails/ematin-5.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "FIRE",
+      "productId": "fire",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (80).jpeg",
+      "evidence": "Fire / Fipronil 40% + Imidacloprid 40% WG",
+      "mainImage": "/uploads/fire.webp",
+      "thumbnail": "/uploads/thumbnails/fire.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    },
+    {
+      "product": "GALEXA",
+      "productId": "galexa",
+      "sourceFile": "WhatsApp Image 2026-08-06 at 4.53.09 PM (83).jpeg",
+      "evidence": "Galexa / Picoxystrobin 22.52% SC / Systemic Fungicide",
+      "mainImage": "/uploads/galexa.webp",
+      "thumbnail": "/uploads/thumbnails/galexa.webp",
+      "mainWritten": true,
+      "thumbWritten": true
+    }
+  ],
+  "skipped": [],
+  "stillMissing": [
+    {
+      "product": "FOSTIN",
+      "productId": "fostin",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "LORVIN",
+      "productId": "lorvin",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "ISRAEL KING",
+      "productId": "israel-king",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "ASFIN-75",
+      "productId": "asfin-75",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "FUNGI STAR",
+      "productId": "fungi-star",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "MANICOP",
+      "productId": "manicop",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "TARA-71",
+      "productId": "tara-71",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "TWINE SUPER",
+      "productId": "twine-super",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "ROBOT",
+      "productId": "robot",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "HUMIC 98%",
+      "productId": "humic-98",
+      "status": "NO ARTWORK IN SOURCE SET"
+    },
+    {
+      "product": "NUTRI POWER 12:32:16",
+      "productId": "nutri-power-123216",
+      "status": "NO ARTWORK IN SOURCE SET"
+    }
+  ]
+}

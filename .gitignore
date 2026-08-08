@@ -26,3 +26,19 @@ out/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Large video assets
+public/videos/
+reference_videos/
+
+# Source artwork archives and originals.
+# The processed WebP images under server/uploads/ are what the app serves and
+# are tracked; these multi-megabyte originals are inputs, not deliverables.
+*.zip
+DrChemistar product image.jpg/
+11 DrChemistar product imagejpg/
+
+# OCR working files (Tesseract language data + cached OCR output)
+*.traineddata
+server/scratch/
+server/uploads/temp/

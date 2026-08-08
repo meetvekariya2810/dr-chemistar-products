@@ -286,8 +286,8 @@ export function App() {
                   </button>
                 </div>
 
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {PRODUCTS_DATA.filter((p) => p.popular).slice(0, 8).map((product) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {productsList.filter((p) => p.popular).slice(0, 8).map((product) => (
                     <ProductCard
                       key={product.id}
                       product={product}
@@ -382,7 +382,7 @@ export function App() {
 
               {/* 101 Products Grid */}
               {filteredProducts.length > 0 ? (
-                <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {filteredProducts.map((product) => (
                     <ProductCard
                       key={product.id}

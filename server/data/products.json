@@ -38,7 +38,10 @@
     "badge": "Bestseller",
     "imageColor": "from-emerald-600 to-teal-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "malika.webp",
+    "imageUrl": "/uploads/malika.webp",
+    "thumbnail": "/uploads/thumbnails/malika.webp"
   },
   {
     "id": "star-tara",
@@ -80,7 +83,10 @@
     "badge": "",
     "imageColor": "from-blue-600 to-indigo-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "star-tara.webp",
+    "imageUrl": "/uploads/star-tara.webp",
+    "thumbnail": "/uploads/thumbnails/star-tara.webp"
   },
   {
     "id": "babuli",
@@ -118,7 +124,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-green-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "babuli.webp",
+    "imageUrl": "/uploads/babuli.webp",
+    "thumbnail": "/uploads/thumbnails/babuli.webp"
   },
   {
     "id": "thaiostar",
@@ -157,7 +166,10 @@
     "badge": "",
     "imageColor": "from-teal-600 to-emerald-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "thaiostar.webp",
+    "imageUrl": "/uploads/thaiostar.webp",
+    "thumbnail": "/uploads/thumbnails/thaiostar.webp"
   },
   {
     "id": "lala",
@@ -196,7 +208,10 @@
     "badge": "",
     "imageColor": "from-cyan-600 to-blue-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "lala.webp",
+    "imageUrl": "/uploads/lala.webp",
+    "thumbnail": "/uploads/thumbnails/lala.webp"
   },
   {
     "id": "pavan-5",
@@ -236,7 +251,10 @@
     "badge": "",
     "imageColor": "from-orange-600 to-amber-700",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "pavan-5.webp",
+    "imageUrl": "/uploads/pavan-5.webp",
+    "thumbnail": "/uploads/thumbnails/pavan-5.webp"
   },
   {
     "id": "lebra",
@@ -275,7 +293,10 @@
     "badge": "",
     "imageColor": "from-blue-700 to-slate-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "lebra.webp",
+    "imageUrl": "/uploads/lebra.webp",
+    "thumbnail": "/uploads/thumbnails/lebra.webp"
   },
   {
     "id": "acprime",
@@ -314,7 +335,10 @@
     "badge": "",
     "imageColor": "from-green-600 to-emerald-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "acprime.webp",
+    "imageUrl": "/uploads/acprime.webp",
+    "thumbnail": "/uploads/thumbnails/acprime.webp"
   },
   {
     "id": "prof-super-44",
@@ -354,7 +378,10 @@
     "badge": "",
     "imageColor": "from-emerald-800 to-sky-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "prof-super-44.webp",
+    "imageUrl": "/uploads/prof-super-44.webp",
+    "thumbnail": "/uploads/thumbnails/prof-super-44.webp"
   },
   {
     "id": "dr-prozon",
@@ -394,7 +421,10 @@
     "badge": "",
     "imageColor": "from-sky-700 to-blue-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "dr-prozon.webp",
+    "imageUrl": "/uploads/dr-prozon.webp",
+    "thumbnail": "/uploads/thumbnails/dr-prozon.webp"
   },
   {
     "id": "starmida",
@@ -435,7 +465,10 @@
     "badge": "",
     "imageColor": "from-amber-600 to-orange-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "starmida.webp",
+    "imageUrl": "/uploads/starmida.webp",
+    "thumbnail": "/uploads/thumbnails/starmida.webp"
   },
   {
     "id": "super-star",
@@ -472,7 +505,10 @@
     "badge": "",
     "imageColor": "from-orange-500 to-red-700",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "super-star.webp",
+    "imageUrl": "/uploads/super-star.webp",
+    "thumbnail": "/uploads/thumbnails/super-star.webp"
   },
   {
     "id": "fire",
@@ -510,7 +546,10 @@
     "badge": "Premium Fire Strike",
     "imageColor": "from-red-600 to-orange-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "fire.webp",
+    "imageUrl": "/uploads/fire.webp",
+    "thumbnail": "/uploads/thumbnails/fire.webp"
   },
   {
     "id": "starlin",
@@ -549,7 +588,10 @@
     "badge": "",
     "imageColor": "from-blue-600 to-indigo-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "starlin.webp",
+    "imageUrl": "/uploads/starlin.webp",
+    "thumbnail": "/uploads/thumbnails/starlin.webp"
   },
   {
     "id": "firing",
@@ -585,7 +627,10 @@
     "badge": "",
     "imageColor": "from-purple-700 to-indigo-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "firing.webp",
+    "imageUrl": "/uploads/firing.webp",
+    "thumbnail": "/uploads/thumbnails/firing.webp"
   },
   {
     "id": "care-phos",
@@ -624,7 +669,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-teal-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "care-phos.webp",
+    "imageUrl": "/uploads/care-phos.webp",
+    "thumbnail": "/uploads/thumbnails/care-phos.webp"
   },
   {
     "id": "chlorin",
@@ -663,7 +711,10 @@
     "badge": "",
     "imageColor": "from-slate-700 to-emerald-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "chlorin.webp",
+    "imageUrl": "/uploads/chlorin.webp",
+    "thumbnail": "/uploads/thumbnails/chlorin.webp"
   },
   {
     "id": "chlorthin-505",
@@ -702,7 +753,10 @@
     "badge": "",
     "imageColor": "from-blue-800 to-teal-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "chlorthin-505.webp",
+    "imageUrl": "/uploads/chlorthin-505.webp",
+    "thumbnail": "/uploads/thumbnails/chlorthin-505.webp"
   },
   {
     "id": "cyber-25",
@@ -740,7 +794,10 @@
     "badge": "",
     "imageColor": "from-sky-600 to-blue-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "cyber-25.webp",
+    "imageUrl": "/uploads/cyber-25.webp",
+    "thumbnail": "/uploads/thumbnails/cyber-25.webp"
   },
   {
     "id": "ujjvala",
@@ -777,7 +834,10 @@
     "badge": "",
     "imageColor": "from-green-600 to-emerald-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "ujjvala.webp",
+    "imageUrl": "/uploads/ujjvala.webp",
+    "thumbnail": "/uploads/thumbnails/ujjvala.webp"
   },
   {
     "id": "zum-zum",
@@ -810,7 +870,10 @@
     "badge": "",
     "imageColor": "from-blue-600 to-cyan-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "zum-zum.webp",
+    "imageUrl": "/uploads/zum-zum.webp",
+    "thumbnail": "/uploads/thumbnails/zum-zum.webp"
   },
   {
     "id": "tiktok",
@@ -843,7 +906,10 @@
     "badge": "Hopper Expert",
     "imageColor": "from-emerald-700 to-sky-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "tiktok.webp",
+    "imageUrl": "/uploads/tiktok.webp",
+    "thumbnail": "/uploads/thumbnails/tiktok.webp"
   },
   {
     "id": "polin-star",
@@ -881,7 +947,10 @@
     "badge": "",
     "imageColor": "from-teal-700 to-emerald-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "polin-star.webp",
+    "imageUrl": "/uploads/polin-star.webp",
+    "thumbnail": "/uploads/thumbnails/polin-star.webp"
   },
   {
     "id": "jimmy",
@@ -919,7 +988,10 @@
     "badge": "",
     "imageColor": "from-orange-700 to-amber-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "jimmy.webp",
+    "imageUrl": "/uploads/jimmy.webp",
+    "thumbnail": "/uploads/thumbnails/jimmy.webp"
   },
   {
     "id": "fostin",
@@ -958,7 +1030,10 @@
     "badge": "",
     "imageColor": "from-emerald-900 to-slate-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "fostin.webp",
+    "imageUrl": "/uploads/fostin.webp",
+    "thumbnail": "/uploads/thumbnails/fostin.webp"
   },
   {
     "id": "toofani",
@@ -998,7 +1073,10 @@
     "badge": "",
     "imageColor": "from-sky-700 to-blue-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "toofani.webp",
+    "imageUrl": "/uploads/toofani.webp",
+    "thumbnail": "/uploads/thumbnails/toofani.webp"
   },
   {
     "id": "ematin-5",
@@ -1040,7 +1118,10 @@
     "badge": "Caterpillar Specialist",
     "imageColor": "from-green-600 to-teal-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "ematin-5.webp",
+    "imageUrl": "/uploads/ematin-5.webp",
+    "thumbnail": "/uploads/thumbnails/ematin-5.webp"
   },
   {
     "id": "speed-power",
@@ -1078,7 +1159,10 @@
     "badge": "",
     "imageColor": "from-teal-600 to-cyan-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "speed-power.webp",
+    "imageUrl": "/uploads/speed-power.webp",
+    "thumbnail": "/uploads/thumbnails/speed-power.webp"
   },
   {
     "id": "dolly-11",
@@ -1115,7 +1199,10 @@
     "badge": "",
     "imageColor": "from-blue-700 to-slate-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "dolly-11.webp",
+    "imageUrl": "/uploads/dolly-11.webp",
+    "thumbnail": "/uploads/thumbnails/dolly-11.webp"
   },
   {
     "id": "faster-plus-plus",
@@ -1158,7 +1245,10 @@
     "badge": "Next-Gen Technology",
     "imageColor": "from-emerald-600 to-green-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "faster-plus-plus.webp",
+    "imageUrl": "/uploads/faster-plus-plus.webp",
+    "thumbnail": "/uploads/thumbnails/faster-plus-plus.webp"
   },
   {
     "id": "lorvin",
@@ -1196,7 +1286,10 @@
     "badge": "",
     "imageColor": "from-indigo-700 to-purple-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "lorvin.webp",
+    "imageUrl": "/uploads/lorvin.webp",
+    "thumbnail": "/uploads/thumbnails/lorvin.webp"
   },
   {
     "id": "abota",
@@ -1237,7 +1330,10 @@
     "badge": "",
     "imageColor": "from-amber-600 to-yellow-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "abota.webp",
+    "imageUrl": "/uploads/abota.webp",
+    "thumbnail": "/uploads/thumbnails/abota.webp"
   },
   {
     "id": "israel-king",
@@ -1278,7 +1374,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-green-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "israel-king.webp",
+    "imageUrl": "/uploads/israel-king.webp",
+    "thumbnail": "/uploads/thumbnails/israel-king.webp"
   },
   {
     "id": "primium",
@@ -1319,7 +1418,10 @@
     "badge": "",
     "imageColor": "from-green-800 to-teal-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "primium.webp",
+    "imageUrl": "/uploads/primium.webp",
+    "thumbnail": "/uploads/thumbnails/primium.webp"
   },
   {
     "id": "all-takatak",
@@ -1355,7 +1457,10 @@
     "badge": "",
     "imageColor": "from-red-600 to-rose-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "all-takatak.webp",
+    "imageUrl": "/uploads/all-takatak.webp",
+    "thumbnail": "/uploads/thumbnails/all-takatak.webp"
   },
   {
     "id": "israel-tech",
@@ -1394,7 +1499,10 @@
     "badge": "",
     "imageColor": "from-blue-600 to-indigo-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "israel-tech.webp",
+    "imageUrl": "/uploads/israel-tech.webp",
+    "thumbnail": "/uploads/thumbnails/israel-tech.webp"
   },
   {
     "id": "topin",
@@ -1430,7 +1538,10 @@
     "badge": "",
     "imageColor": "from-amber-700 to-orange-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "topin.webp",
+    "imageUrl": "/uploads/topin.webp",
+    "thumbnail": "/uploads/thumbnails/topin.webp"
   },
   {
     "id": "asfin-75",
@@ -1468,7 +1579,10 @@
     "badge": "",
     "imageColor": "from-rose-700 to-red-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "asfin-75.webp",
+    "imageUrl": "/uploads/asfin-75.webp",
+    "thumbnail": "/uploads/thumbnails/asfin-75.webp"
   },
   {
     "id": "kombi-shaft",
@@ -1509,7 +1623,10 @@
     "badge": "Farmer Favorite",
     "imageColor": "from-blue-600 to-sky-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "kombi-shaft.webp",
+    "imageUrl": "/uploads/kombi-shaft.webp",
+    "thumbnail": "/uploads/thumbnails/kombi-shaft.webp"
   },
   {
     "id": "manco-m-45",
@@ -1549,7 +1666,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-green-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "manco-m-45.webp",
+    "imageUrl": "/uploads/manco-m-45.webp",
+    "thumbnail": "/uploads/thumbnails/manco-m-45.webp"
   },
   {
     "id": "hexon-plus",
@@ -1590,7 +1710,10 @@
     "badge": "",
     "imageColor": "from-cyan-600 to-blue-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "hexon-plus.webp",
+    "imageUrl": "/uploads/hexon-plus.webp",
+    "thumbnail": "/uploads/thumbnails/hexon-plus.webp"
   },
   {
     "id": "guddi",
@@ -1628,7 +1751,10 @@
     "badge": "",
     "imageColor": "from-blue-700 to-indigo-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "guddi.webp",
+    "imageUrl": "/uploads/guddi.webp",
+    "thumbnail": "/uploads/thumbnails/guddi.webp"
   },
   {
     "id": "galexa",
@@ -1666,7 +1792,10 @@
     "badge": "",
     "imageColor": "from-purple-600 to-pink-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "galexa.webp",
+    "imageUrl": "/uploads/galexa.webp",
+    "thumbnail": "/uploads/thumbnails/galexa.webp"
   },
   {
     "id": "maxil",
@@ -1705,7 +1834,10 @@
     "badge": "",
     "imageColor": "from-amber-600 to-red-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "maxil.webp",
+    "imageUrl": "/uploads/maxil.webp",
+    "thumbnail": "/uploads/thumbnails/maxil.webp"
   },
   {
     "id": "moxa-35",
@@ -1744,7 +1876,10 @@
     "badge": "",
     "imageColor": "from-rose-600 to-orange-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "moxa-35.webp",
+    "imageUrl": "/uploads/moxa-35.webp",
+    "thumbnail": "/uploads/thumbnails/moxa-35.webp"
   },
   {
     "id": "trycon",
@@ -1775,7 +1910,10 @@
     "badge": "",
     "imageColor": "from-green-700 to-emerald-950",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "trycon.webp",
+    "imageUrl": "/uploads/trycon.webp",
+    "thumbnail": "/uploads/thumbnails/trycon.webp"
   },
   {
     "id": "vitayu",
@@ -1814,7 +1952,10 @@
     "badge": "",
     "imageColor": "from-teal-700 to-blue-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "vitayu.webp",
+    "imageUrl": "/uploads/vitayu.webp",
+    "thumbnail": "/uploads/thumbnails/vitayu.webp"
   },
   {
     "id": "jumar",
@@ -1855,7 +1996,10 @@
     "badge": "",
     "imageColor": "from-sky-700 to-slate-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "jumar.webp",
+    "imageUrl": "/uploads/jumar.webp",
+    "thumbnail": "/uploads/thumbnails/jumar.webp"
   },
   {
     "id": "foliyar",
@@ -1896,7 +2040,10 @@
     "badge": "",
     "imageColor": "from-emerald-600 to-teal-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "foliyar.webp",
+    "imageUrl": "/uploads/foliyar.webp",
+    "thumbnail": "/uploads/thumbnails/foliyar.webp"
   },
   {
     "id": "tebsal",
@@ -1935,7 +2082,10 @@
     "badge": "",
     "imageColor": "from-orange-600 to-amber-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "tebsal.webp",
+    "imageUrl": "/uploads/tebsal.webp",
+    "thumbnail": "/uploads/thumbnails/tebsal.webp"
   },
   {
     "id": "azotech",
@@ -1974,7 +2124,10 @@
     "badge": "Premium Dual Tech",
     "imageColor": "from-cyan-700 to-blue-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "azotech.webp",
+    "imageUrl": "/uploads/azotech.webp",
+    "thumbnail": "/uploads/thumbnails/azotech.webp"
   },
   {
     "id": "newton",
@@ -2015,7 +2168,10 @@
     "badge": "",
     "imageColor": "from-pink-600 to-purple-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "newton.webp",
+    "imageUrl": "/uploads/newton.webp",
+    "thumbnail": "/uploads/thumbnails/newton.webp"
   },
   {
     "id": "vivan",
@@ -2054,7 +2210,10 @@
     "badge": "",
     "imageColor": "from-teal-600 to-emerald-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "vivan.webp",
+    "imageUrl": "/uploads/vivan.webp",
+    "thumbnail": "/uploads/thumbnails/vivan.webp"
   },
   {
     "id": "sarthi",
@@ -2092,7 +2251,10 @@
     "badge": "",
     "imageColor": "from-blue-700 to-indigo-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "sarthi.webp",
+    "imageUrl": "/uploads/sarthi.webp",
+    "thumbnail": "/uploads/thumbnails/sarthi.webp"
   },
   {
     "id": "fungi-star",
@@ -2131,7 +2293,10 @@
     "badge": "",
     "imageColor": "from-amber-600 to-yellow-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "fungi-star.webp",
+    "imageUrl": "/uploads/fungi-star.webp",
+    "thumbnail": "/uploads/thumbnails/fungi-star.webp"
   },
   {
     "id": "power-55",
@@ -2170,7 +2335,10 @@
     "badge": "",
     "imageColor": "from-yellow-600 to-amber-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "power-55.webp",
+    "imageUrl": "/uploads/power-55.webp",
+    "thumbnail": "/uploads/thumbnails/power-55.webp"
   },
   {
     "id": "cosa-furt",
@@ -2209,7 +2377,10 @@
     "badge": "",
     "imageColor": "from-amber-500 to-orange-700",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "cosa-furt.webp",
+    "imageUrl": "/uploads/cosa-furt.webp",
+    "thumbnail": "/uploads/thumbnails/cosa-furt.webp"
   },
   {
     "id": "veldex",
@@ -2245,7 +2416,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-green-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "veldex.webp",
+    "imageUrl": "/uploads/veldex.webp",
+    "thumbnail": "/uploads/thumbnails/veldex.webp"
   },
   {
     "id": "manicop",
@@ -2284,7 +2458,10 @@
     "badge": "",
     "imageColor": "from-cyan-700 to-teal-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "manicop.webp",
+    "imageUrl": "/uploads/manicop.webp",
+    "thumbnail": "/uploads/thumbnails/manicop.webp"
   },
   {
     "id": "glystar-41",
@@ -2321,7 +2498,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-green-950",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "glystar-41.webp",
+    "imageUrl": "/uploads/glystar-41.webp",
+    "thumbnail": "/uploads/thumbnails/glystar-41.webp"
   },
   {
     "id": "tara-71",
@@ -2355,7 +2535,10 @@
     "badge": "",
     "imageColor": "from-blue-700 to-indigo-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "tara-71.webp",
+    "imageUrl": "/uploads/tara-71.webp",
+    "thumbnail": "/uploads/thumbnails/tara-71.webp"
   },
   {
     "id": "penil-extra",
@@ -2393,7 +2576,10 @@
     "badge": "",
     "imageColor": "from-amber-600 to-orange-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "penil-extra.webp",
+    "imageUrl": "/uploads/penil-extra.webp",
+    "thumbnail": "/uploads/thumbnails/penil-extra.webp"
   },
   {
     "id": "pendi-star",
@@ -2429,7 +2615,10 @@
     "badge": "",
     "imageColor": "from-yellow-600 to-amber-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "pendi-star.webp",
+    "imageUrl": "/uploads/pendi-star.webp",
+    "thumbnail": "/uploads/thumbnails/pendi-star.webp"
   },
   {
     "id": "perot-24",
@@ -2465,7 +2654,10 @@
     "badge": "",
     "imageColor": "from-red-600 to-rose-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "perot-24.webp",
+    "imageUrl": "/uploads/perot-24.webp",
+    "thumbnail": "/uploads/thumbnails/perot-24.webp"
   },
   {
     "id": "star-gold",
@@ -2503,7 +2695,10 @@
     "badge": "",
     "imageColor": "from-yellow-500 to-amber-700",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "star-gold.webp",
+    "imageUrl": "/uploads/star-gold.webp",
+    "thumbnail": "/uploads/thumbnails/star-gold.webp"
   },
   {
     "id": "harbon-super",
@@ -2537,7 +2732,10 @@
     "badge": "",
     "imageColor": "from-purple-700 to-indigo-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "harbon-super.webp",
+    "imageUrl": "/uploads/harbon-super.webp",
+    "thumbnail": "/uploads/thumbnails/harbon-super.webp"
   },
   {
     "id": "lura",
@@ -2572,7 +2770,10 @@
     "badge": "",
     "imageColor": "from-teal-700 to-emerald-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "lura.webp",
+    "imageUrl": "/uploads/lura.webp",
+    "thumbnail": "/uploads/thumbnails/lura.webp"
   },
   {
     "id": "twine-super",
@@ -2609,7 +2810,10 @@
     "badge": "",
     "imageColor": "from-emerald-600 to-teal-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "twine-super.webp",
+    "imageUrl": "/uploads/twine-super.webp",
+    "thumbnail": "/uploads/thumbnails/twine-super.webp"
   },
   {
     "id": "tagar-super",
@@ -2645,7 +2849,10 @@
     "badge": "",
     "imageColor": "from-green-600 to-emerald-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "tagar-super.webp",
+    "imageUrl": "/uploads/tagar-super.webp",
+    "thumbnail": "/uploads/thumbnails/tagar-super.webp"
   },
   {
     "id": "magic",
@@ -2681,7 +2888,10 @@
     "badge": "",
     "imageColor": "from-blue-600 to-cyan-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "magic.webp",
+    "imageUrl": "/uploads/magic.webp",
+    "thumbnail": "/uploads/thumbnails/magic.webp"
   },
   {
     "id": "atma-50",
@@ -2715,7 +2925,10 @@
     "badge": "",
     "imageColor": "from-yellow-600 to-orange-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "atma-50.webp",
+    "imageUrl": "/uploads/atma-50.webp",
+    "thumbnail": "/uploads/thumbnails/atma-50.webp"
   },
   {
     "id": "call-break",
@@ -2753,7 +2966,10 @@
     "badge": "Fruit Booster",
     "imageColor": "from-amber-600 to-rose-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "call-break.webp",
+    "imageUrl": "/uploads/call-break.webp",
+    "thumbnail": "/uploads/thumbnails/call-break.webp"
   },
   {
     "id": "gibola",
@@ -2790,7 +3006,10 @@
     "badge": "",
     "imageColor": "from-emerald-600 to-green-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "gibola.webp",
+    "imageUrl": "/uploads/gibola.webp",
+    "thumbnail": "/uploads/thumbnails/gibola.webp"
   },
   {
     "id": "kalwar-40",
@@ -2825,7 +3044,10 @@
     "badge": "",
     "imageColor": "from-rose-700 to-red-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "kalwar-40.webp",
+    "imageUrl": "/uploads/kalwar-40.webp",
+    "thumbnail": "/uploads/thumbnails/kalwar-40.webp"
   },
   {
     "id": "cyto-6",
@@ -2862,7 +3084,10 @@
     "badge": "",
     "imageColor": "from-teal-600 to-emerald-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "cyto-6.webp",
+    "imageUrl": "/uploads/cyto-6.webp",
+    "thumbnail": "/uploads/thumbnails/cyto-6.webp"
   },
   {
     "id": "robot",
@@ -2900,7 +3125,10 @@
     "badge": "",
     "imageColor": "from-blue-600 to-indigo-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "robot.webp",
+    "imageUrl": "/uploads/robot.webp",
+    "thumbnail": "/uploads/thumbnails/robot.webp"
   },
   {
     "id": "dr-rapido",
@@ -2937,7 +3165,10 @@
     "badge": "",
     "imageColor": "from-amber-600 to-orange-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "dr-rapido.webp",
+    "imageUrl": "/uploads/dr-rapido.webp",
+    "thumbnail": "/uploads/thumbnails/dr-rapido.webp"
   },
   {
     "id": "new-life-plus",
@@ -2973,7 +3204,10 @@
     "badge": "",
     "imageColor": "from-green-700 to-emerald-950",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "new-life-plus.webp",
+    "imageUrl": "/uploads/new-life-plus.webp",
+    "thumbnail": "/uploads/thumbnails/new-life-plus.webp"
   },
   {
     "id": "dr-life-care",
@@ -3005,7 +3239,10 @@
     "badge": "",
     "imageColor": "from-emerald-600 to-teal-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "dr-life-care.webp",
+    "imageUrl": "/uploads/dr-life-care.webp",
+    "thumbnail": "/uploads/thumbnails/dr-life-care.webp"
   },
   {
     "id": "dr-carbo",
@@ -3037,7 +3274,10 @@
     "badge": "",
     "imageColor": "from-slate-800 to-gray-950",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "dr-carbo.webp",
+    "imageUrl": "/uploads/dr-carbo.webp",
+    "thumbnail": "/uploads/thumbnails/dr-carbo.webp"
   },
   {
     "id": "stick-well",
@@ -3073,7 +3313,10 @@
     "badge": "Super Spreader",
     "imageColor": "from-cyan-600 to-blue-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "stick-well.webp",
+    "imageUrl": "/uploads/stick-well.webp",
+    "thumbnail": "/uploads/thumbnails/stick-well.webp"
   },
   {
     "id": "humic-98",
@@ -3108,7 +3351,10 @@
     "badge": "",
     "imageColor": "from-amber-800 to-stone-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "humic-98.webp",
+    "imageUrl": "/uploads/humic-98.webp",
+    "thumbnail": "/uploads/thumbnails/humic-98.webp"
   },
   {
     "id": "black-gold",
@@ -3144,7 +3390,10 @@
     "badge": "",
     "imageColor": "from-stone-800 to-black",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "black-gold.webp",
+    "imageUrl": "/uploads/black-gold.webp",
+    "thumbnail": "/uploads/thumbnails/black-gold.webp"
   },
   {
     "id": "humi-star-95",
@@ -3176,7 +3425,10 @@
     "badge": "",
     "imageColor": "from-amber-700 to-neutral-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "humi-star-95.webp",
+    "imageUrl": "/uploads/humi-star-95.webp",
+    "thumbnail": "/uploads/thumbnails/humi-star-95.webp"
   },
   {
     "id": "ekka-no-1",
@@ -3210,7 +3462,10 @@
     "badge": "",
     "imageColor": "from-yellow-600 to-emerald-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "ekka-no-1.webp",
+    "imageUrl": "/uploads/ekka-no-1.webp",
+    "thumbnail": "/uploads/thumbnails/ekka-no-1.webp"
   },
   {
     "id": "suffal-gold",
@@ -3247,7 +3502,10 @@
     "badge": "",
     "imageColor": "from-amber-500 to-yellow-700",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "suffal-gold.webp",
+    "imageUrl": "/uploads/suffal-gold.webp",
+    "thumbnail": "/uploads/thumbnails/suffal-gold.webp"
   },
   {
     "id": "bromo",
@@ -3283,7 +3541,10 @@
     "badge": "",
     "imageColor": "from-sky-600 to-blue-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "bromo.webp",
+    "imageUrl": "/uploads/bromo.webp",
+    "thumbnail": "/uploads/thumbnails/bromo.webp"
   },
   {
     "id": "tommy",
@@ -3318,7 +3579,10 @@
     "badge": "Organic Potash",
     "imageColor": "from-red-600 to-rose-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "tommy.webp",
+    "imageUrl": "/uploads/tommy.webp",
+    "thumbnail": "/uploads/thumbnails/tommy.webp"
   },
   {
     "id": "nutri-power-cnb",
@@ -3354,7 +3618,10 @@
     "badge": "",
     "imageColor": "from-blue-600 to-cyan-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-cnb.webp",
+    "imageUrl": "/uploads/nutri-power-cnb.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-cnb.webp"
   },
   {
     "id": "nutri-power-191919",
@@ -3386,7 +3653,10 @@
     "badge": "",
     "imageColor": "from-green-600 to-emerald-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-191919.webp",
+    "imageUrl": "/uploads/nutri-power-191919.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-191919.webp"
   },
   {
     "id": "nutri-power-282800",
@@ -3421,7 +3691,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-teal-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-282800.webp",
+    "imageUrl": "/uploads/nutri-power-282800.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-282800.webp"
   },
   {
     "id": "nutri-power-126100",
@@ -3456,7 +3729,10 @@
     "badge": "",
     "imageColor": "from-teal-600 to-cyan-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-126100.webp",
+    "imageUrl": "/uploads/nutri-power-126100.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-126100.webp"
   },
   {
     "id": "nutri-power-005234",
@@ -3492,7 +3768,10 @@
     "badge": "",
     "imageColor": "from-blue-700 to-indigo-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-005234.webp",
+    "imageUrl": "/uploads/nutri-power-005234.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-005234.webp"
   },
   {
     "id": "nutri-power-000050",
@@ -3528,7 +3807,10 @@
     "badge": "",
     "imageColor": "from-rose-600 to-orange-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-000050.webp",
+    "imageUrl": "/uploads/nutri-power-000050.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-000050.webp"
   },
   {
     "id": "nutri-power-130045",
@@ -3563,7 +3845,10 @@
     "badge": "",
     "imageColor": "from-amber-600 to-red-800",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-130045.webp",
+    "imageUrl": "/uploads/nutri-power-130045.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-130045.webp"
   },
   {
     "id": "zivaa-plus",
@@ -3600,7 +3885,10 @@
     "badge": "Nano Zinc",
     "imageColor": "from-teal-600 to-emerald-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "zivaa-plus.webp",
+    "imageUrl": "/uploads/zivaa-plus.webp",
+    "thumbnail": "/uploads/thumbnails/zivaa-plus.webp"
   },
   {
     "id": "dr-ujjas-32",
@@ -3637,7 +3925,10 @@
     "badge": "",
     "imageColor": "from-green-600 to-teal-800",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "dr-ujjas-32.webp",
+    "imageUrl": "/uploads/dr-ujjas-32.webp",
+    "thumbnail": "/uploads/thumbnails/dr-ujjas-32.webp"
   },
   {
     "id": "dippy-l-dap",
@@ -3669,7 +3960,10 @@
     "badge": "Nano DAP Tech",
     "imageColor": "from-blue-600 to-indigo-900",
     "popular": true,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "dippy-l-dap.webp",
+    "imageUrl": "/uploads/dippy-l-dap.webp",
+    "thumbnail": "/uploads/thumbnails/dippy-l-dap.webp"
   },
   {
     "id": "nutri-power-cbz",
@@ -3705,7 +3999,10 @@
     "badge": "",
     "imageColor": "from-sky-600 to-blue-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-cbz.webp",
+    "imageUrl": "/uploads/nutri-power-cbz.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-cbz.webp"
   },
   {
     "id": "nutriva-35050",
@@ -3741,7 +4038,10 @@
     "badge": "",
     "imageColor": "from-emerald-700 to-green-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutriva-35050.webp",
+    "imageUrl": "/uploads/nutriva-35050.webp",
+    "thumbnail": "/uploads/thumbnails/nutriva-35050.webp"
   },
   {
     "id": "nutri-power-123216",
@@ -3777,6 +4077,9 @@
     "badge": "",
     "imageColor": "from-indigo-600 to-blue-900",
     "popular": false,
-    "pdfPage": null
+    "pdfPage": null,
+    "image": "nutri-power-123216.webp",
+    "imageUrl": "/uploads/nutri-power-123216.webp",
+    "thumbnail": "/uploads/thumbnails/nutri-power-123216.webp"
   }
 ]

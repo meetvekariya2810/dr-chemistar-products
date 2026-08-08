@@ -27,6 +27,9 @@ export interface Product {
   imageColor?: string;
   popular?: boolean;
   pdfPage?: number;
+  image?: string;
+  imageUrl?: string;
+  thumbnail?: string;
 }
 
 export interface CropSolution {
