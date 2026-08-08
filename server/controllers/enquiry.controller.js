@@ -56,6 +56,13 @@ exports.createEnquiry = async (req, res, next) => {
       });
     }
 
+    // Lead-capture is the site's primary conversion path, so record where each
+    // one landed. Contact details are deliberately left out of the log.
+    console.log(
+      `[enquiry] stored in ${global.isMongoConnected ? 'MongoDB' : 'local JSON store'} ` +
+        `(user_type=${user_type}, city=${city})`
+    );
+
     res.status(201).json({ message: 'Enquiry saved successfully.' });
   } catch (err) {
     next(err);

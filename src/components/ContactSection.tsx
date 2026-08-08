@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../data/translations';
-import { Phone, Mail, MapPin, MessageCircle, Send, CheckCircle2, Building2, Clock } from 'lucide-react';
+import { Phone, Mail, MapPin, MessageCircle, Send, CheckCircle2, Building2, Clock, AlertTriangle, Loader2 } from 'lucide-react';
 import { createEnquiry, isApiConfigured } from '../api';
+
+const WHATSAPP_LINK = 'https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry.';
 
 interface ContactSectionProps {
   currentLang: Language;
@@ -16,31 +18,47 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
   const [userType, setUserType] = useState('Farmer');
   const [message, setMessage] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const t = TRANSLATIONS[currentLang];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
 
-    if (isApiConfigured) {
-      try {
-        await createEnquiry({
-          name,
-          phone,
-          email,
-          userType,
-          message,
-          city
-        });
-      } catch (err: any) {
-        alert('Failed to submit enquiry: ' + err.message);
-        return;
-      }
-    } else {
-      console.log('Database not configured. Saved enquiry locally (mock).');
+    setError(null);
+
+    // No backend on this deployment: say so instead of showing a thank-you for
+    // an enquiry nobody will ever receive.
+    if (!isApiConfigured) {
+      setError(
+        'Online enquiry submission is not available on this site yet. ' +
+          'Please send us your requirement on WhatsApp or call +91 6351 250 285 - our team replies within 4 hours.'
+      );
+      return;
     }
 
-    setSubmitted(true);
+    setSubmitting(true);
+    try {
+      await createEnquiry({ name, phone, email, userType, message, city });
+      setSubmitted(true);
+    } catch (err: any) {
+      setError(err?.message || 'Something went wrong while sending your enquiry. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleSendAnother = () => {
+    setSubmitted(false);
+    setError(null);
+    setName('');
+    setPhone('');
+    setEmail('');
+    setCity('');
+    setUserType('Farmer');
+    setMessage('');
   };
 
   return (
@@ -167,7 +185,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
                   Thank you, <span className="font-bold text-white">{name}</span>. Your message regarding <span className="font-bold text-emerald-400">{userType} support</span> has been logged into our Rajkot headquarters database.
                 </p>
                 <button
-                  onClick={() => setSubmitted(false)}
+                  onClick={handleSendAnother}
                   className="bg-emerald-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl"
                 >
                   Send Another Message
@@ -175,7 +193,29 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                
+
+                {error && (
+                  <div
+                    role="alert"
+                    className="bg-red-500/15 border border-red-400/40 text-red-100 p-4 rounded-2xl flex items-start gap-3"
+                  >
+                    <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                    <div className="text-xs leading-relaxed space-y-2">
+                      <p className="font-bold text-white">Your enquiry could not be sent</p>
+                      <p>{error}</p>
+                      <a
+                        href={WHATSAPP_LINK}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 font-bold text-emerald-300 hover:underline"
+                      >
+                        <MessageCircle className="w-4 h-4 fill-current" />
+                        Send it on WhatsApp instead
+                      </a>
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs text-slate-300 font-bold block mb-1">Your Full Name *</label>
@@ -256,14 +296,24 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
                 <div className="grid sm:grid-cols-2 gap-4">
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-emerald-500 to-sky-600 hover:from-emerald-600 hover:to-sky-700 text-white font-black py-3.5 px-6 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"
+                    disabled={submitting}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-sky-600 hover:from-emerald-600 hover:to-sky-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black py-3.5 px-6 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"
                   >
-                    <Send className="w-4 h-4" />
-                    <span>Submit Inquiry Form</span>
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4" />
+                        <span>Submit Inquiry Form</span>
+                      </>
+                    )}
                   </button>
 
                   <a
-                    href="https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry."
+                    href={WHATSAPP_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 px-6 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"
