@@ -1,7 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const uploadsDir = path.join(__dirname, '../uploads');
+// Product artwork lives under the frontend's public/ directory, not the server's.
+// Production is a static Vercel deployment with no backend, so the images have
+// to ship with the frontend build to be reachable at all; keeping a single copy
+// there (rather than duplicating into server/) keeps dev and production serving
+// byte-identical files from the same path.
+const uploadsDir = path.join(__dirname, '../../public/uploads');
 const thumbsDir = path.join(uploadsDir, 'thumbnails');
 
 /**

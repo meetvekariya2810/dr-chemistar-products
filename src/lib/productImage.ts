@@ -3,19 +3,19 @@ import { Product } from '../types';
 /**
  * Single source of truth for turning a stored image path into a browser URL.
  *
- * The API stores product images as origin-relative paths, e.g.
- *   image:     "star-tara.webp"
- *   imageUrl:  "/uploads/star-tara.webp"          (500x500 - use on cards & modal)
- *   thumbnail: "/uploads/thumbnails/star-tara.webp" (150x150 - admin previews only)
+ * Product artwork is a FRONTEND static asset. The files live in public/uploads/,
+ * so Vite serves them at /uploads/... in development and copies them into dist/
+ * for production, where Vercel serves them from the site's own origin.
  *
- * The frontend is served from a different origin than the API in development
- * (Vite :5173 vs API :5001), so relative paths must be prefixed with the API
- * origin. In production, leave VITE_API_URL empty when both are served from the
- * same origin and these paths stay relative.
+ *   image:     "star-tara.webp"
+ *   imageUrl:  "/uploads/star-tara.webp"            (500x500 - cards & modal)
+ *   thumbnail: "/uploads/thumbnails/star-tara.webp" (150x150 - admin previews)
+ *
+ * These paths are deliberately NOT prefixed with VITE_API_URL. Production is a
+ * static deployment with no backend, so pointing image URLs at an API origin
+ * would break every image there - and would put a localhost URL in the
+ * production bundle whenever VITE_API_URL is set for local development.
  */
-
-// Trailing slashes would produce "//uploads/..." once joined.
-const API_ORIGIN = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 /** Resolve any stored upload path (absolute, relative, or data URI) to a usable URL. */
 export function resolveUploadUrl(storedPath?: string | null): string {
@@ -24,14 +24,13 @@ export function resolveUploadUrl(storedPath?: string | null): string {
   const trimmed = storedPath.trim();
   if (!trimmed) return '';
 
-  // Already fully qualified - use as-is.
+  // Already fully qualified (e.g. object storage) - use as-is.
   if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('data:')) {
     return trimmed;
   }
 
   // Guarantee exactly one leading slash so we never emit "//uploads" or "uploads".
-  const normalized = `/${trimmed.replace(/^\/+/, '')}`;
-  return `${API_ORIGIN}${normalized}`;
+  return `/${trimmed.replace(/^\/+/, '')}`;
 }
 
 export type ProductImageVariant = 'full' | 'thumb';

@@ -12,8 +12,9 @@ const {
 } = require('../utils/productImages');
 
 const productsFilePath = path.join(__dirname, '../data/products.json');
-const uploadsDir = path.join(__dirname, '../uploads');
-const tempDir = path.join(__dirname, '../uploads/temp');
+// Shared with the frontend build - see server/utils/productImages.js
+const uploadsDir = path.join(__dirname, '../../public/uploads');
+const tempDir = path.join(__dirname, '../../public/uploads/temp');
 
 // Ensure upload directories exist
 if (!fs.existsSync(uploadsDir)) {

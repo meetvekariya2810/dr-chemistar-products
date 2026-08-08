@@ -42,7 +42,7 @@ app.use('/api/', apiLimiter);
 app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads'), {
   maxAge: '7d',
   fallthrough: true
 }));
