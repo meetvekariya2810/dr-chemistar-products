@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Product, Language } from '../types';
 import { TRANSLATIONS } from '../data/translations';
-import { 
+import { getProductImageUrl } from '../lib/productImage';
+import {
   X, 
   FlaskConical, 
   Droplet, 
@@ -14,7 +15,8 @@ import {
   Bug, 
   Sprout, 
   Building2,
-  Share2
+  Share2,
+  ShieldCheck
 } from 'lucide-react';
 
 interface ProductModalProps {
@@ -33,9 +35,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({
   const [acreage, setAcreage] = useState<number>(1);
   const [pumps, setPumps] = useState<number>(10);
   const [calcMode, setCalcMode] = useState<'acres' | 'pumps'>('acres');
+  const [imgError, setImgError] = useState<boolean>(false);
 
   if (!product) return null;
   const t = TRANSLATIONS[currentLang];
+  const imageUrl = getProductImageUrl(product, 'full');
 
   // Helper dosage calculation logic
   const calculateTotalQuantity = () => {
@@ -96,83 +100,116 @@ export const ProductModal: React.FC<ProductModalProps> = ({
 
         {/* Modal Scrollable Body */}
         <div className="p-6 sm:p-8 max-h-[70vh] overflow-y-auto space-y-8 text-slate-800 text-sm">
-          
-          {/* Top Specifications Grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                   {/* Top Section: Image and Specifications Row */}
+          <div className="grid lg:grid-cols-12 gap-8 items-start">
             
-            <div className="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-100">
-              <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1.5 mb-1">
-                <Droplet className="w-4 h-4 text-emerald-600" />
-                {t.dosage}
-              </span>
-              <p className="text-base font-black text-emerald-950">{product.dose}</p>
-            </div>
-
-            <div className="bg-blue-50/80 p-4 rounded-2xl border border-blue-100">
-              <span className="text-xs font-bold text-blue-800 uppercase tracking-wider flex items-center gap-1.5 mb-1">
-                <Package className="w-4 h-4 text-blue-600" />
-                {t.packing}
-              </span>
-              <p className="text-base font-black text-blue-950">{product.packing.join(', ')}</p>
-            </div>
-
-            <div className="bg-amber-50/80 p-4 rounded-2xl border border-amber-100 sm:col-span-2 lg:col-span-1">
-              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5 mb-1">
-                <ShieldAlert className="w-4 h-4 text-amber-600" />
-                Active Composition
-              </span>
-              <p className="text-sm font-bold text-amber-950">{product.activeIngredient}</p>
-            </div>
-
-          </div>
-
-          {/* Dosage Calculator Interactive Tool */}
-          <div className="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-base flex items-center gap-2 text-emerald-400">
-                <Calculator className="w-5 h-5 text-emerald-400" />
-                Smart Farm Dosage Calculator
-              </h3>
-              <div className="flex bg-slate-800 p-1 rounded-xl text-xs font-bold">
-                <button
-                  onClick={() => setCalcMode('acres')}
-                  className={`px-3 py-1 rounded-lg transition-colors ${calcMode === 'acres' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
-                >
-                  By Acreage
-                </button>
-                <button
-                  onClick={() => setCalcMode('pumps')}
-                  className={`px-3 py-1 rounded-lg transition-colors ${calcMode === 'pumps' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
-                >
-                  By 15L Pumps
-                </button>
+            {/* Left Side: Large Product Image (500x500 contain) */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group/modalimg min-h-[350px]">
+              {imageUrl && !imgError ? (
+                <div className="relative w-full aspect-square max-w-[400px] overflow-hidden rounded-xl flex items-center justify-center">
+                  <img
+                    src={imageUrl}
+                    alt={product.name}
+                    onError={() => setImgError(true)}
+                    className="w-full h-full object-contain transform group-hover/modalimg:scale-110 transition-transform duration-500 cursor-zoom-in"
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-slate-400 p-8 text-center bg-slate-50 rounded-xl w-full aspect-square max-w-[400px]">
+                  <FlaskConical className="w-16 h-16 text-slate-300 mb-2" />
+                  <span className="text-xs font-bold uppercase text-slate-400">No Image Available</span>
+                </div>
+              )}
+              {/* Corner Watermark */}
+              <div className="absolute top-2 right-2 bg-emerald-500/10 text-emerald-600 border border-emerald-400/20 text-[9px] font-black px-2 py-0.5 rounded-md flex items-center gap-0.5 uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                Genuine Label
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4 items-center">
-              <div>
-                <label className="text-xs text-slate-300 font-medium block mb-1">
-                  {calcMode === 'acres' ? 'Total Land Area (Acres):' : 'Number of 15-Litre Water Pumps:'}
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  max="500"
-                  value={calcMode === 'acres' ? acreage : pumps}
-                  onChange={(e) => {
-                    const val = Math.max(1, parseInt(e.target.value) || 1);
-                    if (calcMode === 'acres') setAcreage(val);
-                    else setPumps(val);
-                  }}
-                  className="w-full bg-slate-800 border border-slate-700 text-white px-4 py-2 rounded-xl text-base font-bold focus:outline-none focus:border-emerald-500"
-                />
+            {/* Right Side: Specifications and Calculator */}
+            <div className="lg:col-span-7 space-y-6">
+              
+              {/* Specifications Grid */}
+              <div className="grid sm:grid-cols-3 gap-4">
+                <div className="bg-emerald-50/80 p-4 rounded-xl border border-emerald-100 flex flex-col justify-between">
+                  <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <Droplet className="w-3.5 h-3.5 text-emerald-600" />
+                    {t.dosage}
+                  </span>
+                  <p className="text-sm font-black text-emerald-950 truncate">{product.dose}</p>
+                </div>
+
+                <div className="bg-blue-50/80 p-4 rounded-xl border border-blue-100 flex flex-col justify-between">
+                  <span className="text-xs font-bold text-blue-800 uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <Package className="w-3.5 h-3.5 text-blue-600" />
+                    {t.packing}
+                  </span>
+                  <p className="text-sm font-black text-blue-950 truncate">{product.packing.join(', ')}</p>
+                </div>
+
+                <div className="bg-amber-50/80 p-4 rounded-xl border border-amber-100 flex flex-col justify-between">
+                  <span className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1 mb-1">
+                    <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+                    Composition
+                  </span>
+                  <p className="text-xs font-bold text-amber-950 line-clamp-2">{product.activeIngredient}</p>
+                </div>
               </div>
 
-              <div className="bg-emerald-950/80 p-3.5 rounded-xl border border-emerald-500/40 text-center">
-                <span className="text-xs text-emerald-300 font-semibold block">Total Recommended Quantity Required:</span>
-                <span className="text-2xl font-black text-white font-display">{calculateTotalQuantity()}</span>
+              {/* Dosage Calculator Interactive Tool */}
+              <div className="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 space-y-4 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold text-sm flex items-center gap-2 text-emerald-400">
+                    <Calculator className="w-5 h-5 text-emerald-400" />
+                    Smart Farm Dosage Calculator
+                  </h3>
+                  <div className="flex bg-slate-800 p-1 rounded-xl text-[10px] font-bold gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setCalcMode('acres')}
+                      className={`px-2.5 py-1 rounded-lg transition-colors ${calcMode === 'acres' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
+                    >
+                      By Acreage
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCalcMode('pumps')}
+                      className={`px-2.5 py-1 rounded-lg transition-colors ${calcMode === 'pumps' ? 'bg-emerald-600 text-white' : 'text-slate-400'}`}
+                    >
+                      By Pumps
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4 items-center">
+                  <div>
+                    <label className="text-[11px] text-slate-300 font-medium block mb-1">
+                      {calcMode === 'acres' ? 'Total Land Area (Acres):' : 'Number of 15-Litre Water Pumps:'}
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="500"
+                      value={calcMode === 'acres' ? acreage : pumps}
+                      onChange={(e) => {
+                        const val = Math.max(1, parseInt(e.target.value) || 1);
+                        if (calcMode === 'acres') setAcreage(val);
+                        else setPumps(val);
+                      }}
+                      className="w-full bg-slate-800 border border-slate-700 text-white px-3 py-1.5 rounded-xl text-base font-bold focus:outline-none focus:border-emerald-500"
+                    />
+                  </div>
+
+                  <div className="bg-emerald-950/80 p-3 rounded-xl border border-emerald-500/40 text-center">
+                    <span className="text-[10px] text-emerald-300 font-semibold block">Total Quantity Required:</span>
+                    <span className="text-xl font-black text-white font-display">{calculateTotalQuantity()}</span>
+                  </div>
+                </div>
               </div>
+
             </div>
+
           </div>
 
           {/* Mode of Action & Benefits */}

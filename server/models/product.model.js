@@ -19,7 +19,10 @@ const ProductSchema = new mongoose.Schema({
   badge: { type: String, default: '' },
   imageColor: { type: String, default: '' },
   popular: { type: Boolean, default: false },
-  pdfPage: { type: Number, default: null }
+  pdfPage: { type: Number, default: null },
+  image: { type: String, default: '' },
+  imageUrl: { type: String, default: '' },
+  thumbnail: { type: String, default: '' }
 }, {
   timestamps: true
 });

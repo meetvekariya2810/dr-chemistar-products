@@ -102,3 +102,33 @@ export async function fetchEnquiries(): Promise<any[]> {
   if (!res.ok) throw new Error('Failed to fetch enquiries');
   return res.json();
 }
+
+export async function uploadZipFile(file: File, replaceExisting: boolean): Promise<any> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('replaceExisting', String(replaceExisting));
+
+  const res = await fetch(`${API_URL}/api/products/upload-zip`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to upload image ZIP');
+  }
+  return res.json();
+}
+
+export async function fetchImageStats(): Promise<any> {
+  const res = await fetch(`${API_URL}/api/products/image-stats`);
+  if (!res.ok) throw new Error('Failed to fetch image stats');
+  return res.json();
+}
+
+export async function triggerRematch(): Promise<any> {
+  const res = await fetch(`${API_URL}/api/products/rematch`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error('Failed to trigger image re-match');
+  return res.json();
+}

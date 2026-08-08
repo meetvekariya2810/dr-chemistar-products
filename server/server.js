@@ -19,7 +19,13 @@ connectDB();
 const app = express();
 
 // Security Middlewares
-app.use(helmet());
+// NOTE: helmet's default `Cross-Origin-Resource-Policy: same-origin` makes the
+// browser block every /uploads image when the frontend runs on a different
+// origin than this API (e.g. Vite on :5173 vs API on :5001). Product images are
+// public static assets, so they are explicitly served cross-origin.
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
 app.use(cors());
 
 // Rate Limiter
@@ -36,6 +42,10 @@ app.use('/api/', apiLimiter);
 app.use(compression());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  maxAge: '7d',
+  fallthrough: true
+}));
 
 // Routes
 app.use('/api/products', productRoutes);
