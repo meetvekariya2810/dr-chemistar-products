@@ -4,6 +4,9 @@ export const PRODUCTS_DATA: Product[] = [
   // --- INSECTICIDES ---
   {
     id: 'malika',
+    image: 'malika.webp',
+    imageUrl: '/uploads/malika.webp',
+    thumbnail: '/uploads/thumbnails/malika.webp',
     name: 'MALIKA',
     category: 'Insecticide',
     commonName: 'Thiamethoxam 12.6% + Lambda Cyhalothrin 9.6% ZC',
@@ -21,6 +24,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'star-tara',
+    image: 'star-tara.webp',
+    imageUrl: '/uploads/star-tara.webp',
+    thumbnail: '/uploads/thumbnails/star-tara.webp',
     name: 'STAR TARA',
     category: 'Insecticide',
     commonName: 'Thiamethoxam 25% WG',
@@ -37,6 +43,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'babuli',
+    image: 'babuli.webp',
+    imageUrl: '/uploads/babuli.webp',
+    thumbnail: '/uploads/thumbnails/babuli.webp',
     name: 'BABULI',
     category: 'Insecticide',
     commonName: 'Clothianidin 50% WG',
@@ -53,6 +62,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'thaiostar',
+    image: 'thaiostar.webp',
+    imageUrl: '/uploads/thaiostar.webp',
+    thumbnail: '/uploads/thumbnails/thaiostar.webp',
     name: 'THAIOSTAR',
     category: 'Insecticide',
     commonName: 'Thiamethoxam 30% FS',
@@ -68,6 +80,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'lala',
+    image: 'lala.webp',
+    imageUrl: '/uploads/lala.webp',
+    thumbnail: '/uploads/thumbnails/lala.webp',
     name: 'LALA',
     category: 'Insecticide',
     commonName: 'Thiamethoxam 75% SG',
@@ -83,6 +98,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'pavan-5',
+    image: 'pavan-5.webp',
+    imageUrl: '/uploads/pavan-5.webp',
+    thumbnail: '/uploads/thumbnails/pavan-5.webp',
     name: 'PAVAN-5',
     category: 'Insecticide',
     commonName: 'Lambda Cyhalothrin 5% EC',
@@ -98,6 +116,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'lebra',
+    image: 'lebra.webp',
+    imageUrl: '/uploads/lebra.webp',
+    thumbnail: '/uploads/thumbnails/lebra.webp',
     name: 'LEBRA',
     category: 'Insecticide',
     commonName: 'Lambda Cyhalothrin 4.9% CS',
@@ -113,6 +134,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'acprime',
+    image: 'acprime.webp',
+    imageUrl: '/uploads/acprime.webp',
+    thumbnail: '/uploads/thumbnails/acprime.webp',
     name: 'ACPRIME',
     category: 'Insecticide',
     commonName: 'Acetamiprid 20% SP',
@@ -128,6 +152,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'prof-super-44',
+    image: 'prof-super-44.webp',
+    imageUrl: '/uploads/prof-super-44.webp',
+    thumbnail: '/uploads/thumbnails/prof-super-44.webp',
     name: 'PROF SUPER 44',
     category: 'Insecticide',
     commonName: 'Profenofos 40% + Cypermethrin 4% EC',
@@ -144,6 +171,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'dr-prozon',
+    image: 'dr-prozon.webp',
+    imageUrl: '/uploads/dr-prozon.webp',
+    thumbnail: '/uploads/thumbnails/dr-prozon.webp',
     name: 'DR. PROZON',
     category: 'Insecticide',
     commonName: 'Profenofos 50% EC',
@@ -159,6 +189,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'starmida',
+    image: 'starmida.webp',
+    imageUrl: '/uploads/starmida.webp',
+    thumbnail: '/uploads/thumbnails/starmida.webp',
     name: 'STARMIDA',
     category: 'Insecticide',
     commonName: 'Imidacloprid 17.8% SL',
@@ -174,6 +207,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'super-star',
+    image: 'super-star.webp',
+    imageUrl: '/uploads/super-star.webp',
+    thumbnail: '/uploads/thumbnails/super-star.webp',
     name: 'SUPER STAR',
     category: 'Insecticide',
     commonName: 'Imidacloprid 30.5% SC',
@@ -189,6 +225,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'fire',
+    image: 'fire.webp',
+    imageUrl: '/uploads/fire.webp',
+    thumbnail: '/uploads/thumbnails/fire.webp',
     name: 'FIRE',
     category: 'Insecticide',
     commonName: 'Fipronil 40% + Imidacloprid 40% WG',
@@ -206,6 +245,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'starlin',
+    image: 'starlin.webp',
+    imageUrl: '/uploads/starlin.webp',
+    thumbnail: '/uploads/thumbnails/starlin.webp',
     name: 'STARLIN',
     category: 'Insecticide',
     commonName: 'Fipronil 5% SC',
@@ -221,6 +263,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'firing',
+    image: 'firing.webp',
+    imageUrl: '/uploads/firing.webp',
+    thumbnail: '/uploads/thumbnails/firing.webp',
     name: 'FIRING',
     category: 'Insecticide',
     commonName: 'Fipronil 80% WG',
@@ -236,6 +281,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'care-phos',
+    image: 'care-phos.webp',
+    imageUrl: '/uploads/care-phos.webp',
+    thumbnail: '/uploads/thumbnails/care-phos.webp',
     name: 'CARE PHOS',
     category: 'Insecticide',
     commonName: 'Chlorpyriphos 20% EC',
@@ -251,6 +299,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'chlorin',
+    image: 'chlorin.webp',
+    imageUrl: '/uploads/chlorin.webp',
+    thumbnail: '/uploads/thumbnails/chlorin.webp',
     name: 'CHLORIN',
     category: 'Insecticide',
     commonName: 'Chlorpyriphos 50% EC',
@@ -266,6 +317,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'chlorthin-505',
+    image: 'chlorthin-505.webp',
+    imageUrl: '/uploads/chlorthin-505.webp',
+    thumbnail: '/uploads/thumbnails/chlorthin-505.webp',
     name: 'CHLORTHIN-505',
     category: 'Insecticide',
     commonName: 'Chlorpyriphos 50% + Cypermethrin 5% EC',
@@ -282,6 +336,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'cyber-25',
+    image: 'cyber-25.webp',
+    imageUrl: '/uploads/cyber-25.webp',
+    thumbnail: '/uploads/thumbnails/cyber-25.webp',
     name: 'CYBER-25',
     category: 'Insecticide',
     commonName: 'Cypermethrin 25% EC',
@@ -297,6 +354,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'ujjvala',
+    image: 'ujjvala.webp',
+    imageUrl: '/uploads/ujjvala.webp',
+    thumbnail: '/uploads/thumbnails/ujjvala.webp',
     name: 'UJJVALA',
     category: 'Insecticide',
     commonName: 'Dinotefuran 20% SG',
@@ -313,6 +373,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'zum-zum',
+    image: 'zum-zum.webp',
+    imageUrl: '/uploads/zum-zum.webp',
+    thumbnail: '/uploads/thumbnails/zum-zum.webp',
     name: 'ZUM ZUM',
     category: 'Insecticide',
     commonName: 'Pymetrozine 50% WG',
@@ -328,6 +391,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'tiktok',
+    image: 'tiktok.webp',
+    imageUrl: '/uploads/tiktok.webp',
+    thumbnail: '/uploads/thumbnails/tiktok.webp',
     name: 'TIKTOK',
     category: 'Insecticide',
     commonName: 'Dinotefuran 15% + Pymetrozine 45% WG',
@@ -345,6 +411,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'polin-star',
+    image: 'polin-star.webp',
+    imageUrl: '/uploads/polin-star.webp',
+    thumbnail: '/uploads/thumbnails/polin-star.webp',
     name: 'POLIN STAR',
     category: 'Insecticide',
     commonName: 'Diafenthiuron 50% WP',
@@ -360,6 +429,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'jimmy',
+    image: 'jimmy.webp',
+    imageUrl: '/uploads/jimmy.webp',
+    thumbnail: '/uploads/thumbnails/jimmy.webp',
     name: 'JIMMY',
     category: 'Insecticide',
     commonName: 'Ethion 40% + Cypermethrin 5% EC',
@@ -390,6 +462,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'toofani',
+    image: 'toofani.webp',
+    imageUrl: '/uploads/toofani.webp',
+    thumbnail: '/uploads/thumbnails/toofani.webp',
     name: 'TOOFANI',
     category: 'Insecticide',
     commonName: 'Tolfenpyrad 15% EC',
@@ -406,6 +481,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'ematin-5',
+    image: 'ematin-5.webp',
+    imageUrl: '/uploads/ematin-5.webp',
+    thumbnail: '/uploads/thumbnails/ematin-5.webp',
     name: 'EMATIN-5',
     category: 'Insecticide',
     commonName: 'Emamectin Benzoate 5% SG',
@@ -423,6 +501,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'speed-power',
+    image: 'speed-power.webp',
+    imageUrl: '/uploads/speed-power.webp',
+    thumbnail: '/uploads/thumbnails/speed-power.webp',
     name: 'SPEED POWER',
     category: 'Insecticide',
     commonName: 'Emamectin Benzoate 1.9% EC',
@@ -438,6 +519,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'dolly-11',
+    image: 'dolly-11.webp',
+    imageUrl: '/uploads/dolly-11.webp',
+    thumbnail: '/uploads/thumbnails/dolly-11.webp',
     name: 'DOLLY-11',
     category: 'Insecticide',
     commonName: 'Deltamethrin 11% EC',
@@ -453,6 +537,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'faster-plus-plus',
+    image: 'faster-plus-plus.webp',
+    imageUrl: '/uploads/faster-plus-plus.webp',
+    thumbnail: '/uploads/thumbnails/faster-plus-plus.webp',
     name: 'FASTER ++',
     category: 'Insecticide',
     commonName: 'Chlorantraniliprole 18.5% SC',
@@ -485,6 +572,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'abota',
+    image: 'abota.webp',
+    imageUrl: '/uploads/abota.webp',
+    thumbnail: '/uploads/thumbnails/abota.webp',
     name: 'ABOTA',
     category: 'Insecticide',
     commonName: 'Abamectin 1.9% EC',
@@ -515,6 +605,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'primium',
+    image: 'primium.webp',
+    imageUrl: '/uploads/primium.webp',
+    thumbnail: '/uploads/thumbnails/primium.webp',
     name: 'PRIMIUM',
     category: 'Insecticide',
     commonName: 'Neem Seed Kernel EC Azadirachtin 0.15% (1500 PPM)',
@@ -530,6 +623,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'all-takatak',
+    image: 'all-takatak.webp',
+    imageUrl: '/uploads/all-takatak.webp',
+    thumbnail: '/uploads/thumbnails/all-takatak.webp',
     name: 'ALL TAKATAK',
     category: 'Insecticide',
     commonName: 'Pyriproxyfen 10% + Bifenthrin 10% EC',
@@ -546,6 +642,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'israel-tech',
+    image: 'israel-tech.webp',
+    imageUrl: '/uploads/israel-tech.webp',
+    thumbnail: '/uploads/thumbnails/israel-tech.webp',
     name: 'ISRAEL TECH',
     category: 'Insecticide',
     commonName: 'Fipronil 2.92% EC',
@@ -563,6 +662,9 @@ export const PRODUCTS_DATA: Product[] = [
   // --- FUNGICIDES ---
   {
     id: 'topin',
+    image: 'topin.webp',
+    imageUrl: '/uploads/topin.webp',
+    thumbnail: '/uploads/thumbnails/topin.webp',
     name: 'TOPIN',
     category: 'Fungicide',
     commonName: 'Buprofezin 15% + Acephate 35% WP',
@@ -593,6 +695,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'kombi-shaft',
+    image: 'kombi-shaft.webp',
+    imageUrl: '/uploads/kombi-shaft.webp',
+    thumbnail: '/uploads/thumbnails/kombi-shaft.webp',
     name: 'KOMBI SHAFT',
     category: 'Fungicide',
     commonName: 'Carbendazim 12% + Mancozeb 63% WP',
@@ -610,6 +715,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'manco-m-45',
+    image: 'manco-m-45.webp',
+    imageUrl: '/uploads/manco-m-45.webp',
+    thumbnail: '/uploads/thumbnails/manco-m-45.webp',
     name: 'MANCO M-45',
     category: 'Fungicide',
     commonName: 'Mancozeb 75% WP',
@@ -625,6 +733,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'hexon-plus',
+    image: 'hexon-plus.webp',
+    imageUrl: '/uploads/hexon-plus.webp',
+    thumbnail: '/uploads/thumbnails/hexon-plus.webp',
     name: 'HEXON PLUS',
     category: 'Fungicide',
     commonName: 'Hexaconazole 5% SC',
@@ -640,6 +751,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'guddi',
+    image: 'guddi.webp',
+    imageUrl: '/uploads/guddi.webp',
+    thumbnail: '/uploads/thumbnails/guddi.webp',
     name: 'GUDDI',
     category: 'Fungicide',
     commonName: 'Hexaconazole 75% WG',
@@ -655,6 +769,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'galexa',
+    image: 'galexa.webp',
+    imageUrl: '/uploads/galexa.webp',
+    thumbnail: '/uploads/thumbnails/galexa.webp',
     name: 'GALEXA',
     category: 'Fungicide',
     commonName: 'Picoxystrobin 22.52% SC',
@@ -671,6 +788,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'maxil',
+    image: 'maxil.webp',
+    imageUrl: '/uploads/maxil.webp',
+    thumbnail: '/uploads/thumbnails/maxil.webp',
     name: 'MAXIL',
     category: 'Fungicide',
     commonName: 'Metalaxyl 8% + Mancozeb 64% WP',
@@ -687,6 +807,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'moxa-35',
+    image: 'moxa-35.webp',
+    imageUrl: '/uploads/moxa-35.webp',
+    thumbnail: '/uploads/thumbnails/moxa-35.webp',
     name: 'MOXA-35',
     category: 'Fungicide',
     commonName: 'Metalaxyl 35% WS',
@@ -702,6 +825,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'trycon',
+    image: 'trycon.webp',
+    imageUrl: '/uploads/trycon.webp',
+    thumbnail: '/uploads/thumbnails/trycon.webp',
     name: 'TRYCON',
     category: 'Fungicide',
     commonName: 'Tricyclazole 75% WP',
@@ -718,6 +844,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'vitayu',
+    image: 'vitayu.webp',
+    imageUrl: '/uploads/vitayu.webp',
+    thumbnail: '/uploads/thumbnails/vitayu.webp',
     name: 'VITAYU',
     category: 'Fungicide',
     commonName: 'Chlorothalonil 75% WP',
@@ -733,6 +862,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'jumar',
+    image: 'jumar.webp',
+    imageUrl: '/uploads/jumar.webp',
+    thumbnail: '/uploads/thumbnails/jumar.webp',
     name: 'JUMAR',
     category: 'Fungicide',
     commonName: 'Thiophanate Methyl 70% WP',
@@ -748,6 +880,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'foliyar',
+    image: 'foliyar.webp',
+    imageUrl: '/uploads/foliyar.webp',
+    thumbnail: '/uploads/thumbnails/foliyar.webp',
     name: 'FOLIYAR',
     category: 'Fungicide',
     commonName: 'Tebuconazole 25.9% EC',
@@ -764,6 +899,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'tebsal',
+    image: 'tebsal.webp',
+    imageUrl: '/uploads/tebsal.webp',
+    thumbnail: '/uploads/thumbnails/tebsal.webp',
     name: 'TEBSAL',
     category: 'Fungicide',
     commonName: 'Tebuconazole 10% + Sulphur 65% WG',
@@ -779,6 +917,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'azotech',
+    image: 'azotech.webp',
+    imageUrl: '/uploads/azotech.webp',
+    thumbnail: '/uploads/thumbnails/azotech.webp',
     name: 'AZOTECH',
     category: 'Fungicide',
     commonName: 'Azoxystrobin 11% + Tebuconazole 18.3% SC',
@@ -796,6 +937,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'newton',
+    image: 'newton.webp',
+    imageUrl: '/uploads/newton.webp',
+    thumbnail: '/uploads/thumbnails/newton.webp',
     name: 'NEWTON',
     category: 'Fungicide',
     commonName: 'Azoxystrobin 18.2% + Difenoconazole 11.4% SC',
@@ -812,6 +956,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'vivan',
+    image: 'vivan.webp',
+    imageUrl: '/uploads/vivan.webp',
+    thumbnail: '/uploads/thumbnails/vivan.webp',
     name: 'VIVAN',
     category: 'Fungicide',
     commonName: 'Azoxystrobin 4.8% + Chlorothalonil 40% SC',
@@ -827,6 +974,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'sarthi',
+    image: 'sarthi.webp',
+    imageUrl: '/uploads/sarthi.webp',
+    thumbnail: '/uploads/thumbnails/sarthi.webp',
     name: 'SARTHI',
     category: 'Fungicide',
     commonName: 'Propiconazole 13.9% + Difenoconazole 13.9% EC',
@@ -857,6 +1007,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'power-55',
+    image: 'power-55.webp',
+    imageUrl: '/uploads/power-55.webp',
+    thumbnail: '/uploads/thumbnails/power-55.webp',
     name: 'POWER-55',
     category: 'Fungicide',
     commonName: 'Sulphur 55.16% SC',
@@ -872,6 +1025,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'cosa-furt',
+    image: 'cosa-furt.webp',
+    imageUrl: '/uploads/cosa-furt.webp',
+    thumbnail: '/uploads/thumbnails/cosa-furt.webp',
     name: 'COSA FURT',
     category: 'Fungicide',
     commonName: 'Sulphur 80% WDG',
@@ -887,6 +1043,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'veldex',
+    image: 'veldex.webp',
+    imageUrl: '/uploads/veldex.webp',
+    thumbnail: '/uploads/thumbnails/veldex.webp',
     name: 'VELDEX',
     category: 'Fungicide',
     commonName: 'Validamycin 3% L',
@@ -919,6 +1078,9 @@ export const PRODUCTS_DATA: Product[] = [
   // --- HERBICIDES ---
   {
     id: 'glystar-41',
+    image: 'glystar-41.webp',
+    imageUrl: '/uploads/glystar-41.webp',
+    thumbnail: '/uploads/thumbnails/glystar-41.webp',
     name: 'GLYSTAR-41',
     category: 'Herbicide',
     commonName: 'Glyphosate 41% SL',
@@ -950,6 +1112,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'penil-extra',
+    image: 'penil-extra.webp',
+    imageUrl: '/uploads/penil-extra.webp',
+    thumbnail: '/uploads/thumbnails/penil-extra.webp',
     name: 'PENIL EXTRA',
     category: 'Herbicide',
     commonName: 'Pendimethalin 38.7% CS',
@@ -966,6 +1131,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'pendi-star',
+    image: 'pendi-star.webp',
+    imageUrl: '/uploads/pendi-star.webp',
+    thumbnail: '/uploads/thumbnails/pendi-star.webp',
     name: 'PENDI STAR',
     category: 'Herbicide',
     commonName: 'Pendimethalin 30% EC',
@@ -981,6 +1149,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'perot-24',
+    image: 'perot-24.webp',
+    imageUrl: '/uploads/perot-24.webp',
+    thumbnail: '/uploads/thumbnails/perot-24.webp',
     name: 'PEROT-24',
     category: 'Herbicide',
     commonName: 'Paraquat Dichloride 24% SL',
@@ -996,6 +1167,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'star-gold',
+    image: 'star-gold.webp',
+    imageUrl: '/uploads/star-gold.webp',
+    thumbnail: '/uploads/thumbnails/star-gold.webp',
     name: 'STAR GOLD',
     category: 'Herbicide',
     commonName: 'Oxyfluorfen 23.5% EC',
@@ -1012,6 +1186,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'harbon-super',
+    image: 'harbon-super.webp',
+    imageUrl: '/uploads/harbon-super.webp',
+    thumbnail: '/uploads/thumbnails/harbon-super.webp',
     name: 'HARBON SUPER',
     category: 'Herbicide',
     commonName: 'Imazethapyr 70% WG',
@@ -1027,6 +1204,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'lura',
+    image: 'lura.webp',
+    imageUrl: '/uploads/lura.webp',
+    thumbnail: '/uploads/thumbnails/lura.webp',
     name: 'LURA',
     category: 'Herbicide',
     commonName: '2, 4-D Amine Salt 58% SL',
@@ -1057,6 +1237,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'tagar-super',
+    image: 'tagar-super.webp',
+    imageUrl: '/uploads/tagar-super.webp',
+    thumbnail: '/uploads/thumbnails/tagar-super.webp',
     name: 'TAGAR SUPER',
     category: 'Herbicide',
     commonName: 'Quizalofop Ethyl 5% EC',
@@ -1072,6 +1255,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'magic',
+    image: 'magic.webp',
+    imageUrl: '/uploads/magic.webp',
+    thumbnail: '/uploads/thumbnails/magic.webp',
     name: 'MAGIC',
     category: 'Herbicide',
     commonName: 'Quizalofop Ethyl 10% EC',
@@ -1087,6 +1273,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'atma-50',
+    image: 'atma-50.webp',
+    imageUrl: '/uploads/atma-50.webp',
+    thumbnail: '/uploads/thumbnails/atma-50.webp',
     name: 'ATMA-50',
     category: 'Herbicide',
     commonName: 'Atrazine 50% WP',
@@ -1104,6 +1293,9 @@ export const PRODUCTS_DATA: Product[] = [
   // --- PLANT GROWTH REGULATORS (PGR) ---
   {
     id: 'call-break',
+    image: 'call-break.webp',
+    imageUrl: '/uploads/call-break.webp',
+    thumbnail: '/uploads/thumbnails/call-break.webp',
     name: 'CALL BREAK',
     category: 'PGR',
     commonName: 'Paclobutrazole 23% SC',
@@ -1121,6 +1313,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'gibola',
+    image: 'gibola.webp',
+    imageUrl: '/uploads/gibola.webp',
+    thumbnail: '/uploads/thumbnails/gibola.webp',
     name: 'GIBOLA',
     category: 'PGR',
     commonName: 'Gibberellic Acid 0.001% L',
@@ -1137,6 +1332,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'kalwar-40',
+    image: 'kalwar-40.webp',
+    imageUrl: '/uploads/kalwar-40.webp',
+    thumbnail: '/uploads/thumbnails/kalwar-40.webp',
     name: 'KALWAR-40',
     category: 'PGR',
     commonName: 'Paclobutrazol 40% SC',
@@ -1152,6 +1350,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'cyto-6',
+    image: 'cyto-6.webp',
+    imageUrl: '/uploads/cyto-6.webp',
+    thumbnail: '/uploads/thumbnails/cyto-6.webp',
     name: 'CYTO-6',
     category: 'PGR',
     commonName: 'Seaweed Extract, Humic & Fulvic Acid, Amino & Vitamins Liquid (Bio Stimulant)',
@@ -1183,6 +1384,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'dr-rapido',
+    image: 'dr-rapido.webp',
+    imageUrl: '/uploads/dr-rapido.webp',
+    thumbnail: '/uploads/thumbnails/dr-rapido.webp',
     name: 'DR. RAPIDO',
     category: 'PGR',
     commonName: 'Protein Hydrolysates 25% (Plant Source) Liquid',
@@ -1198,6 +1402,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'new-life-plus',
+    image: 'new-life-plus.webp',
+    imageUrl: '/uploads/new-life-plus.webp',
+    thumbnail: '/uploads/thumbnails/new-life-plus.webp',
     name: 'NEW LIFE PLUS',
     category: 'PGR',
     commonName: 'Mycorrhizal Biofertilizer (Root Maximizer)',
@@ -1213,6 +1420,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'dr-life-care',
+    image: 'dr-life-care.webp',
+    imageUrl: '/uploads/dr-life-care.webp',
+    thumbnail: '/uploads/thumbnails/dr-life-care.webp',
     name: 'DR. LIFE CARE',
     category: 'PGR',
     commonName: 'Bio Stimulant',
@@ -1228,6 +1438,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'dr-carbo',
+    image: 'dr-carbo.webp',
+    imageUrl: '/uploads/dr-carbo.webp',
+    thumbnail: '/uploads/thumbnails/dr-carbo.webp',
     name: 'DR. CARBO',
     category: 'PGR',
     commonName: 'Liquid Carbon',
@@ -1244,6 +1457,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'stick-well',
+    image: 'stick-well.webp',
+    imageUrl: '/uploads/stick-well.webp',
+    thumbnail: '/uploads/thumbnails/stick-well.webp',
     name: 'STICK WELL',
     category: 'PGR',
     commonName: 'Silicon Based Surfactant',
@@ -1276,6 +1492,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'black-gold',
+    image: 'black-gold.webp',
+    imageUrl: '/uploads/black-gold.webp',
+    thumbnail: '/uploads/thumbnails/black-gold.webp',
     name: 'BLACK GOLD',
     category: 'PGR',
     commonName: 'Humic Acid 80%',
@@ -1291,6 +1510,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'humi-star-95',
+    image: 'humi-star-95.webp',
+    imageUrl: '/uploads/humi-star-95.webp',
+    thumbnail: '/uploads/thumbnails/humi-star-95.webp',
     name: 'HUMI STAR-95',
     category: 'PGR',
     commonName: 'Humic Acid 95%',
@@ -1306,6 +1528,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'ekka-no-1',
+    image: 'ekka-no-1.webp',
+    imageUrl: '/uploads/ekka-no-1.webp',
+    thumbnail: '/uploads/thumbnails/ekka-no-1.webp',
     name: 'EKKA NO.1',
     category: 'PGR',
     commonName: 'Fe Sulphate + Citric Acid + Amino Acid',
@@ -1322,6 +1547,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'suffal-gold',
+    image: 'suffal-gold.webp',
+    imageUrl: '/uploads/suffal-gold.webp',
+    thumbnail: '/uploads/thumbnails/suffal-gold.webp',
     name: 'SUFFAL GOLD',
     category: 'Fertilizer',
     commonName: 'Sulphur 90% (Granular) Fertilizer',
@@ -1338,6 +1566,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'bromo',
+    image: 'bromo.webp',
+    imageUrl: '/uploads/bromo.webp',
+    thumbnail: '/uploads/thumbnails/bromo.webp',
     name: 'BROMO',
     category: 'Fertilizer',
     commonName: 'Boron 20%',
@@ -1353,6 +1584,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'tommy',
+    image: 'tommy.webp',
+    imageUrl: '/uploads/tommy.webp',
+    thumbnail: '/uploads/thumbnails/tommy.webp',
     name: 'TOMMY',
     category: 'Fertilizer',
     commonName: 'Rhodophytes Organic Potash',
@@ -1372,6 +1606,9 @@ export const PRODUCTS_DATA: Product[] = [
   // --- FERTILIZERS (NPK & LIQUID) ---
   {
     id: 'nutri-power-cnb',
+    image: 'nutri-power-cnb.webp',
+    imageUrl: '/uploads/nutri-power-cnb.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-cnb.webp',
     name: 'NUTRI POWER CNB',
     category: 'Fertilizer',
     commonName: 'Calcium Nitrate',
@@ -1387,6 +1624,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutri-power-191919',
+    image: 'nutri-power-191919.webp',
+    imageUrl: '/uploads/nutri-power-191919.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-191919.webp',
     name: 'NUTRI POWER 19:19:19',
     category: 'Fertilizer',
     commonName: 'NPK 19:19:19',
@@ -1403,6 +1643,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutri-power-282800',
+    image: 'nutri-power-282800.webp',
+    imageUrl: '/uploads/nutri-power-282800.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-282800.webp',
     name: 'NUTRI POWER 28:28:00',
     category: 'Fertilizer',
     commonName: 'NPK 28:28:00',
@@ -1418,6 +1661,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutri-power-126100',
+    image: 'nutri-power-126100.webp',
+    imageUrl: '/uploads/nutri-power-126100.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-126100.webp',
     name: 'NUTRI POWER 12:61:00',
     category: 'Fertilizer',
     commonName: 'NPK 12:61:00 (MAP)',
@@ -1434,6 +1680,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutri-power-005234',
+    image: 'nutri-power-005234.webp',
+    imageUrl: '/uploads/nutri-power-005234.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-005234.webp',
     name: 'NUTRI POWER 00:52:34',
     category: 'Fertilizer',
     commonName: 'NPK 00:52:34 (MKP)',
@@ -1450,6 +1699,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutri-power-000050',
+    image: 'nutri-power-000050.webp',
+    imageUrl: '/uploads/nutri-power-000050.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-000050.webp',
     name: 'NUTRI POWER 00:00:50',
     category: 'Fertilizer',
     commonName: 'NPK 00:00:50 (SOP)',
@@ -1466,6 +1718,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutri-power-130045',
+    image: 'nutri-power-130045.webp',
+    imageUrl: '/uploads/nutri-power-130045.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-130045.webp',
     name: 'NUTRI POWER 13:00:45',
     category: 'Fertilizer',
     commonName: 'NPK 13:00:45 (Multi-K)',
@@ -1481,6 +1736,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'zivaa-plus',
+    image: 'zivaa-plus.webp',
+    imageUrl: '/uploads/zivaa-plus.webp',
+    thumbnail: '/uploads/thumbnails/zivaa-plus.webp',
     name: 'ZIVAA +',
     category: 'Fertilizer',
     commonName: 'Zinc Oxide Suspension Concentrate (39.5% w/w Zn)',
@@ -1498,6 +1756,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'dr-ujjas-32',
+    image: 'dr-ujjas-32.webp',
+    imageUrl: '/uploads/dr-ujjas-32.webp',
+    thumbnail: '/uploads/thumbnails/dr-ujjas-32.webp',
     name: 'DR. UJJAS-32',
     category: 'Fertilizer',
     commonName: 'Urea Ammonium Nitrate 32% Slow Release Liquid Fertilizer',
@@ -1514,6 +1775,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'dippy-l-dap',
+    image: 'dippy-l-dap.webp',
+    imageUrl: '/uploads/dippy-l-dap.webp',
+    thumbnail: '/uploads/thumbnails/dippy-l-dap.webp',
     name: 'DIPPY L-DAP',
     category: 'Fertilizer',
     commonName: 'NPK 10:34:00 Liquid',
@@ -1531,6 +1795,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutri-power-cbz',
+    image: 'nutri-power-cbz.webp',
+    imageUrl: '/uploads/nutri-power-cbz.webp',
+    thumbnail: '/uploads/thumbnails/nutri-power-cbz.webp',
     name: 'NUTRI POWER CBZ',
     category: 'Fertilizer',
     commonName: 'Fortified Calcium Suspension',
@@ -1546,6 +1813,9 @@ export const PRODUCTS_DATA: Product[] = [
   },
   {
     id: 'nutriva-35050',
+    image: 'nutriva-35050.webp',
+    imageUrl: '/uploads/nutriva-35050.webp',
+    thumbnail: '/uploads/thumbnails/nutriva-35050.webp',
     name: 'NUTRIVA 3.50.50',
     category: 'Fertilizer',
     commonName: 'ORGANIC + NPK 03:50:50',

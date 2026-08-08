@@ -41,4 +41,7 @@ DrChemistar product image.jpg/
 # OCR working files (Tesseract language data + cached OCR output)
 *.traineddata
 server/scratch/
-server/uploads/temp/
+
+# Transient extraction workspace used by the ZIP importer.
+# public/uploads/ itself IS tracked - it is the deployed product artwork.
+public/uploads/temp/
