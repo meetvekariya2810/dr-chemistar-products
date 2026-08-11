@@ -1755,25 +1755,6 @@ export const PRODUCTS_DATA: Product[] = [
     imageColor: 'from-teal-600 to-emerald-900'
   },
   {
-    id: 'dr-ujjas-32',
-    image: 'dr-ujjas-32.webp',
-    imageUrl: '/uploads/dr-ujjas-32.webp',
-    thumbnail: '/uploads/thumbnails/dr-ujjas-32.webp',
-    name: 'DR. UJJAS-32',
-    category: 'Fertilizer',
-    commonName: 'Urea Ammonium Nitrate 32% Slow Release Liquid Fertilizer',
-    activeIngredient: 'UAN-32 (Nitrogen 32% Liquid)',
-    formulation: 'Liquid Slow Release',
-    dose: '30 ml / 15 Ltr. Water',
-    packing: ['250 ml', '500 ml', '1 Ltr.'],
-    targetPest: ['Nitrogen leaching & sudden crop yellowing'],
-    targetCrops: ['Sugarcane', 'Maize', 'Wheat', 'Paddy', 'Cotton'],
-    modeOfAction: 'Provides 3 forms of Nitrogen: Amide, Ammonium, and Nitrate.',
-    benefits: ['Zero nitrogen volatilization loss', 'Continuous green canopy for weeks', 'Foliar & drip friendly'],
-    popular: true,
-    imageColor: 'from-green-600 to-teal-800'
-  },
-  {
     id: 'dippy-l-dap',
     image: 'dippy-l-dap.webp',
     imageUrl: '/uploads/dippy-l-dap.webp',
@@ -1810,38 +1791,5 @@ export const PRODUCTS_DATA: Product[] = [
     modeOfAction: '3-in-1 Fortified micronutrient suspension.',
     benefits: ['Simultaneous delivery of Calcium, Boron & Zinc', 'Prevents flower and fruit shedding', 'Enhances fruit skin firmness'],
     imageColor: 'from-sky-600 to-blue-900'
-  },
-  {
-    id: 'nutriva-35050',
-    image: 'nutriva-35050.webp',
-    imageUrl: '/uploads/nutriva-35050.webp',
-    thumbnail: '/uploads/thumbnails/nutriva-35050.webp',
-    name: 'NUTRIVA 3.50.50',
-    category: 'Fertilizer',
-    commonName: 'ORGANIC + NPK 03:50:50',
-    activeIngredient: 'Organic Bio Extract + High P & K (03:50:50)',
-    formulation: 'Liquid Suspension',
-    dose: '30 ml / 15 Ltr. Water, Soil: 500 ml / Acre',
-    packing: ['250 ml', '500 ml', '1 Ltr.'],
-    targetPest: ['Organic fruiting & grain filling'],
-    targetCrops: ['Groundnut', 'Cumin', 'Wheat', 'Vegetables'],
-    modeOfAction: 'Bio-organic synergized high P & K formulation.',
-    benefits: ['Combines organic vitality with targeted mineral P & K', 'Substantially boosts pod filling in Groundnut', 'Improves grain weight'],
-    imageColor: 'from-emerald-700 to-green-900'
-  },
-  {
-    id: 'nutri-power-123216',
-    name: 'NUTRI POWER 12:32:16',
-    category: 'Fertilizer',
-    commonName: 'NPK 12:32:16 Fortified Suspension',
-    activeIngredient: 'NPK 12:32:16 + Trace Elements Liquid Suspension',
-    formulation: 'Liquid Suspension',
-    dose: '40 ml / 15 Ltr. Water, Soil: 500 ml / Acre',
-    packing: ['500 ml', '1 Ltr.'],
-    targetPest: ['Balanced crop feeding'],
-    targetCrops: ['Cotton', 'Sugarcane', 'Paddy', 'Pulses', 'Oilseeds'],
-    modeOfAction: 'Fortified suspension concentrate liquid fertilizer.',
-    benefits: ['Liquid alternative to complex 12:32:16 granules', 'Drip and foliar application ready', 'Prevents nutrient tie-up in soil'],
-    imageColor: 'from-indigo-600 to-blue-900'
   }
 ];
