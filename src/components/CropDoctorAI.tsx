@@ -37,7 +37,7 @@ export const CropDoctorAI: React.FC<CropDoctorAIProps> = ({
   const sampleDiagnoses = [
     {
       crop: 'Cotton',
-      image: 'https://images.unsplash.com/photo-1595246140625-573b715d11dc?auto=format&fit=crop&w=600&q=80',
+      image: '/diseases/cotton-whitefly.jpg',
       diseaseName: 'Whitefly & Leaf Curl Warning',
       severity: 'High (78%)',
       symptoms: 'Sticky honeydew on under-leaf surface, adult whitefly colonies, early leaf yellowing.',
@@ -47,7 +47,7 @@ export const CropDoctorAI: React.FC<CropDoctorAIProps> = ({
     },
     {
       crop: 'Paddy / Rice',
-      image: 'https://images.unsplash.com/photo-1536657464919-892534f60d6e?auto=format&fit=crop&w=600&q=80',
+      image: '/diseases/rice-leaf-blast.jpg',
       diseaseName: 'Rice Leaf Blast (Magnaporthe oryzae)',
       severity: 'Moderate (62%)',
       symptoms: 'Spindle-shaped lesions with gray centers and reddish-brown borders on leaves.',
@@ -57,7 +57,7 @@ export const CropDoctorAI: React.FC<CropDoctorAIProps> = ({
     },
     {
       crop: 'Groundnut',
-      image: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=600&q=80',
+      image: '/diseases/groundnut-tikka.jpg',
       diseaseName: 'Tikka Disease / Leaf Spot',
       severity: 'Severe (85%)',
       symptoms: 'Circular dark black spots surrounded by yellow halo causing leaf dropping.',
