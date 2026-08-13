@@ -146,19 +146,56 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
 
             </div>
 
-            {/* Simulated Google Map Location Card */}
-            <div className="bg-slate-950 rounded-3xl overflow-hidden border border-white/10 p-4 text-center">
-              <div className="bg-slate-900 rounded-2xl h-48 flex flex-col items-center justify-center p-4 border border-slate-800">
-                <MapPin className="w-10 h-10 text-emerald-400 animate-bounce mb-2" />
-                <span className="text-xs font-bold text-white">Google Maps Location Preview</span>
-                <span className="text-[11px] text-slate-400 mt-0.5">Sopan Industrial Zone, Near Atul Auto, Rajkot (Gujarat)</span>
+            {/* Real Google Map Location Card */}
+            <div className="bg-slate-950 rounded-3xl overflow-hidden border border-white/10 p-4">
+              <div className="w-full overflow-hidden rounded-2xl border border-slate-800 h-[300px] sm:h-[450px] bg-slate-900">
+                <iframe
+                  title="DR. CHEMISTAR Agro Industries Location"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d17104.825557503747!2d70.77703427960643!3d22.13824499768966!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3958352105fb75b9%3A0x8a1a870606a0656e!2sDR.%20CHEMISTAR%20AGRO%20INDUSTRIES!5e1!3m2!1sen!2sin!4v1786636267189!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  className="focus:outline-none"
+                />
+              </div>
+              
+              <div className="mt-4 p-4 bg-white/5 rounded-2xl border border-white/5 text-left">
+                <div className="flex items-center justify-between mb-1.5">
+                  <h4 className="text-sm font-bold text-white font-display uppercase tracking-wide">
+                    DR. CHEMISTAR CROP CARE PVT. LTD.
+                  </h4>
+                  <span className="bg-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-emerald-500/30">
+                    Verified Location
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-1 mb-3">
+                  <span className="text-amber-400 text-xs font-bold">4.9</span>
+                  <div className="flex text-amber-400">
+                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 ml-1">(Factory & Head Office)</span>
+                </div>
+
+                <div className="text-slate-300 text-xs leading-relaxed font-sans">
+                  <p className="font-bold text-white mb-1">Factory & Registered Office:</p>
+                  <p>Survey No. 664, Plot No. 17,</p>
+                  <p>Near Atul Auto, N.H.-8B,</p>
+                  <p>Sopan Industrial Zone,</p>
+                  <p>Rajkot, Gujarat, India.</p>
+                </div>
+
                 <a
-                  href="https://maps.google.com/?q=Rajkot+Sopan+Industrial+Zone"
+                  href="https://www.google.com/maps/search/?api=1&query=DR.+CHEMISTAR+AGRO+INDUSTRIES,+Sopan+Industrial+Zone,+Rajkot"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-3 bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg border border-white/20"
+                  className="mt-4 w-full bg-gradient-to-r from-emerald-500 to-sky-600 hover:from-emerald-600 hover:to-sky-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-lg"
                 >
-                  Open in Google Maps App
+                  <MapPin className="w-4 h-4 text-emerald-300" />
+                  <span>Open in Google Maps App</span>
                 </a>
               </div>
             </div>

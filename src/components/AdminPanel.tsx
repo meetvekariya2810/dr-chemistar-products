@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Product, Language } from '../types';
+import { Product, ProductCategory, Language } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { PRODUCTS_DATA } from '../data/productsData';
-import { fetchProducts, fetchDealers, fetchEnquiries, approveDealer, deleteProduct, isApiConfigured, fetchImageStats, uploadZipFile, triggerRematch } from '../api';
+import { fetchProducts, fetchDealers, fetchEnquiries, approveDealer, deleteProduct, createProduct, isApiConfigured, fetchImageStats, uploadZipFile, triggerRematch } from '../api';
 import { resolveUploadUrl } from '../lib/productImage';
 import { 
   Lock, 
@@ -25,17 +25,206 @@ import {
   FileText,
   Check,
   RefreshCw,
-  Upload
+  Upload,
+  X,
+  Loader2,
+  PackagePlus
 } from 'lucide-react';
 
 interface AdminPanelProps {
   currentLang: Language;
 }
 
+/**
+ * The five catalogue types, and how the "what does it act on" field should be
+ * labelled and stored for each.
+ *
+ * The Product shape carries `targetPest` and `targetDisease` but no weed or
+ * deficiency field, and the existing catalogue already overloads `targetPest`
+ * for herbicide weeds, PGR growth issues and fertilizer purposes. Rather than
+ * add a column, each type gets the wording an agronomist would expect while
+ * writing into the field the rest of the catalogue already uses.
+ */
+interface ProductTypeConfig {
+  value: ProductCategory;
+  label: string;
+  emoji: string;
+  hint: string;
+  targetsLabel: string;
+  targetsField: 'targetPest' | 'targetDisease';
+  targetsPlaceholder: string;
+  formulationPlaceholder: string;
+  dosePlaceholder: string;
+}
+
+const PRODUCT_TYPES: ProductTypeConfig[] = [
+  {
+    value: 'Insecticide',
+    label: 'Insecticide',
+    emoji: '🌾',
+    hint: 'Pest control for sucking & chewing insects',
+    targetsLabel: 'Target Pests',
+    targetsField: 'targetPest',
+    targetsPlaceholder: 'Aphids, Whitefly, Thrips, Pink Bollworm',
+    formulationPlaceholder: 'e.g. 5% SC, 20% WG, 1.8% EC',
+    dosePlaceholder: 'e.g. 15 ml / 15 Ltr. Water'
+  },
+  {
+    value: 'Fungicide',
+    label: 'Fungicide',
+    emoji: '🛡️',
+    hint: 'Preventive & curative disease control',
+    targetsLabel: 'Target Diseases',
+    targetsField: 'targetDisease',
+    targetsPlaceholder: 'Powdery Mildew, Leaf Spot, Blight, Rust',
+    formulationPlaceholder: 'e.g. 75% WP, 25% SC, 50% WG',
+    dosePlaceholder: 'e.g. 30 gm / 15 Ltr. Water'
+  },
+  {
+    value: 'Herbicide',
+    label: 'Herbicide',
+    emoji: '🌱',
+    hint: 'Selective & non-selective weed control',
+    targetsLabel: 'Target Weeds',
+    targetsField: 'targetPest',
+    targetsPlaceholder: 'Grassy weeds, Broadleaf weeds, Sedges',
+    formulationPlaceholder: 'e.g. 10% SC, 41% SL',
+    dosePlaceholder: 'e.g. 400 ml / Acre'
+  },
+  {
+    value: 'PGR',
+    label: 'PGR & Bio',
+    emoji: '⚡',
+    hint: 'Growth regulators & bio-stimulants',
+    targetsLabel: 'Growth Issues Addressed',
+    targetsField: 'targetPest',
+    targetsPlaceholder: 'Flower drop, Poor root growth, Stress recovery',
+    formulationPlaceholder: 'e.g. Liquid Bio-stimulant, 0.001% L',
+    dosePlaceholder: 'e.g. 20 ml / 15 Ltr. Water'
+  },
+  {
+    value: 'Fertilizer',
+    label: 'Fertilizer',
+    emoji: '💧',
+    hint: 'Water soluble NPK & micronutrients',
+    targetsLabel: 'Deficiency / Purpose',
+    targetsField: 'targetPest',
+    targetsPlaceholder: 'Nitrogen deficiency, Poor grain filling',
+    formulationPlaceholder: 'e.g. Water Soluble Powder, Liquid Suspension',
+    dosePlaceholder: 'e.g. 75 gm / 15 Ltr. Water'
+  }
+];
+
+const EMPTY_PRODUCT_FORM = {
+  name: '',
+  commonName: '',
+  activeIngredient: '',
+  formulation: '',
+  dose: '',
+  packing: '',
+  targets: '',
+  targetCrops: '',
+  modeOfAction: '',
+  benefits: '',
+  safetyInstructions: '',
+  storageInstructions: '',
+  badge: '',
+  popular: false
+};
+
 export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
   const [productsList, setProductsList] = useState<Product[]>(PRODUCTS_DATA);
-  const [activeTab, setActiveTab] = useState<'products' | 'dealers' | 'enquiries' | 'settings' | 'images'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'add-product' | 'dealers' | 'enquiries' | 'settings' | 'images'>('products');
   const [searchTerm, setSearchTerm] = useState('');
+
+  // Add Product form state
+  const [newProductType, setNewProductType] = useState<ProductCategory | null>(null);
+  const [productForm, setProductForm] = useState(EMPTY_PRODUCT_FORM);
+  const [productPhoto, setProductPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string>('');
+  const [savingProduct, setSavingProduct] = useState(false);
+  const [addProductError, setAddProductError] = useState<string | null>(null);
+  const [addProductSuccess, setAddProductSuccess] = useState<string | null>(null);
+
+  const selectedType = PRODUCT_TYPES.find(t => t.value === newProductType) || null;
+
+  const updateProductField = (field: keyof typeof EMPTY_PRODUCT_FORM, value: string | boolean) => {
+    setProductForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  // Object URLs are only freed when the component unmounts or the file changes,
+  // so revoke the previous one on every swap to avoid leaking blobs.
+  const handlePhotoChange = (file: File | null) => {
+    setPhotoPreview(prev => {
+      if (prev) URL.revokeObjectURL(prev);
+      return file ? URL.createObjectURL(file) : '';
+    });
+    setProductPhoto(file);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
+    };
+  }, [photoPreview]);
+
+  const resetProductForm = () => {
+    setProductForm(EMPTY_PRODUCT_FORM);
+    handlePhotoChange(null);
+    setAddProductError(null);
+  };
+
+  const handleAddProduct = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (savingProduct || !selectedType) return;
+
+    setAddProductError(null);
+    setAddProductSuccess(null);
+
+    if (!isApiConfigured) {
+      setAddProductError(
+        'Products are stored by the backend API, which is not reachable from this build. ' +
+          'Start the local server (npm run dev) or point VITE_API_URL at a deployed API.'
+      );
+      return;
+    }
+
+    const form = new FormData();
+    form.append('name', productForm.name);
+    form.append('category', selectedType.value);
+    form.append('commonName', productForm.commonName);
+    form.append('activeIngredient', productForm.activeIngredient);
+    form.append('formulation', productForm.formulation);
+    form.append('dose', productForm.dose);
+    form.append('packing', productForm.packing);
+    form.append('targetCrops', productForm.targetCrops);
+    form.append('modeOfAction', productForm.modeOfAction);
+    form.append('benefits', productForm.benefits);
+    form.append('safetyInstructions', productForm.safetyInstructions);
+    form.append('storageInstructions', productForm.storageInstructions);
+    form.append('badge', productForm.badge);
+    form.append('popular', String(productForm.popular));
+    // The targets box writes into whichever field this product type uses.
+    form.append(selectedType.targetsField, productForm.targets);
+    if (productPhoto) form.append('image', productPhoto);
+
+    setSavingProduct(true);
+    try {
+      const result = await createProduct(form);
+      if (result?.product) {
+        setProductsList(prev => [...prev, result.product as Product]);
+      }
+      setAddProductSuccess(
+        `${productForm.name} added to the ${selectedType.label} catalogue` +
+          `${productPhoto ? ' with its photo' : ' (no photo yet)'}.`
+      );
+      resetProductForm();
+    } catch (err: any) {
+      setAddProductError(err?.message || 'Could not save the product. Please try again.');
+    } finally {
+      setSavingProduct(false);
+    }
+  };
 
   // Image mapping stats state
   const [imageStats, setImageStats] = useState<{
@@ -378,6 +567,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
             Product Management ({productsList.length})
           </button>
           <button
+            onClick={() => setActiveTab('add-product')}
+            className={`flex-1 min-w-[120px] py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'add-product' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
+          >
+            <PackagePlus className="w-4 h-4" />
+            Add Product
+          </button>
+          <button
             onClick={() => setActiveTab('dealers')}
             className={`flex-1 min-w-[120px] py-2.5 rounded-xl transition-colors ${activeTab === 'dealers' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
           >
@@ -419,7 +615,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
               </div>
 
               <button
-                onClick={() => alert('Add Product Modal Triggered. Enter product specs.')}
+                onClick={() => setActiveTab('add-product')}
                 className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
@@ -492,7 +688,341 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
           </div>
         )}
 
-        {/* TAB 2: DEALER APPROVAL QUEUE */}
+        {/* TAB 2: ADD PRODUCT (type first, then a form worded for that type) */}
+        {activeTab === 'add-product' && (
+          <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6 space-y-6">
+
+            <div>
+              <h3 className="text-lg font-bold text-white font-display flex items-center gap-2">
+                <PackagePlus className="w-5 h-5 text-emerald-400" />
+                Add a New Product
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Pick the product type first - the form below adjusts its wording to match. The photo is
+                optional and can be uploaded later from the Image Manager.
+              </p>
+            </div>
+
+            {addProductSuccess && (
+              <div className="bg-emerald-500/15 border border-emerald-400/40 p-4 rounded-2xl flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <div className="text-xs text-emerald-100">
+                  <p className="font-bold text-white">Product saved</p>
+                  <p className="mt-1">{addProductSuccess}</p>
+                </div>
+                <button
+                  onClick={() => setAddProductSuccess(null)}
+                  className="ml-auto text-emerald-300 hover:text-white"
+                  aria-label="Dismiss"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            {addProductError && (
+              <div role="alert" className="bg-red-500/15 border border-red-400/40 p-4 rounded-2xl flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <div className="text-xs text-red-100">
+                  <p className="font-bold text-white">Product not saved</p>
+                  <p className="mt-1">{addProductError}</p>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 1 - product type */}
+            <div>
+              <label className="text-[11px] text-slate-300 font-bold block mb-2">
+                Step 1 &middot; Product Type *
+              </label>
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                {PRODUCT_TYPES.map(type => (
+                  <button
+                    key={type.value}
+                    type="button"
+                    onClick={() => setNewProductType(type.value)}
+                    className={`text-left p-4 rounded-2xl border transition-all ${
+                      newProductType === type.value
+                        ? 'bg-emerald-600/20 border-emerald-500 shadow-glow-green'
+                        : 'bg-slate-950 border-slate-800 hover:border-slate-600'
+                    }`}
+                  >
+                    <span className="text-xl block mb-1.5">{type.emoji}</span>
+                    <span className="text-xs font-black text-white block font-display">{type.label}</span>
+                    <span className="text-[10px] text-slate-400 block mt-1 leading-snug">{type.hint}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* STEP 2 - details, worded for the chosen type */}
+            {selectedType && (
+              <form onSubmit={handleAddProduct} className="space-y-5">
+
+                <div className="border-t border-slate-800 pt-5">
+                  <label className="text-[11px] text-slate-300 font-bold block mb-3">
+                    Step 2 &middot; {selectedType.label} Details
+                  </label>
+
+                  <div className="grid lg:grid-cols-3 gap-5">
+
+                    {/* Photo uploader */}
+                    <div className="lg:col-span-1">
+                      <span className="text-[11px] text-slate-300 font-bold block mb-1.5">Product Photo</span>
+
+                      <div className="bg-slate-950 border border-dashed border-slate-700 rounded-2xl p-4 text-center">
+                        {photoPreview ? (
+                          <div className="space-y-3">
+                            <img
+                              src={photoPreview}
+                              alt="Selected product"
+                              className="w-full h-40 object-contain rounded-xl bg-white"
+                            />
+                            <p className="text-[10px] text-slate-400 truncate">{productPhoto?.name}</p>
+                            <button
+                              type="button"
+                              onClick={() => handlePhotoChange(null)}
+                              className="text-[11px] font-bold text-rose-400 hover:text-rose-300 inline-flex items-center gap-1"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                              Remove photo
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="py-6 space-y-2">
+                            <ImageIcon className="w-8 h-8 text-slate-600 mx-auto" />
+                            <p className="text-[11px] text-slate-400">No photo selected</p>
+                          </div>
+                        )}
+
+                        <label className="mt-3 inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold px-3 py-2 rounded-xl cursor-pointer">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>{photoPreview ? 'Choose a different photo' : 'Choose photo'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handlePhotoChange(e.target.files?.[0] || null)}
+                          />
+                        </label>
+                      </div>
+
+                      <p className="text-[10px] text-slate-500 mt-2 leading-relaxed">
+                        JPG, PNG or WebP up to 10 MB. It is converted to WebP and resized to 500&times;500
+                        with a 150&times;150 thumbnail, exactly like the bulk ZIP import.
+                      </p>
+                    </div>
+
+                    {/* Core fields */}
+                    <div className="lg:col-span-2 space-y-4">
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Product Name *</label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. ROKET SUPER"
+                            value={productForm.name}
+                            onChange={(e) => updateProductField('name', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Common / Trade Name</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Imidacloprid 17.8% SL"
+                            value={productForm.commonName}
+                            onChange={(e) => updateProductField('commonName', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Active Ingredient</label>
+                          <input
+                            type="text"
+                            placeholder="Technical composition"
+                            value={productForm.activeIngredient}
+                            onChange={(e) => updateProductField('activeIngredient', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Formulation</label>
+                          <input
+                            type="text"
+                            placeholder={selectedType.formulationPlaceholder}
+                            value={productForm.formulation}
+                            onChange={(e) => updateProductField('formulation', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Dose</label>
+                          <input
+                            type="text"
+                            placeholder={selectedType.dosePlaceholder}
+                            value={productForm.dose}
+                            onChange={(e) => updateProductField('dose', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Packing Sizes</label>
+                          <input
+                            type="text"
+                            placeholder="250 ml, 500 ml, 1 Ltr."
+                            value={productForm.packing}
+                            onChange={(e) => updateProductField('packing', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Type-specific: label and destination field both follow the chosen type */}
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-[11px] text-emerald-300 font-bold block mb-1.5">
+                            {selectedType.targetsLabel}
+                          </label>
+                          <input
+                            type="text"
+                            placeholder={selectedType.targetsPlaceholder}
+                            value={productForm.targets}
+                            onChange={(e) => updateProductField('targets', e.target.value)}
+                            className="w-full bg-slate-950 border border-emerald-800/60 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Target Crops</label>
+                          <input
+                            type="text"
+                            placeholder="Cotton, Paddy, Chilli, Vegetables"
+                            value={productForm.targetCrops}
+                            onChange={(e) => updateProductField('targetCrops', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Mode of Action</label>
+                        <textarea
+                          rows={2}
+                          placeholder="How the product works on the crop"
+                          value={productForm.modeOfAction}
+                          onChange={(e) => updateProductField('modeOfAction', e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[11px] text-slate-300 font-bold block mb-1.5">
+                          Key Benefits <span className="text-slate-500 font-medium">(one per line)</span>
+                        </label>
+                        <textarea
+                          rows={3}
+                          placeholder={'Quick knockdown action\nLong residual protection\nSafe for beneficial insects'}
+                          value={productForm.benefits}
+                          onChange={(e) => updateProductField('benefits', e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                        />
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Safety Instructions</label>
+                          <input
+                            type="text"
+                            placeholder="Protective gear, re-entry interval"
+                            value={productForm.safetyInstructions}
+                            onChange={(e) => updateProductField('safetyInstructions', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">Storage Instructions</label>
+                          <input
+                            type="text"
+                            placeholder="Cool dry place, away from children"
+                            value={productForm.storageInstructions}
+                            onChange={(e) => updateProductField('storageInstructions', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 gap-4 items-end">
+                        <div>
+                          <label className="text-[11px] text-slate-300 font-bold block mb-1.5">
+                            Badge <span className="text-slate-500 font-medium">(optional ribbon)</span>
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Best Seller, New Launch"
+                            value={productForm.badge}
+                            onChange={(e) => updateProductField('badge', e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                          />
+                        </div>
+                        <label className="flex items-center gap-2.5 text-xs text-slate-300 font-bold cursor-pointer pb-2.5">
+                          <input
+                            type="checkbox"
+                            checked={productForm.popular}
+                            onChange={(e) => updateProductField('popular', e.target.checked)}
+                            className="w-4 h-4 rounded accent-emerald-500"
+                          />
+                          Mark as a popular product
+                        </label>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-3 border-t border-slate-800 pt-5">
+                  <button
+                    type="submit"
+                    disabled={savingProduct}
+                    className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs px-5 py-3 rounded-xl flex items-center gap-2"
+                  >
+                    {savingProduct ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Saving product...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" />
+                        <span>Save {selectedType.label} to Catalogue</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={resetProductForm}
+                    disabled={savingProduct}
+                    className="bg-slate-800 hover:bg-slate-700 disabled:opacity-60 text-white font-bold text-xs px-5 py-3 rounded-xl"
+                  >
+                    Clear Form
+                  </button>
+                </div>
+
+              </form>
+            )}
+
+          </div>
+        )}
+
+        {/* TAB 3: DEALER APPROVAL QUEUE */}
         {activeTab === 'dealers' && (
           <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6">
             <h3 className="text-lg font-bold text-white mb-4">

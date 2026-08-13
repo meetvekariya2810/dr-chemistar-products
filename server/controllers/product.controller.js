@@ -126,6 +126,182 @@ exports.getProducts = async (req, res, next) => {
   }
 };
 
+const PRODUCT_CATEGORIES = ['Insecticide', 'Fungicide', 'Herbicide', 'PGR', 'Fertilizer'];
+
+/** "NUTRI POWER 12:32:16" -> "nutri-power-12-32-16" */
+const slugify = (value) => String(value)
+  .toLowerCase()
+  .trim()
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-+|-+$/g, '');
+
+/**
+ * List fields arrive from the admin form as one form-data string. Accept a JSON
+ * array, or a comma/newline separated list, so the endpoint is equally usable
+ * from the panel and from a hand-written API call.
+ */
+const parseList = (value) => {
+  if (Array.isArray(value)) return value.map(v => String(v).trim()).filter(Boolean);
+  if (value === undefined || value === null) return [];
+
+  const raw = String(value).trim();
+  if (!raw) return [];
+
+  if (raw.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed.map(v => String(v).trim()).filter(Boolean);
+    } catch (e) {
+      // Not JSON after all - fall through to delimiter splitting.
+    }
+  }
+
+  return raw.split(/[\n,]/).map(v => v.trim()).filter(Boolean);
+};
+
+/**
+ * Reserve an id that is not already taken: "roket", then "roket-2", "roket-3".
+ * baseId is always slugified first, so it is safe to embed in the RegExp.
+ */
+const reserveProductId = async (baseId) => {
+  const taken = new Set();
+
+  if (global.isMongoConnected) {
+    const docs = await Product.find({ id: new RegExp(`^${baseId}(-\\d+)?$`) }).select('id');
+    docs.forEach(d => taken.add(d.id));
+  } else {
+    getLocalProducts().forEach(p => {
+      if (p.id === baseId || String(p.id).startsWith(`${baseId}-`)) taken.add(p.id);
+    });
+  }
+
+  if (!taken.has(baseId)) return baseId;
+
+  let suffix = 2;
+  while (taken.has(`${baseId}-${suffix}`)) suffix++;
+  return `${baseId}-${suffix}`;
+};
+
+/** True when a product with this exact name (case-insensitive) already exists. */
+const productNameExists = async (name) => {
+  const needle = name.trim().toLowerCase();
+  if (global.isMongoConnected) {
+    const existing = await Product.findOne({
+      name: new RegExp(`^${needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i')
+    }).select('id');
+    return Boolean(existing);
+  }
+  return getLocalProducts().some(p => String(p.name).trim().toLowerCase() === needle);
+};
+
+// @desc    Create a single product, optionally with its artwork
+// @route   POST /api/products
+// @access  Public
+exports.createProduct = async (req, res, next) => {
+  try {
+    const name = String(req.body.name || '').trim();
+    const category = String(req.body.category || '').trim();
+
+    if (!name) {
+      return res.status(400).json({ error: 'Product name is required' });
+    }
+    if (!PRODUCT_CATEGORIES.includes(category)) {
+      return res.status(400).json({
+        error: `Product type must be one of: ${PRODUCT_CATEGORIES.join(', ')}`
+      });
+    }
+
+    // A repeat submit is far more likely than a genuine same-name product, so
+    // reject the collision rather than quietly creating a near-duplicate entry.
+    if (await productNameExists(name)) {
+      return res.status(409).json({ error: `A product named "${name}" already exists` });
+    }
+
+    const baseId = slugify(req.body.id || name);
+    if (!baseId) {
+      return res.status(400).json({ error: 'Product name must contain at least one letter or number' });
+    }
+    const id = await reserveProductId(baseId);
+
+    const product = {
+      id,
+      name,
+      category,
+      commonName: String(req.body.commonName || '').trim(),
+      activeIngredient: String(req.body.activeIngredient || '').trim(),
+      formulation: String(req.body.formulation || '').trim(),
+      dose: String(req.body.dose || '').trim(),
+      packing: parseList(req.body.packing),
+      targetPest: parseList(req.body.targetPest),
+      targetDisease: parseList(req.body.targetDisease),
+      targetCrops: parseList(req.body.targetCrops),
+      modeOfAction: String(req.body.modeOfAction || '').trim(),
+      benefits: parseList(req.body.benefits),
+      safetyInstructions: String(req.body.safetyInstructions || '').trim(),
+      storageInstructions: String(req.body.storageInstructions || '').trim(),
+      badge: String(req.body.badge || '').trim(),
+      imageColor: String(req.body.imageColor || '').trim(),
+      popular: req.body.popular === 'true' || req.body.popular === true,
+      pdfPage: null,
+      image: '',
+      imageUrl: '',
+      thumbnail: ''
+    };
+
+    // Artwork follows the same `<id>.webp` convention and the same 500/150
+    // contain-on-white treatment the ZIP importer uses, so a photo added here is
+    // indistinguishable from a bulk-imported one.
+    if (req.file) {
+      const filename = `${id}.webp`;
+
+      try {
+        await sharp(req.file.buffer)
+          .resize(500, 500, { fit: 'contain', background: '#ffffff' })
+          .toFormat('webp')
+          .toFile(path.join(uploadsDir, filename));
+
+        await sharp(req.file.buffer)
+          .resize(150, 150, { fit: 'contain', background: '#ffffff' })
+          .toFormat('webp')
+          .toFile(path.join(uploadsDir, 'thumbnails', filename));
+      } catch (imageErr) {
+        // sharp is the real gate on whether this is an image, so a decode
+        // failure is a bad upload (400), not a server fault (500). Nothing has
+        // been written to the database yet, so there is nothing to roll back.
+        return res.status(400).json({
+          error: 'That file could not be read as an image. Please upload a valid JPG, PNG or WebP photo.'
+        });
+      }
+
+      product.image = filename;
+      product.imageUrl = `/uploads/${filename}`;
+      product.thumbnail = `/uploads/thumbnails/${filename}`;
+
+      // Without this the availability cache would report the brand new image as
+      // absent for up to 30s and the product would come back imageless.
+      invalidateImageAvailability();
+    }
+
+    if (global.isMongoConnected) {
+      await Product.create(product);
+    } else {
+      const productsList = getLocalProducts();
+      productsList.push(product);
+      saveLocalProducts(productsList);
+    }
+
+    console.log(
+      `[product] created ${id} (${category}) ` +
+        `${req.file ? 'with artwork' : 'without artwork'} in ` +
+        `${global.isMongoConnected ? 'MongoDB' : 'local JSON store'}`
+    );
+
+    res.status(201).json({ message: 'Product added successfully.', product });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc    Delete a product
 // @route   DELETE /api/products/:id
 // @access  Public
