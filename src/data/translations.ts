@@ -60,7 +60,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
 
     contactTitle: 'Get in Touch with Dr. CHEMISTAR',
     headOffice: 'Head Office & Manufacturing Unit',
-    address: 'Survey No. 664, Plot No. 17, Near Atul Auto, N.H.-8B, Sopan Industrial Zone, Rajkot (Gujarat)',
+    address: 'Survey No. 664, Plot No. 17, Near Atul Auto, N.H.-8B, Sopan Industrial Zone, Rajkot, Gujarat, India.',
     customerCare: 'Customer Care: +91 6351 250 285',
     email: 'drchemistarcrop@gmail.com'
   },
@@ -124,7 +124,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
 
     contactTitle: 'डॉ. केमिस्टार से संपर्क करें',
     headOffice: 'प्रधान कार्यालय व विनिर्माण इकाई',
-    address: 'सर्वे नं. 664, प्लॉट नं. 17, अतुल ऑटो के पास, एन.एच.-8बी, सोपान इंडस्ट्रियल ज़ोन, राजकोट (गुजरात)',
+    address: 'सर्वे नं. 664, प्लॉट नं. 17, अतुल ऑटो के पास, एन.एच.-8बी, सोपान इंडस्ट्रियल ज़ोन, राजकोट, गुजरात, भारत।',
     customerCare: 'ग्राहक सेवा: +91 6351 250 285',
     email: 'drchemistarcrop@gmail.com'
   },
@@ -188,7 +188,7 @@ export const TRANSLATIONS: Record<Language, Record<string, string>> = {
 
     contactTitle: 'ડૉ. કેમિસ્ટાર નો સંપર્ક કરો',
     headOffice: 'હેડ ઓફિસ અને મેન્યુફેક્ચરિંગ યુનિટ',
-    address: 'સર્વે નં. ૬૬૪, પ્લોટ નં. ૧૭, અતુલ ઓટો નજીક, એન.એચ.-૮બી, સોપાન ઈન્ડસ્ટ્રીયલ ઝોન, રાજકોટ (ગુજરાત)',
+    address: 'સર્વે નં. ૬૬૪, પ્લોટ નં. ૧૭, અતુલ ઓટો નજીક, એન.એચ.-૮બી, સોપાન ઈન્ડસ્ટ્રીયલ ઝોન, રાજકોટ, ગુજરાત, ભારત.',
     customerCare: 'કસ્ટમર કેર: +91 6351 250 285',
     email: 'drchemistarcrop@gmail.com'
   }

@@ -156,7 +156,7 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-2.5 text-slate-300">
             <div className="flex items-start gap-2">
               <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <span>Survey No. 664, Plot No. 17, Near Atul Auto, N.H.-8B, Sopan Industrial Zone, Rajkot (Guj.)</span>
+              <span>Survey No. 664, Plot No. 17, Near Atul Auto, N.H.-8B, Sopan Industrial Zone, Rajkot, Gujarat, India.</span>
             </div>
 
             <div className="flex items-center gap-2">

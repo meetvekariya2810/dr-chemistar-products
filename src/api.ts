@@ -105,6 +105,20 @@ export async function seedProducts(products: Product[]): Promise<any> {
   return res.json();
 }
 
+/**
+ * Create one product, optionally with its photo.
+ *
+ * Takes FormData rather than an object because the photo rides along in the
+ * same request. Deliberately no Content-Type header - the browser has to set
+ * it itself so the multipart boundary is included.
+ */
+export async function createProduct(form: FormData): Promise<any> {
+  return apiRequest('/api/products', {
+    method: 'POST',
+    body: form,
+  });
+}
+
 export async function deleteProduct(id: string): Promise<any> {
   const res = await fetch(`${API_URL}/api/products/${id}`, {
     method: 'DELETE',
