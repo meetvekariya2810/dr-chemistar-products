@@ -27,11 +27,11 @@ export const CROP_SOLUTIONS: CropSolution[] = [
     image: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=800&q=80',
     majorPests: ['White Grub', 'Spodoptera', 'Aphids', 'Thrips'],
     majorDiseases: ['Tikka Disease (Leaf Spot)', 'Stem Rot / Collar Rot', 'Rust'],
-    recommendedProductIds: ['babuli', 'fire', 'kombi-shaft', 'vitayu', 'suffal-gold', 'nutriva-35050'],
+    recommendedProductIds: ['babuli', 'fire', 'kombi-shaft', 'vitayu', 'suffal-gold'],
     spraySchedule: [
       { stage: 'Sowing & Germination (0-15 Days)', days: 'At Sowing', focus: 'White Grub & Seed Rot', products: ['BABULI', 'FIRE', 'MOXA-35'] },
       { stage: 'Pegging & Flowering (30-45 Days)', days: '35 Days', focus: 'Tikka Disease & Root Expansion', products: ['KOMBI SHAFT', 'SUFFAL GOLD', 'HUMIC 98%'] },
-      { stage: 'Pod Development (60-80 Days)', days: '65 Days', focus: 'Pod Weight & Leaf Rust', products: ['HEXON PLUS', 'NUTRIVA 3.50.50', 'DR. CARBO'] }
+      { stage: 'Pod Development (60-80 Days)', days: '65 Days', focus: 'Pod Weight & Leaf Rust', products: ['HEXON PLUS', 'DR. CARBO'] }
     ]
   },
   {

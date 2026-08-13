@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../data/translations';
+import { HeroVideoBackground } from './HeroVideoBackground';
 import { 
   Search, 
   Stethoscope, 
@@ -39,22 +40,22 @@ export const Hero: React.FC<HeroProps> = ({
   };
 
   return (
-    <section className="relative overflow-hidden bg-slate-900 text-white min-h-[85vh] flex items-center">
-      {/* Background Graphic & Ambient Light */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 opacity-90 z-0"></div>
-      
+    <section className="relative overflow-hidden bg-slate-900 text-white min-h-[720px] lg:h-[calc(100vh-104px)] lg:max-h-[900px] flex items-center">
+      {/* Cinematic rotating film backdrop (carries its own readability scrim) */}
+      <HeroVideoBackground />
+
       {/* Ambient glowing orbs themed after the logo colors */}
       {/* Top Left - Purple (Top Petal) */}
-      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none z-0"></div>
+      <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-purple-600/8 rounded-full blur-[140px] pointer-events-none z-0"></div>
       {/* Bottom Right - Orange/Amber (Right Petal) */}
-      <div className="absolute -bottom-32 -right-32 w-[550px] h-[550px] bg-amber-500/15 rounded-full blur-[140px] pointer-events-none z-0 animate-pulse-glow"></div>
+      <div className="absolute -bottom-32 -right-32 w-[550px] h-[550px] bg-amber-500/8 rounded-full blur-[140px] pointer-events-none z-0 animate-pulse-glow"></div>
       {/* Left Center - Sky Blue (Left Petal) */}
-      <div className="absolute top-[30%] -left-40 w-[450px] h-[450px] bg-sky-500/15 rounded-full blur-[120px] pointer-events-none z-0"></div>
+      <div className="absolute top-[30%] -left-40 w-[450px] h-[450px] bg-sky-500/8 rounded-full blur-[120px] pointer-events-none z-0"></div>
       {/* Right Center - Emerald Green (Flask Liquid) */}
-      <div className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-emerald-500/15 rounded-full blur-[130px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-[20%] right-[10%] w-[500px] h-[500px] bg-emerald-500/8 rounded-full blur-[130px] pointer-events-none z-0"></div>
 
       {/* Giant Logo Watermark Background Effect */}
-      <div className="absolute right-[-15%] md:right-[2%] bottom-[-10%] md:bottom-[5%] w-[450px] h-[450px] md:w-[700px] md:h-[700px] lg:w-[850px] lg:h-[850px] opacity-[0.06] pointer-events-none select-none z-0 animate-float-slow transform origin-center">
+      <div className="absolute right-[-15%] md:right-[2%] bottom-[-10%] md:bottom-[5%] w-[450px] h-[450px] md:w-[700px] md:h-[700px] lg:w-[850px] lg:h-[850px] opacity-[0.03] pointer-events-none select-none z-0 animate-float-slow transform origin-center">
         <svg viewBox="0 0 100 100" className="w-full h-full text-white">
           <defs>
             <linearGradient id="heroTopPetalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -123,7 +124,7 @@ export const Hero: React.FC<HeroProps> = ({
 
       {/* Decorative Grid Overlay */}
       <div 
-        className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none"
+        className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.06] pointer-events-none"
       ></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-16 lg:py-24 w-full">
@@ -160,7 +161,7 @@ export const Hero: React.FC<HeroProps> = ({
             {/* Smart Search Bar */}
             <form 
               onSubmit={handleSearch}
-              className="w-full max-w-xl bg-white/10 backdrop-blur-xl p-2 rounded-2xl border border-white/20 shadow-2xl flex items-center gap-2 mt-2"
+              className="w-full max-w-xl bg-[rgba(10,25,40,0.72)] backdrop-blur-xl p-2 rounded-2xl border border-white/[0.18] shadow-2xl flex items-center gap-2 mt-2"
             >
               <div className="relative flex-1 flex items-center pl-3">
                 <Search className="w-5 h-5 text-slate-400" />
@@ -186,31 +187,31 @@ export const Hero: React.FC<HeroProps> = ({
               <span className="text-slate-400 self-center mr-1">Quick Lookup:</span>
               <button 
                 onClick={() => onSelectCategory('Insecticide')}
-                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-emerald-500/30 border border-white/10 hover:border-emerald-400/50 transition-all"
+                className="px-3 py-1.5 rounded-lg bg-[rgba(10,25,40,0.6)] backdrop-blur-md hover:bg-emerald-500/30 border border-white/10 hover:border-emerald-400/50 transition-all"
               >
                 🌾 Insecticides (35+)
               </button>
               <button 
                 onClick={() => onSelectCategory('Fungicide')}
-                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-sky-500/30 border border-white/10 hover:border-sky-400/50 transition-all"
+                className="px-3 py-1.5 rounded-lg bg-[rgba(10,25,40,0.6)] backdrop-blur-md hover:bg-sky-500/30 border border-white/10 hover:border-sky-400/50 transition-all"
               >
                 🛡️ Fungicides (23+)
               </button>
               <button 
                 onClick={() => onSelectCategory('Herbicide')}
-                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-amber-500/30 border border-white/10 hover:border-amber-400/50 transition-all"
+                className="px-3 py-1.5 rounded-lg bg-[rgba(10,25,40,0.6)] backdrop-blur-md hover:bg-amber-500/30 border border-white/10 hover:border-amber-400/50 transition-all"
               >
                 🌱 Herbicides (12+)
               </button>
               <button 
                 onClick={() => onSelectCategory('PGR')}
-                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-purple-500/30 border border-white/10 hover:border-purple-400/50 transition-all"
+                className="px-3 py-1.5 rounded-lg bg-[rgba(10,25,40,0.6)] backdrop-blur-md hover:bg-purple-500/30 border border-white/10 hover:border-purple-400/50 transition-all"
               >
                 ⚡ PGR & Bio (17+)
               </button>
               <button 
                 onClick={() => onSelectCategory('Fertilizer')}
-                className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-teal-500/30 border border-white/10 hover:border-teal-400/50 transition-all"
+                className="px-3 py-1.5 rounded-lg bg-[rgba(10,25,40,0.6)] backdrop-blur-md hover:bg-teal-500/30 border border-white/10 hover:border-teal-400/50 transition-all"
               >
                 💧 Water Soluble NPK (14+)
               </button>
@@ -220,7 +221,7 @@ export const Hero: React.FC<HeroProps> = ({
             <div className="flex flex-wrap gap-4 pt-2">
               <button
                 onClick={() => onNavigate('products')}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold text-sm shadow-glow-green transition-all flex items-center gap-2"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-3.5 rounded-xl font-bold text-sm shadow-glow-green transition-all hover:-translate-y-0.5 hover:shadow-2xl flex items-center gap-2"
               >
                 <span>{t.exploreProducts}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -228,7 +229,7 @@ export const Hero: React.FC<HeroProps> = ({
 
               <button
                 onClick={() => onNavigate('crop-doctor')}
-                className="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white px-6 py-3.5 rounded-xl font-bold text-sm shadow-glow-blue transition-all flex items-center gap-2 border border-sky-400/30"
+                className="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white px-6 py-3.5 rounded-xl font-bold text-sm shadow-glow-blue transition-all hover:-translate-y-0.5 hover:shadow-2xl flex items-center gap-2 border border-sky-400/30"
               >
                 <Stethoscope className="w-4 h-4" />
                 <span>{t.askCropDoctor}</span>
@@ -236,7 +237,7 @@ export const Hero: React.FC<HeroProps> = ({
 
               <button
                 onClick={() => onNavigate('dealer-portal')}
-                className="bg-white/10 hover:bg-white/20 text-white px-6 py-3.5 rounded-xl font-bold text-sm border border-white/20 transition-all"
+                className="bg-[rgba(10,25,40,0.6)] backdrop-blur-md hover:bg-white/20 text-white px-6 py-3.5 rounded-xl font-bold text-sm border border-white/20 transition-all hover:-translate-y-0.5 hover:shadow-2xl"
               >
                 {t.becomeDealer}
               </button>
