@@ -9,7 +9,31 @@ import { Product, DealerRequest, ProductEnquiry } from './types';
  * VITE_API_URL is only needed when the API lives on a different origin than the
  * site (e.g. a separate Render service).
  */
-const API_URL = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+const CONFIGURED_API_URL = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+
+/**
+ * Local fallback for a PRODUCTION bundle opened on localhost.
+ *
+ * `npm run preview` (and any `serve dist`) hands out the built files as plain
+ * static assets with no dev proxy, so a same-origin POST /api/farmers is
+ * answered by the file server with 405 Method Not Allowed and never reaches
+ * Express - identical symptoms to an unconfigured deployment, but with a purely
+ * local cause. Pointing at the backend's own port makes previewing a real build
+ * work the way `npm run dev` already does.
+ *
+ * Scoped to loopback hostnames only, so this can never send a deployed site's
+ * farmer data to a machine that happens to be running something on port 5001.
+ */
+const isLoopback =
+  typeof window !== 'undefined' &&
+  ['localhost', '127.0.0.1', '[::1]', '::1'].includes(window.location.hostname);
+
+const LOCAL_FALLBACK_API_URL =
+  !CONFIGURED_API_URL && isLoopback && !import.meta.env.DEV
+    ? `http://localhost:${import.meta.env.VITE_DEV_API_PORT || 5001}`
+    : '';
+
+const API_URL = CONFIGURED_API_URL || LOCAL_FALLBACK_API_URL;
 
 /**
  * Whether a backend is expected to be reachable at all.
