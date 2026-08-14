@@ -132,10 +132,32 @@ async function apiRequest(path: string, init: RequestInit = {}, opts: { auth?: b
     if (payload?.error || payload?.message) {
       throw new ApiError(payload.error || payload.message, res.status);
     }
-    if (res.status === 404) throw new ApiError(`API endpoint not found: ${path}`, 404);
     if (res.status === 429) {
       throw new ApiError('Too many requests. Please wait a few minutes and try again.', 429);
     }
+
+    /*
+     * A non-JSON 404/405 means the request was answered by the static site host
+     * instead of the API. On Vercel every unmatched path used to rewrite to
+     * index.html, and because static hosting only serves GET/HEAD, a POST came
+     * back "405 Method Not Allowed" - which told a farmer nothing and told us
+     * nothing either. The visitor gets a plain-English message; the actual cause
+     * goes to the console for whoever is deploying.
+     */
+    if (!isJson && (res.status === 404 || res.status === 405 || res.status === 501)) {
+      console.error(
+        `[api] ${path} returned HTTP ${res.status} from the static host, not the backend. ` +
+          'The build has no VITE_API_URL, so it is calling its own origin. ' +
+          'Set VITE_API_URL to the API origin and redeploy.'
+      );
+      throw new ApiError(
+        'Online submission is temporarily unavailable, so nothing was saved. ' +
+          'Please try again shortly, or send us your details on WhatsApp.',
+        res.status
+      );
+    }
+
+    if (res.status === 404) throw new ApiError(`API endpoint not found: ${path}`, 404);
     throw new ApiError(`Request failed with status ${res.status}`, res.status);
   }
 
