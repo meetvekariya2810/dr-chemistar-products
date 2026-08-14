@@ -16,7 +16,8 @@ import {
   UserCheck,
   Building2,
   Lock,
-  Sparkles
+  Sparkles,
+  Sprout
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -185,6 +186,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
+              onClick={() => handleNavClick('farmer')}
+              className={`px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 ${
+                activeSection === 'farmer'
+                  ? 'bg-emerald-600 text-white font-bold'
+                  : 'text-emerald-700 font-bold hover:bg-emerald-50'
+              }`}
+            >
+              <Sprout className="w-3.5 h-3.5" />
+              Farmer Registration
+            </button>
+
+            <button
               onClick={() => handleNavClick('dealer-portal')}
               className={`px-3 py-2 rounded-lg transition-all ${
                 activeSection === 'dealer-portal' 
@@ -284,6 +297,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="px-4 py-2.5 text-left hover:bg-emerald-50 rounded-lg"
             >
               {t.navFarmerPortal}
+            </button>
+
+            <button
+              onClick={() => handleNavClick('farmer')}
+              className="px-4 py-2.5 text-left bg-emerald-50 text-emerald-700 rounded-lg font-bold flex items-center gap-2"
+            >
+              <Sprout className="w-4 h-4" />
+              Farmer Registration
             </button>
 
             <button

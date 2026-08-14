@@ -2,9 +2,18 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { Phone, Mail, MapPin, MessageCircle, Send, CheckCircle2, Building2, Clock, AlertTriangle, Loader2 } from 'lucide-react';
-import { createEnquiry, isApiConfigured } from '../api';
+import { createEnquiry, isEnquiryFormDisabled } from '../api';
 
 const WHATSAPP_LINK = 'https://wa.me/916351250285?text=Hello%20Dr.%20CHEMISTAR,%20I%20have%20an%20inquiry.';
+
+/**
+ * Short, human-quotable reference from the database id.
+ *
+ * MongoDB ids are 24 hex characters - unusable as something a farmer reads out
+ * over the phone. The last 8 are the counter/random portion, so they are the
+ * part that actually distinguishes two enquiries.
+ */
+const toReferenceId = (id: string) => (id || '').slice(-8).toUpperCase();
 
 interface ContactSectionProps {
   currentLang: Language;
@@ -20,8 +29,30 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [referenceId, setReferenceId] = useState<string>('');
+  const [submittedName, setSubmittedName] = useState<string>('');
+  const [submittedType, setSubmittedType] = useState<string>('');
 
   const t = TRANSLATIONS[currentLang];
+
+  /**
+   * Catch the obvious problems before spending a round trip, using the same
+   * rules the server enforces so a submission can never pass here and fail
+   * there with a different-sounding message.
+   */
+  const validate = (): string | null => {
+    if (!name.trim()) return 'Please enter your full name.';
+    const digits = phone.replace(/\D/g, '');
+    if (!phone.trim()) return 'Please enter your phone number.';
+    if (digits.length < 7 || digits.length > 15) return 'Please enter a valid phone number.';
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return 'Please enter a valid email address, or leave it blank.';
+    }
+    if (!city.trim()) return 'Please enter your city or district.';
+    if (!userType.trim()) return 'Please choose what you are inquiring as.';
+    if (!message.trim()) return 'Please describe your requirement.';
+    return null;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,11 +60,19 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
 
     setError(null);
 
-    // No backend on this deployment: say so instead of showing a thank-you for
-    // an enquiry nobody will ever receive.
-    if (!isApiConfigured) {
+    const invalid = validate();
+    if (invalid) {
+      setError(invalid);
+      return;
+    }
+
+    // The ONLY case that may claim submission is unavailable: the form has been
+    // deliberately switched off with VITE_DISABLE_ENQUIRY_FORM. Otherwise we
+    // always call the API and report what actually happened - a build without
+    // VITE_API_URL is not the same thing as a site without a backend.
+    if (isEnquiryFormDisabled) {
       setError(
-        'Online enquiry submission is not available on this site yet. ' +
+        'Online enquiry submission is currently switched off. ' +
           'Please send us your requirement on WhatsApp or call +91 6351 250 285 - our team replies within 4 hours.'
       );
       return;
@@ -41,10 +80,24 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
 
     setSubmitting(true);
     try {
-      await createEnquiry({ name, phone, email, userType, message, city });
+      const result = await createEnquiry({
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        userType,
+        message: message.trim(),
+        city: city.trim()
+      });
+      setReferenceId(toReferenceId(result?.id || ''));
+      setSubmittedName(name.trim());
+      setSubmittedType(userType);
       setSubmitted(true);
     } catch (err: any) {
-      setError(err?.message || 'Something went wrong while sending your enquiry. Please try again.');
+      setError(
+        err?.status === 0
+          ? 'Unable to connect to the enquiry service. Please try again in a moment, or contact us on WhatsApp.'
+          : err?.message || 'Something went wrong while sending your enquiry. Please try again.'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -53,6 +106,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
   const handleSendAnother = () => {
     setSubmitted(false);
     setError(null);
+    setReferenceId('');
     setName('');
     setPhone('');
     setEmail('');
@@ -216,17 +270,34 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
               <div className="bg-emerald-500/20 border border-emerald-400/40 p-8 rounded-2xl text-center space-y-4">
                 <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
                 <h4 className="text-2xl font-black text-white font-display">
-                  Inquiry Received!
+                  Enquiry Submitted
                 </h4>
-                <p className="text-xs text-slate-300">
-                  Thank you, <span className="font-bold text-white">{name}</span>. Your message regarding <span className="font-bold text-emerald-400">{userType} support</span> has been logged into our Rajkot headquarters database.
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Your enquiry has been submitted successfully. Thank you,{' '}
+                  <span className="font-bold text-white">{submittedName}</span> - your message regarding{' '}
+                  <span className="font-bold text-emerald-400">{submittedType} support</span> has been logged
+                  into our Rajkot headquarters database. Our technical team will contact you shortly.
                 </p>
-                <button
-                  onClick={handleSendAnother}
-                  className="bg-emerald-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl"
-                >
-                  Send Another Message
-                </button>
+
+                {referenceId && (
+                  <div className="bg-slate-900/60 border border-emerald-400/20 rounded-xl px-4 py-3 inline-block">
+                    <span className="block text-[10px] uppercase tracking-widest text-slate-400 font-bold">
+                      Reference ID
+                    </span>
+                    <span className="block text-lg font-black text-emerald-300 font-mono tracking-wider">
+                      #{referenceId}
+                    </span>
+                  </div>
+                )}
+
+                <div>
+                  <button
+                    onClick={handleSendAnother}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition-colors"
+                  >
+                    Send another enquiry
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -314,6 +385,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ currentLang }) =
                     <option value="Farmer">Farmer (ખેડૂત)</option>
                     <option value="Dealer">Authorized Agro Dealer (ડીલર)</option>
                     <option value="Distributor">Distributor / Stockist</option>
+                    <option value="Retailer">Retailer</option>
                     <option value="Other">Other Query</option>
                   </select>
                 </div>

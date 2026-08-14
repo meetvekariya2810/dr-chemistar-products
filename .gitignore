@@ -42,6 +42,19 @@ DrChemistar product image.jpg/
 *.traineddata
 server/scratch/
 
+# Source certificate archives and scans - reference material, not deliverables.
+# ~50 MB of binaries that git would carry in every clone forever.
+*.7z
+CIR CERTIFICATE - DR CHEMISTAR CROP CARE/
+
+# Local data stores and API response dumps.
+# server/data/farmers.json is the JSON fallback for real farmer registrations,
+# and list.json was a saved GET /api/farmers response - both hold personal data
+# that must never reach the repository.
+server/data/farmers.json
+server/data/farmer-audit-log.json
+server/list.json
+
 # Transient extraction workspace used by the ZIP importer.
 # public/uploads/ itself IS tracked - it is the deployed product artwork.
 public/uploads/temp/

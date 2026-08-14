@@ -21,6 +21,18 @@ const API_URL = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
  */
 export const isApiConfigured = Boolean(API_URL) || import.meta.env.DEV;
 
+/**
+ * Kill switch for the website enquiry form.
+ *
+ * This is the ONLY thing that may make the form say "online submission is not
+ * available". It used to be inferred from isApiConfigured, which meant every
+ * production build without VITE_API_URL refused to submit without ever calling
+ * the API - so a perfectly healthy backend looked switched off. The form now
+ * always posts and reports whatever really happened.
+ */
+export const isEnquiryFormDisabled =
+  String(import.meta.env.VITE_DISABLE_ENQUIRY_FORM || '').toLowerCase() === 'true';
+
 /** Error carrying the HTTP status (0 = the request never reached a server). */
 export class ApiError extends Error {
   status: number;
@@ -29,6 +41,41 @@ export class ApiError extends Error {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Admin session                                                               */
+/* -------------------------------------------------------------------------- */
+
+const ADMIN_TOKEN_KEY = 'drchemistar.admin.token';
+
+/**
+ * sessionStorage, not localStorage: the CMS token grants read access to every
+ * customer's contact details, so it should not outlive the browser tab. Every
+ * access is guarded because storage throws in private-mode Safari.
+ */
+export function getAdminToken(): string | null {
+  try {
+    return sessionStorage.getItem(ADMIN_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function setAdminToken(token: string): void {
+  try {
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
+  } catch {
+    /* storage unavailable - the session simply won't survive a reload */
+  }
+}
+
+export function clearAdminToken(): void {
+  try {
+    sessionStorage.removeItem(ADMIN_TOKEN_KEY);
+  } catch {
+    /* nothing to clean up */
   }
 }
 
@@ -46,12 +93,21 @@ function formatValidationErrors(payload: any): string | null {
  * server error, and "got HTML instead of JSON" (the API path fell through to the
  * SPA rewrite because no backend is deployed on this origin).
  */
-async function apiRequest(path: string, init?: RequestInit): Promise<any> {
+async function apiRequest(path: string, init: RequestInit = {}, opts: { auth?: boolean } = {}): Promise<any> {
   const url = `${API_URL}${path}`;
+
+  const headers = new Headers(init.headers || {});
+  if (opts.auth) {
+    const token = getAdminToken();
+    if (!token) {
+      throw new ApiError('Your admin session has ended. Please sign in again.', 401);
+    }
+    headers.set('Authorization', `Bearer ${token}`);
+  }
 
   let res: Response;
   try {
-    res = await fetch(url, init);
+    res = await fetch(url, { ...init, headers });
   } catch (err) {
     // fetch() only rejects for network-level failures: server down, DNS, CORS
     // preflight rejected, or the request was blocked before a response existed.
@@ -67,6 +123,10 @@ async function apiRequest(path: string, init?: RequestInit): Promise<any> {
   const payload = isJson ? await res.json().catch(() => null) : null;
 
   if (!res.ok) {
+    // A rejected token is dead for every future call, so drop it here rather
+    // than letting each screen discover the same 401 separately.
+    if (res.status === 401 && opts.auth) clearAdminToken();
+
     const validation = formatValidationErrors(payload);
     if (validation) throw new ApiError(validation, res.status);
     if (payload?.error || payload?.message) {
@@ -169,6 +229,41 @@ export async function approveDealer(id: string | number): Promise<any> {
   return res.json();
 }
 
+/* -------------------------------------------------------------------------- */
+/* Enquiries                                                                   */
+/* -------------------------------------------------------------------------- */
+
+export const ENQUIRY_STATUSES = ['New', 'Contacted', 'In Progress', 'Resolved', 'Closed'] as const;
+export type EnquiryStatus = (typeof ENQUIRY_STATUSES)[number];
+
+/** One enquiry exactly as the API returns it - same shape from Mongo or the JSON fallback. */
+export interface Enquiry {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  city: string;
+  user_type: string;
+  message: string;
+  status: EnquiryStatus;
+  admin_notes: string;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface EnquiryStats {
+  total: number;
+  New: number;
+  Contacted: number;
+  'In Progress': number;
+  Resolved: number;
+  Closed: number;
+}
+
+/**
+ * Submit the website contact form. Public - no token involved.
+ * Resolves with the new record's id, which the form shows as a reference number.
+ */
 export async function createEnquiry(enquiry: {
   name: string;
   phone: string;
@@ -176,7 +271,7 @@ export async function createEnquiry(enquiry: {
   userType: string;
   message: string;
   city: string;
-}): Promise<any> {
+}): Promise<{ success: boolean; message: string; id: string; enquiry: Enquiry }> {
   const body = {
     name: enquiry.name,
     phone: enquiry.phone,
@@ -193,10 +288,280 @@ export async function createEnquiry(enquiry: {
   });
 }
 
-export async function fetchEnquiries(): Promise<any[]> {
-  const res = await fetch(`${API_URL}/api/enquiries`);
-  if (!res.ok) throw new Error('Failed to fetch enquiries');
-  return res.json();
+/** Admin only. Returns every enquiry newest-first plus the dashboard counters. */
+export async function fetchEnquiries(): Promise<{ data: Enquiry[]; stats: EnquiryStats; source: string }> {
+  const payload = await apiRequest('/api/enquiries', { method: 'GET' }, { auth: true });
+  return {
+    data: Array.isArray(payload?.data) ? payload.data : [],
+    stats: payload?.stats || { total: 0, New: 0, Contacted: 0, 'In Progress': 0, Resolved: 0, Closed: 0 },
+    source: payload?.source || 'unknown'
+  };
+}
+
+export async function updateEnquiryStatus(id: string, status: EnquiryStatus): Promise<{ enquiry: Enquiry }> {
+  return apiRequest(`/api/enquiries/${encodeURIComponent(id)}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  }, { auth: true });
+}
+
+export async function updateEnquiry(
+  id: string,
+  changes: { status?: EnquiryStatus; admin_notes?: string }
+): Promise<{ enquiry: Enquiry }> {
+  return apiRequest(`/api/enquiries/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(changes),
+  }, { auth: true });
+}
+
+export async function deleteEnquiry(id: string): Promise<{ success: boolean; id: string }> {
+  return apiRequest(`/api/enquiries/${encodeURIComponent(id)}`, { method: 'DELETE' }, { auth: true });
+}
+
+/* -------------------------------------------------------------------------- */
+/* Farmers                                                                     */
+/* -------------------------------------------------------------------------- */
+
+export const FARMER_STATUSES = ['New', 'Contacted', 'Active', 'Inactive'] as const;
+export type FarmerStatus = (typeof FARMER_STATUSES)[number];
+
+/** A farmer record as the admin API returns it. Never exposed to the public. */
+export interface Farmer {
+  id: string;
+  farmer_id: string;
+  farmer_name: string;
+  mobile: string;
+  alternate_mobile: string;
+  email: string;
+  gender: string;
+  age: string;
+  village: string;
+  city: string;
+  district: string;
+  state: string;
+  pincode: string;
+  farm_area: string;
+  land_unit: string;
+  irrigation: string;
+  soil_type: string;
+  main_crop: string;
+  other_crops: string[];
+  current_season: string;
+  crop_area: string;
+  farming_experience: string;
+  farming_type: string;
+  interests: string[];
+  message: string;
+  consent: boolean;
+  status: FarmerStatus;
+  admin_notes: string;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface FarmerStats {
+  total: number;
+  newThisMonth: number;
+  active: number;
+  byStatus: Record<FarmerStatus, number>;
+  byDistrict: { name: string; count: number }[];
+  byState: { name: string; count: number }[];
+  byCrop: { name: string; count: number }[];
+}
+
+export interface FarmerFilterOptions {
+  districts: string[];
+  states: string[];
+  cities: string[];
+  crops: string[];
+  irrigation: string[];
+}
+
+/** Everything the public /farmer form can submit. All optional but the four. */
+export interface FarmerSubmission {
+  farmer_name: string;
+  mobile: string;
+  consent: boolean;
+  [field: string]: string | string[] | boolean | undefined;
+}
+
+/**
+ * Thrown when the API thinks this mobile just registered.
+ *
+ * Carries no detail about the existing record - the caller only needs to know
+ * to ask "did you mean to send this twice?" and resend with confirmed: true.
+ */
+export class DuplicateFarmerError extends ApiError {
+  constructor(message: string) {
+    super(message, 409);
+    this.name = 'DuplicateFarmerError';
+  }
+}
+
+/**
+ * Register a farmer. Public - no token.
+ *
+ * Resolves with the registration number to show on screen. Pass confirmed=true
+ * to go through after the caller acknowledged a duplicate warning.
+ */
+export async function createFarmer(
+  submission: FarmerSubmission,
+  confirmed = false
+): Promise<{ farmer_id: string }> {
+  const body = { ...submission, consent: true, ...(confirmed ? { confirm_duplicate: true } : {}) };
+
+  try {
+    return await apiRequest('/api/farmers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch (err) {
+    if (err instanceof ApiError && err.status === 409) {
+      throw new DuplicateFarmerError(err.message);
+    }
+    throw err;
+  }
+}
+
+/** Admin only. `params` are the search/filter query values. */
+export async function fetchFarmers(params: Record<string, string> = {}): Promise<{
+  data: Farmer[];
+  stats: FarmerStats;
+  filterOptions: FarmerFilterOptions;
+  total: number;
+  source: string;
+}> {
+  const qs = new URLSearchParams(
+    Object.entries(params).filter(([, v]) => v && v !== 'All')
+  ).toString();
+
+  const payload = await apiRequest(`/api/farmers${qs ? `?${qs}` : ''}`, { method: 'GET' }, { auth: true });
+  return {
+    data: Array.isArray(payload?.data) ? payload.data : [],
+    stats: payload?.stats,
+    filterOptions: payload?.filterOptions || { districts: [], states: [], cities: [], crops: [], irrigation: [] },
+    total: payload?.total ?? 0,
+    source: payload?.source || 'unknown'
+  };
+}
+
+export async function fetchFarmer(id: string): Promise<Farmer> {
+  const payload = await apiRequest(`/api/farmers/${encodeURIComponent(id)}`, { method: 'GET' }, { auth: true });
+  return payload.data;
+}
+
+export async function updateFarmer(id: string, changes: Record<string, string>): Promise<Farmer> {
+  const payload = await apiRequest(`/api/farmers/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(changes),
+  }, { auth: true });
+  return payload.data;
+}
+
+export async function deleteFarmer(id: string): Promise<{ success: boolean }> {
+  return apiRequest(`/api/farmers/${encodeURIComponent(id)}`, { method: 'DELETE' }, { auth: true });
+}
+
+/**
+ * Download an export.
+ *
+ * Goes through fetch rather than a plain link because the endpoint needs the
+ * Authorization header - a bare <a href> would arrive unauthenticated and 401.
+ * The response is turned into a blob and saved via a temporary object URL.
+ */
+async function downloadAuthed(path: string, fallbackName: string): Promise<void> {
+  const token = getAdminToken();
+  if (!token) throw new ApiError('Your admin session has ended. Please sign in again.', 401);
+
+  const res = await fetch(`${API_URL}${path}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) {
+    if (res.status === 401) clearAdminToken();
+    const payload = await res.json().catch(() => null);
+    throw new ApiError(payload?.message || `Export failed with status ${res.status}`, res.status);
+  }
+
+  // Prefer the filename the server chose, so exports land on disk already dated.
+  const disposition = res.headers.get('content-disposition') || '';
+  const match = /filename="?([^";]+)"?/i.exec(disposition);
+  const filename = match ? match[1] : fallbackName;
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  // Revoke on the next tick - revoking synchronously can cancel the download.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+const filterQuery = (params: Record<string, string>) =>
+  new URLSearchParams(Object.entries(params).filter(([, v]) => v && v !== 'All')).toString();
+
+export async function exportFarmersExcel(params: Record<string, string> = {}): Promise<void> {
+  const qs = filterQuery(params);
+  return downloadAuthed(`/api/farmers/export/excel${qs ? `?${qs}` : ''}`, 'dr-chemistar-farmers.xlsx');
+}
+
+export async function exportFarmersPdf(params: Record<string, string> = {}): Promise<void> {
+  const qs = filterQuery(params);
+  return downloadAuthed(`/api/farmers/export/pdf${qs ? `?${qs}` : ''}`, 'dr-chemistar-farmers.pdf');
+}
+
+export async function exportFarmerPdf(id: string): Promise<void> {
+  return downloadAuthed(`/api/farmers/${encodeURIComponent(id)}/export/pdf`, `${id}.pdf`);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Admin authentication                                                        */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Sign in against the backend and keep the returned token for this tab.
+ *
+ * The credentials are checked server-side; nothing about the password lives in
+ * this bundle any more.
+ */
+export interface AdminUser {
+  username: string;
+  role: string;
+  /**
+   * What this role may do with farmer records: view / edit / delete / export.
+   * Used only to hide controls the role cannot use - the API enforces it for
+   * real, so a tampered client gains nothing.
+   */
+  farmerPermissions: string[];
+}
+
+export async function adminLogin(username: string, password: string): Promise<AdminUser> {
+  const payload = await apiRequest('/api/auth/admin/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+
+  if (!payload?.token) {
+    throw new ApiError('The server did not return a session token.', 500);
+  }
+
+  setAdminToken(payload.token);
+  return { username, role: 'admin', farmerPermissions: [], ...(payload.user || {}) };
+}
+
+/** Confirm a token kept from an earlier page load is still good. */
+export async function adminMe(): Promise<AdminUser> {
+  const payload = await apiRequest('/api/auth/admin/me', { method: 'GET' }, { auth: true });
+  return { username: '', role: 'admin', farmerPermissions: [], ...(payload.user || {}) };
 }
 
 export async function uploadZipFile(file: File, replaceExisting: boolean): Promise<any> {
