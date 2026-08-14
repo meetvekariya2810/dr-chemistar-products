@@ -40,7 +40,6 @@ import type {
   FarmerStats,
   FarmerFilterOptions
 } from '../api';
-import { FarmersAdmin } from './admin/FarmersAdmin';
 import { resolveUploadUrl } from '../lib/productImage';
 import { 
   Lock, 
@@ -1014,13 +1013,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
             </button>
           )}
           <button
-            onClick={() => setActiveTab('farmers')}
-            className={`flex-1 min-w-[120px] py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'farmers' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
-          >
-            <Users className="w-4 h-4" />
-            Farmers
-          </button>
-          <button
             onClick={() => {
               setActiveTab('images');
               if (isApiConfigured) {
@@ -1932,11 +1924,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
               </div>
             </div>
           </div>
-        )}
-
-        {/* TAB: FARMERS - the only place farmer records are ever displayed */}
-        {activeTab === 'farmers' && (
-          <FarmersAdmin role={adminUser?.role || 'staff'} />
         )}
 
         {/* TAB: FARMER DATABASE (admin only, role-gated) */}
