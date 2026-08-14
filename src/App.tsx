@@ -15,6 +15,7 @@ import { MediaGallery } from './components/MediaGallery';
 import { AboutUs } from './components/AboutUs';
 import { ContactSection } from './components/ContactSection';
 import { AdminPanel } from './components/AdminPanel';
+import { FarmerRegistration } from './components/FarmerRegistration';
 import { Footer } from './components/Footer';
 import { fetchProducts, seedProducts, isApiConfigured } from './api';
 import { 
@@ -37,8 +38,13 @@ export function App() {
     if (path === '/admin' || hash === '#/admin' || hash === '#admin') {
       return 'admin';
     }
+    // /farmer is a shareable URL printed on leaflets and sent over WhatsApp, so
+    // it is a real path rather than a hash like the in-page sections.
+    if (path === '/farmer' || hash === '#/farmer' || hash === '#farmer') {
+      return 'farmer';
+    }
     const cleanHash = hash.replace('#', '').replace('/', '');
-    if (cleanHash && ['home', 'products', 'crop-solutions', 'disease-library', 'crop-doctor', 'farmer-portal', 'dealer-portal', 'gallery', 'about', 'contact', 'admin'].includes(cleanHash)) {
+    if (cleanHash && ['home', 'products', 'crop-solutions', 'disease-library', 'crop-doctor', 'farmer', 'farmer-portal', 'dealer-portal', 'gallery', 'about', 'contact', 'admin'].includes(cleanHash)) {
       return cleanHash;
     }
     return 'home';
@@ -99,9 +105,11 @@ export function App() {
       const hash = window.location.hash;
       if (path === '/admin' || hash === '#/admin' || hash === '#admin') {
         setActiveSection('admin');
+      } else if (path === '/farmer' || hash === '#/farmer' || hash === '#farmer') {
+        setActiveSection('farmer');
       } else {
         const cleanHash = hash.replace('#', '').replace('/', '');
-        if (cleanHash && ['home', 'products', 'crop-solutions', 'disease-library', 'crop-doctor', 'farmer-portal', 'dealer-portal', 'gallery', 'about', 'contact', 'admin'].includes(cleanHash)) {
+        if (cleanHash && ['home', 'products', 'crop-solutions', 'disease-library', 'crop-doctor', 'farmer', 'farmer-portal', 'dealer-portal', 'gallery', 'about', 'contact', 'admin'].includes(cleanHash)) {
           setActiveSection(cleanHash);
         } else if (path === '/' || path === '/index.html') {
           setActiveSection('home');
@@ -121,6 +129,8 @@ export function App() {
     setActiveSection(sectionId);
     if (sectionId === 'admin') {
       window.history.pushState(null, '', '/admin');
+    } else if (sectionId === 'farmer') {
+      window.history.pushState(null, '', '/farmer');
     } else if (sectionId === 'home') {
       window.history.pushState(null, '', '/');
     } else {
@@ -443,6 +453,10 @@ export function App() {
 
         {activeSection === 'contact' && (
           <ContactSection currentLang={currentLang} />
+        )}
+
+        {activeSection === 'farmer' && (
+          <FarmerRegistration currentLang={currentLang} />
         )}
 
         {activeSection === 'admin' && (

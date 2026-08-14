@@ -9,5 +9,43 @@ services:
     envVars:
       - key: MONGO_URI
         sync: false
+
       - key: PORT
         value: 5001
+
+      - key: NODE_ENV
+        value: production
+
+      # Signs admin session tokens. generateValue makes Render mint a strong
+      # random value once and keep it, rather than the server generating a new
+      # one on every boot - which would sign every admin out on each restart.
+      - key: JWT_SECRET
+        generateValue: true
+
+      - key: ADMIN_TOKEN_TTL
+        value: 8h
+
+      # CMS login. Set these in the Render dashboard, never in this file.
+      # ADMIN_PASSWORD_HASH is a bcrypt hash - generate it with:
+      #   node -e "console.log(require('bcryptjs').hashSync(process.argv[1],10))" "yourPassword"
+      # Without it the server falls back to the built-in admin/admin123, which
+      # would leave the farmer database open to anyone who guesses it.
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD_HASH
+        sync: false
+
+      # Role for the account above: director | admin | staff.
+      # Director is required to export or delete farmer records.
+      - key: ADMIN_ROLE
+        value: director
+
+      # Comma-separated site origins allowed to call this API from a browser.
+      # Must include the deployed frontend URL or every request is blocked by
+      # CORS, e.g. https://dr-chemistar-products.vercel.app
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+      # Public farmer registrations allowed per IP per 15 minutes.
+      - key: FARMER_REGISTER_RATE_LIMIT
+        value: 12

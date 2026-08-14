@@ -2,7 +2,45 @@ import React, { useState, useEffect } from 'react';
 import { Product, ProductCategory, Language } from '../types';
 import { TRANSLATIONS } from '../data/translations';
 import { PRODUCTS_DATA } from '../data/productsData';
-import { fetchProducts, fetchDealers, fetchEnquiries, approveDealer, deleteProduct, createProduct, isApiConfigured, fetchImageStats, uploadZipFile, triggerRematch } from '../api';
+import {
+  fetchProducts,
+  fetchDealers,
+  fetchEnquiries,
+  updateEnquiry as apiUpdateEnquiry,
+  updateEnquiryStatus as apiUpdateEnquiryStatus,
+  deleteEnquiry as apiDeleteEnquiry,
+  adminLogin,
+  adminMe,
+  clearAdminToken,
+  getAdminToken,
+  approveDealer,
+  deleteProduct,
+  createProduct,
+  isApiConfigured,
+  fetchImageStats,
+  uploadZipFile,
+  triggerRematch,
+  ENQUIRY_STATUSES,
+  FARMER_STATUSES,
+  fetchFarmers,
+  updateFarmer as apiUpdateFarmer,
+  deleteFarmer as apiDeleteFarmer,
+  exportFarmersExcel,
+  exportFarmersPdf,
+  exportFarmerPdf,
+  ApiError
+} from '../api';
+import type {
+  Enquiry,
+  EnquiryStatus,
+  EnquiryStats,
+  AdminUser,
+  Farmer,
+  FarmerStatus,
+  FarmerStats,
+  FarmerFilterOptions
+} from '../api';
+import { FarmersAdmin } from './admin/FarmersAdmin';
 import { resolveUploadUrl } from '../lib/productImage';
 import { 
   Lock, 
@@ -28,7 +66,16 @@ import {
   Upload,
   X,
   Loader2,
-  PackagePlus
+  PackagePlus,
+  Phone,
+  Mail,
+  MapPin,
+  Eye,
+  Inbox,
+  Sprout,
+  FileSpreadsheet,
+  FileDown,
+  Save
 } from 'lucide-react';
 
 interface AdminPanelProps {
@@ -115,6 +162,72 @@ const PRODUCT_TYPES: ProductTypeConfig[] = [
   }
 ];
 
+const EMPTY_ENQUIRY_STATS: EnquiryStats = {
+  total: 0,
+  New: 0,
+  Contacted: 0,
+  'In Progress': 0,
+  Resolved: 0,
+  Closed: 0
+};
+
+/** Status pill colours, shared by the table, the filter chips and the modal. */
+const STATUS_STYLES: Record<EnquiryStatus, string> = {
+  New: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+  Contacted: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  'In Progress': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+  Resolved: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  Closed: 'bg-slate-600/30 text-slate-300 border-slate-500/30'
+};
+
+/** The one-click transition offered on each row, i.e. "what happens next". */
+const NEXT_STATUS: Partial<Record<EnquiryStatus, EnquiryStatus>> = {
+  New: 'Contacted',
+  Contacted: 'In Progress',
+  'In Progress': 'Resolved',
+  Resolved: 'Closed'
+};
+
+const formatDateTime = (value: string | null) => {
+  if (!value) return '-';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return '-';
+  return d.toLocaleString('en-IN', {
+    day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  });
+};
+
+/** Short reference shown to the customer on submit, so both sides quote the same code. */
+const shortRef = (id: string) => (id || '').slice(-8).toUpperCase();
+
+const EMPTY_FARMER_STATS: FarmerStats = {
+  total: 0,
+  newThisMonth: 0,
+  active: 0,
+  byStatus: { New: 0, Contacted: 0, Active: 0, Inactive: 0 },
+  byDistrict: [],
+  byState: [],
+  byCrop: []
+};
+
+const EMPTY_FARMER_FILTER_OPTIONS: FarmerFilterOptions = {
+  districts: [], states: [], cities: [], crops: [], irrigation: []
+};
+
+const FARMER_STATUS_STYLES: Record<FarmerStatus, string> = {
+  New: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+  Contacted: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  Active: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+  Inactive: 'bg-slate-600/30 text-slate-300 border-slate-500/30'
+};
+
+const formatDateOnly = (value: string | null) => {
+  if (!value) return '-';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return '-';
+  return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+};
+
 const EMPTY_PRODUCT_FORM = {
   name: '',
   commonName: '',
@@ -134,7 +247,7 @@ const EMPTY_PRODUCT_FORM = {
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
   const [productsList, setProductsList] = useState<Product[]>(PRODUCTS_DATA);
-  const [activeTab, setActiveTab] = useState<'products' | 'add-product' | 'dealers' | 'enquiries' | 'settings' | 'images'>('products');
+  const [activeTab, setActiveTab] = useState<'products' | 'add-product' | 'dealers' | 'enquiries' | 'farmers' | 'settings' | 'images'>('products');
   const [searchTerm, setSearchTerm] = useState('');
 
   // Add Product form state
@@ -258,18 +371,58 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
   const [loginId, setLoginId] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [loggingIn, setLoggingIn] = useState(false);
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  /**
+   * A token kept in sessionStorage survives a page refresh, so check whether it
+   * is still valid before showing the login form again.
+   */
+  useEffect(() => {
+    if (!getAdminToken()) return;
+    adminMe()
+      .then((user) => {
+        setAdminUser(user);
+        setIsLoggedIn(true);
+      })
+      .catch(() => clearAdminToken());
+  }, []);
+
+  /**
+   * Credentials are checked by the backend, which then issues a session token.
+   * Nothing about the password lives in this bundle any more - the old
+   * `loginId === 'admin' && password === 'admin123'` comparison shipped the
+   * real password to every visitor who opened DevTools.
+   */
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginId.trim() === 'admin' && password === 'admin123') {
+    if (loggingIn) return;
+
+    setLoginError('');
+    setLoggingIn(true);
+    try {
+      const user = await adminLogin(loginId.trim(), password);
+      setAdminUser(user);
       setIsLoggedIn(true);
-      setLoginError('');
-      // Clear inputs
       setLoginId('');
       setPassword('');
-    } else {
-      setLoginError('Invalid Login ID or Password');
+    } catch (err: any) {
+      setLoginError(
+        err?.status === 0
+          ? 'Cannot reach the API server. Start the backend (npm run dev) or check VITE_API_URL.'
+          : err?.message || 'Invalid Login ID or Password'
+      );
+    } finally {
+      setLoggingIn(false);
     }
+  };
+
+  const handleLogout = () => {
+    clearAdminToken();
+    setAdminUser(null);
+    setIsLoggedIn(false);
+    setEnquiries([]);
+    setEnquiryStats(EMPTY_ENQUIRY_STATS);
   };
 
   // Mock pending dealers
@@ -279,11 +432,58 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
     { id: 'd3', firm: 'Shree Ram Farm Products', name: 'Sanjay Kumar', city: 'Rajkot', phone: '+91 97120 98765', gst: '24CCCCC2222C3Z7', status: 'Pending', date: '2026-07-22' }
   ]);
 
-  // Mock leads
-  const [leadsList, setLeadsList] = useState([
-    { id: 'l1', name: 'Rameshbhai K', phone: '+91 98765 11111', email: '', type: 'Farmer', query: 'Required MALIKA dose for 10 acres cotton', date: 'Today' },
-    { id: 'l2', name: 'Gita Agro Traders', phone: '+91 98765 22222', email: '', type: 'Dealer', query: 'Price list for 100 boxes ALL TAKATAK', date: 'Yesterday' }
-  ]);
+  /* ---------------------------------------------------------------------- */
+  /* Enquiries (live, from the database)                                     */
+  /* ---------------------------------------------------------------------- */
+
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [enquiryStats, setEnquiryStats] = useState<EnquiryStats>(EMPTY_ENQUIRY_STATS);
+  const [enquiriesLoading, setEnquiriesLoading] = useState(false);
+  const [enquiriesError, setEnquiriesError] = useState<string | null>(null);
+  const [enquirySource, setEnquirySource] = useState<string>('');
+  const [enquiryLoadedAt, setEnquiryLoadedAt] = useState<Date | null>(null);
+
+  const [enquirySearch, setEnquirySearch] = useState('');
+  const [enquiryStatusFilter, setEnquiryStatusFilter] = useState<'All' | EnquiryStatus>('All');
+  const [enquiryTypeFilter, setEnquiryTypeFilter] = useState<string>('All');
+
+  const [detailEnquiry, setDetailEnquiry] = useState<Enquiry | null>(null);
+  const [detailNotes, setDetailNotes] = useState('');
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [rowBusyId, setRowBusyId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  /**
+   * Pull the enquiry list fresh from the API. Every mutation calls this again
+   * rather than patching local state blindly, so the table always shows what is
+   * actually stored - including anything another admin changed meanwhile.
+   */
+  const loadEnquiries = React.useCallback(async () => {
+    setEnquiriesLoading(true);
+    setEnquiriesError(null);
+    try {
+      const { data, stats, source } = await fetchEnquiries();
+      setEnquiries(data);
+      setEnquiryStats(stats);
+      setEnquirySource(source);
+      setEnquiryLoadedAt(new Date());
+    } catch (err: any) {
+      // A dead session must return the operator to the login screen, not leave
+      // them staring at an empty table wondering where the leads went.
+      if (err instanceof ApiError && err.status === 401) {
+        setIsLoggedIn(false);
+        setAdminUser(null);
+        setLoginError(err.message);
+      }
+      setEnquiriesError(
+        err?.status === 0
+          ? 'Cannot reach the API server. Start the backend, or set VITE_API_URL to the deployed API.'
+          : err?.message || 'Could not load enquiries.'
+      );
+    } finally {
+      setEnquiriesLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isApiConfigured) return;
@@ -311,21 +511,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
           })));
         }
 
-        // 3. Fetch Enquiries
-        const dbEnquiries = await fetchEnquiries();
-        if (dbEnquiries && dbEnquiries.length > 0) {
-          setLeadsList(dbEnquiries.map((e: any) => ({
-            id: e.id,
-            name: e.name,
-            phone: e.phone,
-            email: e.email || '',
-            type: e.user_type,
-            query: e.message,
-            date: new Date(e.created_at).toLocaleDateString()
-          })));
-        }
-
-        // 4. Fetch Image Stats
+        // 3. Fetch Image Stats
         try {
           const stats = await fetchImageStats();
           setImageStats(stats);
@@ -339,6 +525,220 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
 
     fetchAdminData();
   }, []);
+
+  // Enquiries need a token, so they load on sign-in rather than on mount.
+  useEffect(() => {
+    if (isLoggedIn) loadEnquiries();
+  }, [isLoggedIn, loadEnquiries]);
+
+  /* ---------------------------------------------------------------------- */
+  /* Farmers (live, from the database - admin only)                          */
+  /* ---------------------------------------------------------------------- */
+
+  const [farmers, setFarmers] = useState<Farmer[]>([]);
+  const [farmerStats, setFarmerStats] = useState<FarmerStats>(EMPTY_FARMER_STATS);
+  const [farmerFilterOptions, setFarmerFilterOptions] = useState<FarmerFilterOptions>(EMPTY_FARMER_FILTER_OPTIONS);
+  const [farmersLoading, setFarmersLoading] = useState(false);
+  const [farmersError, setFarmersError] = useState<string | null>(null);
+  const [farmerSource, setFarmerSource] = useState('');
+  const [farmersLoadedAt, setFarmersLoadedAt] = useState<Date | null>(null);
+  const [exporting, setExporting] = useState<string | null>(null);
+
+  // Filters are held as the exact query the API expects, so the same object
+  // drives the table AND the "export what I'm looking at" buttons - they can
+  // never disagree about which rows are in scope.
+  const [farmerFilters, setFarmerFilters] = useState({
+    search: '', district: 'All', state: 'All', main_crop: 'All', status: 'All', irrigation: 'All'
+  });
+
+  const [detailFarmer, setDetailFarmer] = useState<Farmer | null>(null);
+  const [farmerNotes, setFarmerNotes] = useState('');
+  const [savingFarmer, setSavingFarmer] = useState(false);
+  const [farmerBusyId, setFarmerBusyId] = useState<string | null>(null);
+  const [confirmDeleteFarmer, setConfirmDeleteFarmer] = useState<Farmer | null>(null);
+
+  /** What this signed-in role may do. The API enforces it; this only hides controls. */
+  const farmerPerms = adminUser?.farmerPermissions || [];
+  const canViewFarmers = farmerPerms.includes('view');
+  const canEditFarmers = farmerPerms.includes('edit');
+  const canDeleteFarmers = farmerPerms.includes('delete');
+  const canExportFarmers = farmerPerms.includes('export');
+
+  const loadFarmers = React.useCallback(async (filters = farmerFilters) => {
+    setFarmersLoading(true);
+    setFarmersError(null);
+    try {
+      const res = await fetchFarmers(filters);
+      setFarmers(res.data);
+      setFarmerStats(res.stats || EMPTY_FARMER_STATS);
+      setFarmerFilterOptions(res.filterOptions);
+      setFarmerSource(res.source);
+      setFarmersLoadedAt(new Date());
+    } catch (err: any) {
+      if (err instanceof ApiError && err.status === 401) {
+        setIsLoggedIn(false);
+        setAdminUser(null);
+        setLoginError(err.message);
+      }
+      setFarmersError(
+        err?.status === 403
+          ? err.message
+          : err?.status === 0
+            ? 'Cannot reach the API server. Start the backend, or set VITE_API_URL to the deployed API.'
+            : err?.message || 'Could not load farmer records.'
+      );
+    } finally {
+      setFarmersLoading(false);
+    }
+  }, [farmerFilters]);
+
+  // Filtering happens server-side so the counters, the rows and the exports all
+  // describe one set. Debounced so typing in the search box is not one request
+  // per keystroke.
+  useEffect(() => {
+    if (!isLoggedIn || activeTab !== 'farmers' || !canViewFarmers) return;
+    const t = setTimeout(() => loadFarmers(farmerFilters), 300);
+    return () => clearTimeout(t);
+  }, [isLoggedIn, activeTab, canViewFarmers, farmerFilters, loadFarmers]);
+
+  const setFarmerFilter = (key: keyof typeof farmerFilters, value: string) => {
+    setFarmerFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const farmerFiltersActive =
+    farmerFilters.search.trim() !== '' ||
+    Object.entries(farmerFilters).some(([k, v]) => k !== 'search' && v !== 'All');
+
+  const handleFarmerStatusChange = async (farmer: Farmer, status: FarmerStatus) => {
+    setFarmerBusyId(farmer.id);
+    setFarmersError(null);
+    try {
+      const updated = await apiUpdateFarmer(farmer.farmer_id, { status });
+      setFarmers((prev) => prev.map((f) => (f.id === updated.id ? updated : f)));
+      setDetailFarmer((prev) => (prev && prev.id === updated.id ? updated : prev));
+      loadFarmers(farmerFilters);
+    } catch (err: any) {
+      setFarmersError(err?.message || 'Could not update the status.');
+    } finally {
+      setFarmerBusyId(null);
+    }
+  };
+
+  const handleSaveFarmerNotes = async () => {
+    if (!detailFarmer) return;
+    setSavingFarmer(true);
+    setFarmersError(null);
+    try {
+      const updated = await apiUpdateFarmer(detailFarmer.farmer_id, { admin_notes: farmerNotes });
+      setFarmers((prev) => prev.map((f) => (f.id === updated.id ? updated : f)));
+      setDetailFarmer(updated);
+    } catch (err: any) {
+      setFarmersError(err?.message || 'Could not save the notes.');
+    } finally {
+      setSavingFarmer(false);
+    }
+  };
+
+  const handleDeleteFarmer = async (farmer: Farmer) => {
+    setFarmerBusyId(farmer.id);
+    setFarmersError(null);
+    try {
+      await apiDeleteFarmer(farmer.farmer_id);
+      setConfirmDeleteFarmer(null);
+      setDetailFarmer((prev) => (prev && prev.id === farmer.id ? null : prev));
+      loadFarmers(farmerFilters);
+    } catch (err: any) {
+      setFarmersError(err?.message || 'Could not delete the record.');
+    } finally {
+      setFarmerBusyId(null);
+    }
+  };
+
+  /** Exports always carry the CURRENT filters, so they match what is on screen. */
+  const runExport = async (kind: 'excel' | 'pdf' | 'single', farmer?: Farmer) => {
+    setExporting(kind === 'single' ? `single-${farmer?.id}` : kind);
+    setFarmersError(null);
+    try {
+      if (kind === 'excel') await exportFarmersExcel(farmerFilters);
+      else if (kind === 'pdf') await exportFarmersPdf(farmerFilters);
+      else if (farmer) await exportFarmerPdf(farmer.farmer_id);
+    } catch (err: any) {
+      setFarmersError(err?.message || 'The export could not be generated.');
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const openFarmerDetail = (farmer: Farmer) => {
+    setDetailFarmer(farmer);
+    setFarmerNotes(farmer.admin_notes || '');
+  };
+
+  const handleEnquiryStatusChange = async (id: string, status: EnquiryStatus) => {
+    setRowBusyId(id);
+    setEnquiriesError(null);
+    try {
+      const res = await apiUpdateEnquiryStatus(id, status);
+      // Update the row in place for an instant response, then reconcile the
+      // counters with the server.
+      setEnquiries((prev) => prev.map((e) => (e.id === id ? res.enquiry : e)));
+      setDetailEnquiry((prev) => (prev && prev.id === id ? res.enquiry : prev));
+      loadEnquiries();
+    } catch (err: any) {
+      setEnquiriesError(err?.message || 'Could not update the status.');
+    } finally {
+      setRowBusyId(null);
+    }
+  };
+
+  const handleSaveNotes = async () => {
+    if (!detailEnquiry) return;
+    setSavingNotes(true);
+    setEnquiriesError(null);
+    try {
+      const res = await apiUpdateEnquiry(detailEnquiry.id, { admin_notes: detailNotes });
+      setEnquiries((prev) => prev.map((e) => (e.id === res.enquiry.id ? res.enquiry : e)));
+      setDetailEnquiry(res.enquiry);
+    } catch (err: any) {
+      setEnquiriesError(err?.message || 'Could not save the notes.');
+    } finally {
+      setSavingNotes(false);
+    }
+  };
+
+  const handleDeleteEnquiry = async (id: string) => {
+    setRowBusyId(id);
+    setEnquiriesError(null);
+    try {
+      await apiDeleteEnquiry(id);
+      setConfirmDeleteId(null);
+      setDetailEnquiry((prev) => (prev && prev.id === id ? null : prev));
+      loadEnquiries();
+    } catch (err: any) {
+      setEnquiriesError(err?.message || 'Could not delete the enquiry.');
+    } finally {
+      setRowBusyId(null);
+    }
+  };
+
+  const openEnquiryDetail = (enquiry: Enquiry) => {
+    setDetailEnquiry(enquiry);
+    setDetailNotes(enquiry.admin_notes || '');
+  };
+
+  // Types come from the data rather than a fixed list, so a value added to the
+  // website form shows up here without a code change.
+  const enquiryTypes = Array.from(new Set(enquiries.map((e) => e.user_type).filter(Boolean))).sort();
+
+  const filteredEnquiries = enquiries.filter((e) => {
+    if (enquiryStatusFilter !== 'All' && e.status !== enquiryStatusFilter) return false;
+    if (enquiryTypeFilter !== 'All' && e.user_type !== enquiryTypeFilter) return false;
+    const q = enquirySearch.trim().toLowerCase();
+    if (!q) return true;
+    return [e.name, e.phone, e.email, e.city, e.message, e.admin_notes]
+      .filter(Boolean)
+      .some((field) => String(field).toLowerCase().includes(q));
+  });
 
   const handleZipUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -469,10 +869,23 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
 
             <button
               type="submit"
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl transition-all shadow-lg hover:shadow-emerald-600/10"
+              disabled={loggingIn}
+              className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-xs py-3 rounded-xl transition-all shadow-lg hover:shadow-emerald-600/10 flex items-center justify-center gap-2"
             >
-              Sign In to CMS Portal
+              {loggingIn ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Signing in...</span>
+                </>
+              ) : (
+                <span>Sign In to CMS Portal</span>
+              )}
             </button>
+
+            <p className="text-[10px] text-slate-500 text-center leading-relaxed">
+              Credentials are verified by the API server. Configure them with
+              ADMIN_USERNAME / ADMIN_PASSWORD_HASH in the backend .env file.
+            </p>
           </form>
         </div>
       </section>
@@ -494,7 +907,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
                 Dr. CHEMISTAR Corporate CMS Admin Panel
               </h2>
               <p className="text-xs text-slate-400">
-                System Administrator • Logged in as Head Office Rajkot (Super Admin)
+                Head Office Rajkot • Signed in as{' '}
+                <span className="font-bold text-slate-300">{adminUser?.username || 'admin'}</span>
+                {adminUser?.role ? ` (${adminUser.role})` : ''}
               </p>
             </div>
           </div>
@@ -509,7 +924,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
             </button>
 
             <button
-              onClick={() => setIsLoggedIn(false)}
+              onClick={handleLogout}
               className="bg-rose-950/40 hover:bg-rose-900/40 text-rose-300 text-xs font-bold px-4 py-2.5 rounded-xl border border-rose-500/20"
             >
               Log Out
@@ -549,11 +964,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
 
           <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800">
             <div className="flex items-center justify-between">
-              <span className="text-xs text-slate-400 font-semibold">Customer Leads</span>
+              <span className="text-xs text-slate-400 font-semibold">Customer Enquiries</span>
               <MessageSquare className="w-5 h-5 text-amber-400" />
             </div>
-            <div className="text-3xl font-black text-white font-display mt-2">{leadsList.length}</div>
-            <span className="text-[10px] text-emerald-400 font-bold">Active Enquiries</span>
+            <div className="text-3xl font-black text-white font-display mt-2">{enquiryStats.total}</div>
+            <span className="text-[10px] text-emerald-400 font-bold">{enquiryStats.New} new &middot; unhandled</span>
           </div>
 
         </div>
@@ -580,10 +995,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
             Dealer Approvals ({dealersList.length})
           </button>
           <button
-            onClick={() => setActiveTab('enquiries')}
+            onClick={() => {
+              setActiveTab('enquiries');
+              loadEnquiries();
+            }}
             className={`flex-1 min-w-[120px] py-2.5 rounded-xl transition-colors ${activeTab === 'enquiries' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
           >
-            Lead Inquiries
+            Enquiries ({enquiryStats.total})
+          </button>
+          {/* Only shown to roles that may read farmer records at all. */}
+          {canViewFarmers && (
+            <button
+              onClick={() => setActiveTab('farmers')}
+              className={`flex-1 min-w-[120px] py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'farmers' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
+            >
+              <Sprout className="w-4 h-4" />
+              Farmers ({farmerStats.total})
+            </button>
+          )}
+          <button
+            onClick={() => setActiveTab('farmers')}
+            className={`flex-1 min-w-[120px] py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5 ${activeTab === 'farmers' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
+          >
+            <Users className="w-4 h-4" />
+            Farmers
           </button>
           <button
             onClick={() => {
@@ -1073,24 +1508,435 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
           </div>
         )}
 
-        {/* TAB 3: LEADS & ENQUIRIES */}
+        {/* TAB 3: CUSTOMER ENQUIRIES (live from the database) */}
         {activeTab === 'enquiries' && (
-          <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6 space-y-4">
-            <h3 className="text-lg font-bold text-white">Recent Customer Enquiries</h3>
-            <div className="grid md:grid-cols-2 gap-4">
-              {leadsList.map((l) => (
-                <div key={l.id} className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="font-bold text-white text-sm">{l.name}</span>
-                    <span className="bg-slate-800 text-emerald-400 px-2 py-0.5 rounded font-bold">{l.type}</span>
-                  </div>
-                  <p className="text-slate-300 font-semibold mb-1">Phone: {l.phone}</p>
-                  {l.email && <p className="text-slate-300 font-semibold mb-1">Email: {l.email}</p>}
-                  <p className="text-slate-400 mt-1">"{l.query}"</p>
+          <div className="space-y-6">
+
+            {/* Enquiry counters - every number comes from the API response */}
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+              {([
+                { label: 'Total', value: enquiryStats.total, tone: 'text-white' },
+                { label: 'New', value: enquiryStats.New, tone: 'text-sky-400' },
+                { label: 'Contacted', value: enquiryStats.Contacted, tone: 'text-amber-400' },
+                { label: 'In Progress', value: enquiryStats['In Progress'], tone: 'text-purple-400' },
+                { label: 'Resolved', value: enquiryStats.Resolved, tone: 'text-emerald-400' }
+              ]).map((card) => (
+                <div key={card.label} className="bg-slate-900 p-5 rounded-2xl border border-slate-800">
+                  <span className="text-xs text-slate-400 font-semibold uppercase tracking-wide">{card.label}</span>
+                  <div className={`text-3xl font-black font-display mt-2 ${card.tone}`}>{card.value}</div>
                 </div>
               ))}
             </div>
+
+            <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6 space-y-5">
+
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white font-display flex items-center gap-2">
+                    <Inbox className="w-5 h-5 text-emerald-400" />
+                    Customer Enquiries
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Every submission from the website contact form, newest first.
+                    {enquiryLoadedAt && (
+                      <> Last refreshed {enquiryLoadedAt.toLocaleTimeString()}.</>
+                    )}
+                    {enquirySource === 'local-json' && (
+                      <span className="text-amber-400 font-bold">
+                        {' '}Served from the local JSON fallback - MongoDB was unreachable at server start.
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                <button
+                  onClick={loadEnquiries}
+                  disabled={enquiriesLoading}
+                  className="bg-slate-850 hover:bg-slate-800 disabled:opacity-60 text-white text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2"
+                >
+                  <RefreshCw className={`w-4 h-4 ${enquiriesLoading ? 'animate-spin' : ''}`} />
+                  <span>{enquiriesLoading ? 'Refreshing...' : 'Refresh'}</span>
+                </button>
+              </div>
+
+              {enquiriesError && (
+                <div role="alert" className="bg-red-500/15 border border-red-400/40 p-4 rounded-2xl flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-red-100">
+                    <p className="font-bold text-white">Enquiries could not be loaded</p>
+                    <p className="mt-1">{enquiriesError}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Search + filters */}
+              <div className="space-y-3">
+                <div className="relative max-w-md">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <input
+                    type="text"
+                    placeholder="Search name, phone, email, city or message..."
+                    value={enquirySearch}
+                    onChange={(e) => setEnquirySearch(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 pl-10 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider mr-1">Status:</span>
+                  {(['All', ...ENQUIRY_STATUSES] as const).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setEnquiryStatusFilter(s as 'All' | EnquiryStatus)}
+                      className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors ${
+                        enquiryStatusFilter === s
+                          ? 'bg-emerald-600 text-white border-emerald-500'
+                          : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
+                      }`}
+                    >
+                      {s}
+                      {s !== 'All' && ` (${enquiryStats[s as EnquiryStatus] ?? 0})`}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider mr-1">Type:</span>
+                  <select
+                    value={enquiryTypeFilter}
+                    onChange={(e) => setEnquiryTypeFilter(e.target.value)}
+                    className="bg-slate-950 border border-slate-800 text-white px-3 py-1.5 rounded-lg text-[11px] font-bold focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="All">All types</option>
+                    {enquiryTypes.map((tp) => (
+                      <option key={tp} value={tp}>{tp}</option>
+                    ))}
+                  </select>
+
+                  {(enquirySearch || enquiryStatusFilter !== 'All' || enquiryTypeFilter !== 'All') && (
+                    <button
+                      onClick={() => {
+                        setEnquirySearch('');
+                        setEnquiryStatusFilter('All');
+                        setEnquiryTypeFilter('All');
+                      }}
+                      className="text-[11px] font-bold text-slate-400 hover:text-white underline"
+                    >
+                      Clear filters
+                    </button>
+                  )}
+
+                  <span className="text-[11px] text-slate-500 font-semibold ml-auto">
+                    Showing {filteredEnquiries.length} of {enquiries.length}
+                  </span>
+                </div>
+              </div>
+
+              {/* Enquiry table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-800">
+                      <th className="p-3">Ref</th>
+                      <th className="p-3">Date / Time</th>
+                      <th className="p-3">Full Name</th>
+                      <th className="p-3">Phone</th>
+                      <th className="p-3">Email</th>
+                      <th className="p-3">City</th>
+                      <th className="p-3">Type</th>
+                      <th className="p-3">Message</th>
+                      <th className="p-3">Status</th>
+                      <th className="p-3">Notes</th>
+                      <th className="p-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800 font-medium">
+                    {filteredEnquiries.map((e) => {
+                      const next = NEXT_STATUS[e.status];
+                      const busy = rowBusyId === e.id;
+                      return (
+                        <tr key={e.id} className="hover:bg-slate-850 align-top">
+                          <td className="p-3 font-mono text-[10px] text-slate-500">#{shortRef(e.id)}</td>
+                          <td className="p-3 text-slate-300 whitespace-nowrap">{formatDateTime(e.created_at)}</td>
+                          <td className="p-3 font-bold text-white">{e.name}</td>
+                          <td className="p-3 text-slate-300 whitespace-nowrap">
+                            <a href={`tel:${e.phone}`} className="hover:text-emerald-400">{e.phone}</a>
+                          </td>
+                          <td className="p-3 text-slate-300">
+                            {e.email ? (
+                              <a href={`mailto:${e.email}`} className="hover:text-emerald-400 break-all">{e.email}</a>
+                            ) : (
+                              <span className="text-slate-600">-</span>
+                            )}
+                          </td>
+                          <td className="p-3 text-slate-300">{e.city}</td>
+                          <td className="p-3">
+                            <span className="bg-slate-800 text-emerald-400 px-2 py-0.5 rounded font-bold whitespace-nowrap">
+                              {e.user_type}
+                            </span>
+                          </td>
+                          <td className="p-3 text-slate-300 max-w-[220px]">
+                            <span className="line-clamp-2">{e.message}</span>
+                            {e.message.length > 80 && (
+                              <button
+                                onClick={() => openEnquiryDetail(e)}
+                                className="text-emerald-400 hover:text-emerald-300 font-bold mt-1 block"
+                              >
+                                View Details
+                              </button>
+                            )}
+                          </td>
+                          <td className="p-3">
+                            <select
+                              value={e.status}
+                              disabled={busy}
+                              onChange={(ev) => handleEnquiryStatusChange(e.id, ev.target.value as EnquiryStatus)}
+                              className={`px-2 py-1 rounded-full text-[10px] font-bold border bg-slate-950 focus:outline-none disabled:opacity-50 ${STATUS_STYLES[e.status]}`}
+                            >
+                              {ENQUIRY_STATUSES.map((s) => (
+                                <option key={s} value={s} className="bg-slate-900 text-white">{s}</option>
+                              ))}
+                            </select>
+                          </td>
+                          <td className="p-3 text-slate-400 max-w-[160px]">
+                            {e.admin_notes
+                              ? <span className="line-clamp-2">{e.admin_notes}</span>
+                              : <span className="text-slate-600">-</span>}
+                          </td>
+                          <td className="p-3 text-right whitespace-nowrap space-x-1.5">
+                            <button
+                              onClick={() => openEnquiryDetail(e)}
+                              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-sky-400 rounded-lg"
+                              title="View full enquiry"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+
+                            {next && (
+                              <button
+                                onClick={() => handleEnquiryStatusChange(e.id, next)}
+                                disabled={busy}
+                                className="px-2 py-1.5 bg-emerald-700/40 hover:bg-emerald-600/50 disabled:opacity-50 text-emerald-300 rounded-lg text-[10px] font-bold border border-emerald-500/20"
+                                title={`Mark as ${next}`}
+                              >
+                                {busy ? '...' : `Mark ${next}`}
+                              </button>
+                            )}
+
+                            <button
+                              onClick={() => setConfirmDeleteId(e.id)}
+                              disabled={busy}
+                              className="p-1.5 bg-slate-800 hover:bg-rose-900/50 disabled:opacity-50 text-rose-400 rounded-lg"
+                              title="Delete enquiry"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {filteredEnquiries.length === 0 && (
+                      <tr>
+                        <td colSpan={11} className="py-12 text-center text-slate-500 font-bold">
+                          {enquiriesLoading
+                            ? 'Loading enquiries...'
+                            : enquiries.length === 0
+                              ? 'No enquiries have been submitted yet.'
+                              : 'No enquiries match the current search and filters.'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
+        )}
+
+        {/* Enquiry detail drawer - the full submission, nothing truncated */}
+        {detailEnquiry && (
+          <div
+            className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto"
+            onClick={() => setDetailEnquiry(null)}
+          >
+            <div
+              className="bg-slate-900 w-full max-w-2xl rounded-3xl border border-slate-800 shadow-2xl my-8"
+              onClick={(ev) => ev.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4 p-6 border-b border-slate-800">
+                <div>
+                  <h3 className="text-xl font-black text-white font-display">{detailEnquiry.name}</h3>
+                  <p className="text-[11px] text-slate-400 mt-1 font-mono">
+                    Reference #{shortRef(detailEnquiry.id)} &middot; {formatDateTime(detailEnquiry.created_at)}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${STATUS_STYLES[detailEnquiry.status]}`}>
+                    {detailEnquiry.status}
+                  </span>
+                  <button
+                    onClick={() => setDetailEnquiry(null)}
+                    className="text-slate-400 hover:text-white"
+                    aria-label="Close"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-5 text-xs">
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                    <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5" /> Phone
+                    </span>
+                    <a href={`tel:${detailEnquiry.phone}`} className="block mt-1 font-bold text-white hover:text-emerald-400">
+                      {detailEnquiry.phone}
+                    </a>
+                  </div>
+
+                  <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                    <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5" /> Email
+                    </span>
+                    {detailEnquiry.email ? (
+                      <a href={`mailto:${detailEnquiry.email}`} className="block mt-1 font-bold text-white hover:text-emerald-400 break-all">
+                        {detailEnquiry.email}
+                      </a>
+                    ) : (
+                      <span className="block mt-1 text-slate-600 font-bold">Not provided</span>
+                    )}
+                  </div>
+
+                  <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                    <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5" /> City / District
+                    </span>
+                    <span className="block mt-1 font-bold text-white">{detailEnquiry.city}</span>
+                  </div>
+
+                  <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+                    <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5" /> Inquiring as
+                    </span>
+                    <span className="block mt-1 font-bold text-emerald-400">{detailEnquiry.user_type}</span>
+                  </div>
+                </div>
+
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Message / Product Inquiry</span>
+                  <p className="mt-1.5 bg-slate-950 p-4 rounded-xl border border-slate-800 text-slate-200 leading-relaxed whitespace-pre-wrap break-words">
+                    {detailEnquiry.message}
+                  </p>
+                </div>
+
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold">Internal Admin Notes</span>
+                  <textarea
+                    rows={3}
+                    value={detailNotes}
+                    onChange={(ev) => setDetailNotes(ev.target.value)}
+                    placeholder="Record what was discussed, quotes sent, follow-up dates..."
+                    className="mt-1.5 w-full bg-slate-950 border border-slate-800 text-white px-4 py-3 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                  />
+                  <button
+                    onClick={handleSaveNotes}
+                    disabled={savingNotes || detailNotes === (detailEnquiry.admin_notes || '')}
+                    className="mt-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-[11px] px-4 py-2 rounded-xl flex items-center gap-2"
+                  >
+                    {savingNotes ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                    <span>{savingNotes ? 'Saving...' : 'Save notes'}</span>
+                  </button>
+                </div>
+
+                <div className="border-t border-slate-800 pt-4">
+                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold block mb-2">Update status</span>
+                  <div className="flex flex-wrap gap-2">
+                    {ENQUIRY_STATUSES.map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => handleEnquiryStatusChange(detailEnquiry.id, s)}
+                        disabled={rowBusyId === detailEnquiry.id || detailEnquiry.status === s}
+                        className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                          detailEnquiry.status === s
+                            ? STATUS_STYLES[s]
+                            : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-600'
+                        }`}
+                      >
+                        {detailEnquiry.status === s ? `${s} (current)` : `Mark as ${s}`}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[10px] text-slate-500 mt-3">
+                    Last updated {formatDateTime(detailEnquiry.updated_at)}.
+                  </p>
+                </div>
+
+                <div className="border-t border-slate-800 pt-4 flex flex-wrap gap-3">
+                  <a
+                    href={`https://wa.me/${detailEnquiry.phone.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] px-4 py-2 rounded-xl flex items-center gap-2"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    Reply on WhatsApp
+                  </a>
+                  <button
+                    onClick={() => setConfirmDeleteId(detailEnquiry.id)}
+                    className="bg-rose-950/40 hover:bg-rose-900/40 text-rose-300 font-bold text-[11px] px-4 py-2 rounded-xl border border-rose-500/20 flex items-center gap-2"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Delete enquiry
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete confirmation - deliberately a second, explicit step. A lead is
+            unrecoverable once removed, so it must never go on a single click. */}
+        {confirmDeleteId && (
+          <div className="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-slate-900 w-full max-w-sm rounded-3xl border border-rose-500/30 shadow-2xl p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <h4 className="text-base font-black text-white font-display">Delete this enquiry?</h4>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Enquiry <span className="font-mono font-bold text-white">#{shortRef(confirmDeleteId)}</span> will
+                be permanently removed from the database. This cannot be undone.
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleDeleteEnquiry(confirmDeleteId)}
+                  disabled={rowBusyId === confirmDeleteId}
+                  className="flex-1 bg-rose-600 hover:bg-rose-500 disabled:opacity-60 text-white font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-2"
+                >
+                  {rowBusyId === confirmDeleteId && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  Yes, delete it
+                </button>
+                <button
+                  onClick={() => setConfirmDeleteId(null)}
+                  className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-2.5 rounded-xl"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: FARMERS - the only place farmer records are ever displayed */}
+        {activeTab === 'farmers' && (
+          <FarmersAdmin role={adminUser?.role || 'staff'} />
         )}
 
         {/* TAB 4: IMAGE MANAGER */}
