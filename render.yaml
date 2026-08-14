@@ -10,8 +10,9 @@ services:
       - key: MONGO_URI
         sync: false
 
-      - key: PORT
-        value: 5001
+      # PORT is deliberately NOT set here. Render injects its own and expects
+      # the service to bind to it; server.js already reads process.env.PORT.
+      # Pinning it to 5001 risks Render failing to detect an open port.
 
       - key: NODE_ENV
         value: production
