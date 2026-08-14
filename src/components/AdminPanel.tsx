@@ -1939,6 +1939,522 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
           <FarmersAdmin role={adminUser?.role || 'staff'} />
         )}
 
+        {/* TAB: FARMER DATABASE (admin only, role-gated) */}
+        {activeTab === 'farmers' && canViewFarmers && (
+          <div className="space-y-6">
+
+            {/* Counters - describe the FILTERED set, so they always match the rows below */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {([
+                { label: 'Total Farmers', value: farmerStats.total, tone: 'text-white', hint: farmerFiltersActive ? 'matching filters' : 'registered' },
+                { label: 'New This Month', value: farmerStats.newThisMonth, tone: 'text-sky-400', hint: 'since the 1st' },
+                { label: 'Active', value: farmerStats.byStatus.Active, tone: 'text-emerald-400', hint: 'engaged farmers' },
+                { label: 'New / Uncontacted', value: farmerStats.byStatus.New, tone: 'text-amber-400', hint: 'need a first call' }
+              ]).map((c) => (
+                <div key={c.label} className="bg-slate-900 p-5 rounded-2xl border border-slate-800">
+                  <span className="text-xs text-slate-400 font-semibold">{c.label}</span>
+                  <div className={`text-3xl font-black font-display mt-2 ${c.tone}`}>{c.value}</div>
+                  <span className="text-[10px] text-slate-500 font-bold">{c.hint}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-slate-900 rounded-3xl border border-slate-800 p-6 space-y-5">
+
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white font-display flex items-center gap-2">
+                    <Sprout className="w-5 h-5 text-emerald-400" />
+                    Farmer Database
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Registrations from the public /farmer page, newest first.
+                    {farmersLoadedAt && <> Last refreshed {farmersLoadedAt.toLocaleTimeString()}.</>}
+                    {farmerSource === 'local-json' && (
+                      <span className="text-amber-400 font-bold">
+                        {' '}Served from the local JSON fallback - MongoDB was unreachable at server start.
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-[10px] text-slate-500 mt-1.5 flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                    Personal data. Every view, edit and export is written to the audit log.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => loadFarmers(farmerFilters)}
+                    disabled={farmersLoading}
+                    className="bg-slate-850 hover:bg-slate-800 disabled:opacity-60 text-white text-xs font-bold px-4 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${farmersLoading ? 'animate-spin' : ''}`} />
+                    <span>{farmersLoading ? 'Refreshing...' : 'Refresh'}</span>
+                  </button>
+
+                  {/* Export is director-only by default - hidden entirely otherwise. */}
+                  {canExportFarmers && (
+                    <>
+                      <button
+                        onClick={() => runExport('excel')}
+                        disabled={exporting !== null || farmers.length === 0}
+                        className="bg-emerald-700/40 hover:bg-emerald-600/50 disabled:opacity-50 text-emerald-300 text-xs font-bold px-4 py-2.5 rounded-xl border border-emerald-500/20 flex items-center gap-2"
+                        title="Download the farmers currently listed as an Excel workbook"
+                      >
+                        {exporting === 'excel'
+                          ? <Loader2 className="w-4 h-4 animate-spin" />
+                          : <FileSpreadsheet className="w-4 h-4" />}
+                        <span>Excel</span>
+                      </button>
+
+                      <button
+                        onClick={() => runExport('pdf')}
+                        disabled={exporting !== null || farmers.length === 0}
+                        className="bg-rose-900/30 hover:bg-rose-800/40 disabled:opacity-50 text-rose-300 text-xs font-bold px-4 py-2.5 rounded-xl border border-rose-500/20 flex items-center gap-2"
+                        title="Download the farmers currently listed as a PDF report"
+                      >
+                        {exporting === 'pdf'
+                          ? <Loader2 className="w-4 h-4 animate-spin" />
+                          : <FileDown className="w-4 h-4" />}
+                        <span>PDF</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {farmersError && (
+                <div role="alert" className="bg-red-500/15 border border-red-400/40 p-4 rounded-2xl flex items-start gap-3">
+                  <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-red-100">
+                    <p className="font-bold text-white">Farmer records</p>
+                    <p className="mt-1">{farmersError}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Search + filters */}
+              <div className="space-y-3">
+                <div className="relative max-w-md">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <input
+                    type="text"
+                    placeholder="Search ID, name, mobile, village, city, district or crop..."
+                    value={farmerFilters.search}
+                    onChange={(e) => setFarmerFilter('search', e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-2.5 pl-10 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {([
+                    { key: 'status' as const, label: 'Status', values: [...FARMER_STATUSES] },
+                    { key: 'district' as const, label: 'District', values: farmerFilterOptions.districts },
+                    { key: 'state' as const, label: 'State', values: farmerFilterOptions.states },
+                    { key: 'main_crop' as const, label: 'Crop', values: farmerFilterOptions.crops },
+                    { key: 'irrigation' as const, label: 'Irrigation', values: farmerFilterOptions.irrigation }
+                  ]).map((f) => (
+                    <select
+                      key={f.key}
+                      value={farmerFilters[f.key]}
+                      onChange={(e) => setFarmerFilter(f.key, e.target.value)}
+                      className={`bg-slate-950 border text-white px-3 py-2 rounded-lg text-[11px] font-bold focus:outline-none focus:border-emerald-500 ${
+                        farmerFilters[f.key] !== 'All' ? 'border-emerald-500/50 text-emerald-300' : 'border-slate-800'
+                      }`}
+                    >
+                      <option value="All">{f.label}: All</option>
+                      {f.values.map((v) => <option key={v} value={v}>{v}</option>)}
+                    </select>
+                  ))}
+
+                  {farmerFiltersActive && (
+                    <button
+                      onClick={() => setFarmerFilters({ search: '', district: 'All', state: 'All', main_crop: 'All', status: 'All', irrigation: 'All' })}
+                      className="text-[11px] font-bold text-slate-400 hover:text-white underline"
+                    >
+                      Clear filters
+                    </button>
+                  )}
+
+                  <span className="text-[11px] text-slate-500 font-semibold ml-auto">
+                    {farmers.length} record{farmers.length === 1 ? '' : 's'}
+                    {farmerFiltersActive && ' matching'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Farmer table */}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="bg-slate-950 text-slate-400 uppercase font-black tracking-wider border-b border-slate-800">
+                      <th className="p-3">Farmer ID</th>
+                      <th className="p-3">Name</th>
+                      <th className="p-3">Mobile</th>
+                      <th className="p-3">Village</th>
+                      <th className="p-3">City</th>
+                      <th className="p-3">District</th>
+                      <th className="p-3">State</th>
+                      <th className="p-3">Crop</th>
+                      <th className="p-3">Farm Area</th>
+                      <th className="p-3">Registered</th>
+                      <th className="p-3">Status</th>
+                      <th className="p-3 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800 font-medium">
+                    {farmers.map((f) => {
+                      const busy = farmerBusyId === f.id;
+                      return (
+                        <tr key={f.id} className="hover:bg-slate-850">
+                          <td className="p-3 font-mono text-[10px] text-emerald-400 font-bold whitespace-nowrap">{f.farmer_id}</td>
+                          <td className="p-3 font-bold text-white">{f.farmer_name}</td>
+                          <td className="p-3 text-slate-300 whitespace-nowrap">
+                            <a href={`tel:${f.mobile}`} className="hover:text-emerald-400">{f.mobile}</a>
+                          </td>
+                          <td className="p-3 text-slate-300">{f.village || <span className="text-slate-600">-</span>}</td>
+                          <td className="p-3 text-slate-300">{f.city || <span className="text-slate-600">-</span>}</td>
+                          <td className="p-3 text-slate-300">{f.district || <span className="text-slate-600">-</span>}</td>
+                          <td className="p-3 text-slate-300">{f.state || <span className="text-slate-600">-</span>}</td>
+                          <td className="p-3">
+                            {f.main_crop
+                              ? <span className="bg-slate-800 text-emerald-400 px-2 py-0.5 rounded font-bold whitespace-nowrap">{f.main_crop}</span>
+                              : <span className="text-slate-600">-</span>}
+                          </td>
+                          <td className="p-3 text-slate-300 whitespace-nowrap">
+                            {f.farm_area ? `${f.farm_area} ${f.land_unit || ''}`.trim() : <span className="text-slate-600">-</span>}
+                          </td>
+                          <td className="p-3 text-slate-300 whitespace-nowrap">{formatDateOnly(f.created_at)}</td>
+                          <td className="p-3">
+                            {canEditFarmers ? (
+                              <select
+                                value={f.status}
+                                disabled={busy}
+                                onChange={(e) => handleFarmerStatusChange(f, e.target.value as FarmerStatus)}
+                                className={`px-2 py-1 rounded-full text-[10px] font-bold border bg-slate-950 focus:outline-none disabled:opacity-50 ${FARMER_STATUS_STYLES[f.status]}`}
+                              >
+                                {FARMER_STATUSES.map((s) => (
+                                  <option key={s} value={s} className="bg-slate-900 text-white">{s}</option>
+                                ))}
+                              </select>
+                            ) : (
+                              <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${FARMER_STATUS_STYLES[f.status]}`}>
+                                {f.status}
+                              </span>
+                            )}
+                          </td>
+                          <td className="p-3 text-right whitespace-nowrap space-x-1.5">
+                            <button
+                              onClick={() => openFarmerDetail(f)}
+                              className="p-1.5 bg-slate-800 hover:bg-slate-700 text-sky-400 rounded-lg"
+                              title="View full farmer record"
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </button>
+
+                            {canExportFarmers && (
+                              <button
+                                onClick={() => runExport('single', f)}
+                                disabled={exporting !== null}
+                                className="p-1.5 bg-slate-800 hover:bg-slate-700 disabled:opacity-50 text-rose-300 rounded-lg"
+                                title="Download this farmer's profile as a PDF"
+                              >
+                                {exporting === `single-${f.id}`
+                                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                  : <FileDown className="w-3.5 h-3.5" />}
+                              </button>
+                            )}
+
+                            {canDeleteFarmers && (
+                              <button
+                                onClick={() => setConfirmDeleteFarmer(f)}
+                                disabled={busy}
+                                className="p-1.5 bg-slate-800 hover:bg-rose-900/50 disabled:opacity-50 text-rose-400 rounded-lg"
+                                title="Delete farmer record"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {farmers.length === 0 && (
+                      <tr>
+                        <td colSpan={12} className="py-12 text-center text-slate-500 font-bold">
+                          {farmersLoading
+                            ? 'Loading farmer records...'
+                            : farmerFiltersActive
+                              ? 'No farmers match the current search and filters.'
+                              : 'No farmers have registered yet. Share drchemistar.com/farmer to start collecting registrations.'}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Top districts / crops - what the sales team actually asks for */}
+              {farmerStats.total > 0 && (
+                <div className="grid sm:grid-cols-2 gap-4 border-t border-slate-800 pt-5">
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-black mb-2">Top Districts</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {farmerStats.byDistrict.slice(0, 8).map((d) => (
+                        <button
+                          key={d.name}
+                          onClick={() => setFarmerFilter('district', d.name)}
+                          className="bg-slate-950 border border-slate-800 hover:border-emerald-500/50 text-slate-300 px-2.5 py-1 rounded-lg text-[11px] font-bold"
+                        >
+                          {d.name} <span className="text-emerald-400">{d.count}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-black mb-2">Top Crops</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {farmerStats.byCrop.slice(0, 8).map((c) => (
+                        <button
+                          key={c.name}
+                          onClick={() => setFarmerFilter('main_crop', c.name)}
+                          className="bg-slate-950 border border-slate-800 hover:border-emerald-500/50 text-slate-300 px-2.5 py-1 rounded-lg text-[11px] font-bold"
+                        >
+                          {c.name} <span className="text-emerald-400">{c.count}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Farmer detail drawer - the complete registration */}
+        {detailFarmer && (
+          <div
+            className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto"
+            onClick={() => setDetailFarmer(null)}
+          >
+            <div
+              className="bg-slate-900 w-full max-w-3xl rounded-3xl border border-slate-800 shadow-2xl my-8"
+              onClick={(ev) => ev.stopPropagation()}
+            >
+              <div className="flex items-start justify-between gap-4 p-6 border-b border-slate-800">
+                <div>
+                  <h3 className="text-xl font-black text-white font-display">{detailFarmer.farmer_name}</h3>
+                  <p className="text-[11px] text-emerald-400 mt-1 font-mono font-bold">
+                    {detailFarmer.farmer_id}
+                    <span className="text-slate-500 font-sans font-normal">
+                      {' '}&middot; registered {formatDateTime(detailFarmer.created_at)}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${FARMER_STATUS_STYLES[detailFarmer.status]}`}>
+                    {detailFarmer.status}
+                  </span>
+                  <button onClick={() => setDetailFarmer(null)} className="text-slate-400 hover:text-white" aria-label="Close">
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-5 text-xs">
+                {([
+                  {
+                    title: 'Contact',
+                    rows: [
+                      ['Mobile', detailFarmer.mobile],
+                      ['Alternate Mobile', detailFarmer.alternate_mobile],
+                      ['Email', detailFarmer.email],
+                      ['Gender', detailFarmer.gender],
+                      ['Age', detailFarmer.age]
+                    ]
+                  },
+                  {
+                    title: 'Location',
+                    rows: [
+                      ['Village', detailFarmer.village],
+                      ['City / Taluka', detailFarmer.city],
+                      ['District', detailFarmer.district],
+                      ['State', detailFarmer.state],
+                      ['PIN Code', detailFarmer.pincode]
+                    ]
+                  },
+                  {
+                    title: 'Farm',
+                    rows: [
+                      ['Farm Area', detailFarmer.farm_area ? `${detailFarmer.farm_area} ${detailFarmer.land_unit || ''}`.trim() : ''],
+                      ['Irrigation', detailFarmer.irrigation],
+                      ['Soil Type', detailFarmer.soil_type],
+                      ['Farming Type', detailFarmer.farming_type],
+                      ['Experience', detailFarmer.farming_experience]
+                    ]
+                  },
+                  {
+                    title: 'Crops',
+                    rows: [
+                      ['Main Crop', detailFarmer.main_crop],
+                      ['Other Crops', detailFarmer.other_crops.join(', ')],
+                      ['Current Season', detailFarmer.current_season],
+                      ['Crop Area', detailFarmer.crop_area],
+                      ['Interested In', detailFarmer.interests.join(', ')]
+                    ]
+                  }
+                ]).map((group) => (
+                  <div key={group.title}>
+                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-black mb-2">{group.title}</h4>
+                    <div className="bg-slate-950 rounded-xl border border-slate-800 divide-y divide-slate-800/70">
+                      {group.rows.map(([label, value]) => (
+                        <div key={label} className="flex gap-4 px-4 py-2.5">
+                          <span className="text-slate-500 font-bold w-36 flex-shrink-0">{label}</span>
+                          <span className={value ? 'text-white font-semibold break-words' : 'text-slate-600'}>
+                            {value || 'Not provided'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                {detailFarmer.message && (
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-black mb-2">Farmer's Message</h4>
+                    <p className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-slate-200 leading-relaxed whitespace-pre-wrap break-words">
+                      {detailFarmer.message}
+                    </p>
+                  </div>
+                )}
+
+                {canEditFarmers && (
+                  <div>
+                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-black mb-2">Internal Admin Notes</h4>
+                    <textarea
+                      rows={3}
+                      value={farmerNotes}
+                      onChange={(ev) => setFarmerNotes(ev.target.value)}
+                      placeholder="Visit notes, products recommended, follow-up date..."
+                      className="w-full bg-slate-950 border border-slate-800 text-white px-4 py-3 rounded-xl text-xs font-medium focus:outline-none focus:border-emerald-500"
+                    />
+                    <button
+                      onClick={handleSaveFarmerNotes}
+                      disabled={savingFarmer || farmerNotes === (detailFarmer.admin_notes || '')}
+                      className="mt-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold text-[11px] px-4 py-2 rounded-xl flex items-center gap-2"
+                    >
+                      {savingFarmer ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                      <span>{savingFarmer ? 'Saving...' : 'Save notes'}</span>
+                    </button>
+                  </div>
+                )}
+
+                {canEditFarmers && (
+                  <div className="border-t border-slate-800 pt-4">
+                    <h4 className="text-[10px] uppercase tracking-wider text-slate-500 font-black mb-2">Update Status</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {FARMER_STATUSES.map((s) => (
+                        <button
+                          key={s}
+                          onClick={() => handleFarmerStatusChange(detailFarmer, s)}
+                          disabled={farmerBusyId === detailFarmer.id || detailFarmer.status === s}
+                          className={`px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
+                            detailFarmer.status === s
+                              ? FARMER_STATUS_STYLES[s]
+                              : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-600'
+                          }`}
+                        >
+                          {detailFarmer.status === s ? `${s} (current)` : `Mark as ${s}`}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="border-t border-slate-800 pt-4 flex flex-wrap gap-3">
+                  <a
+                    href={`https://wa.me/${detailFarmer.mobile.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[11px] px-4 py-2 rounded-xl flex items-center gap-2"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    WhatsApp
+                  </a>
+                  <a
+                    href={`tel:${detailFarmer.mobile}`}
+                    className="bg-slate-800 hover:bg-slate-700 text-white font-bold text-[11px] px-4 py-2 rounded-xl flex items-center gap-2"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    Call
+                  </a>
+
+                  {canExportFarmers && (
+                    <button
+                      onClick={() => runExport('single', detailFarmer)}
+                      disabled={exporting !== null}
+                      className="bg-rose-900/30 hover:bg-rose-800/40 disabled:opacity-50 text-rose-300 font-bold text-[11px] px-4 py-2 rounded-xl border border-rose-500/20 flex items-center gap-2"
+                    >
+                      {exporting === `single-${detailFarmer.id}`
+                        ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        : <FileDown className="w-3.5 h-3.5" />}
+                      Download PDF
+                    </button>
+                  )}
+
+                  {canDeleteFarmers && (
+                    <button
+                      onClick={() => setConfirmDeleteFarmer(detailFarmer)}
+                      className="bg-rose-950/40 hover:bg-rose-900/40 text-rose-300 font-bold text-[11px] px-4 py-2 rounded-xl border border-rose-500/20 flex items-center gap-2 ml-auto"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete record
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Farmer delete confirmation - a registration is unrecoverable once gone */}
+        {confirmDeleteFarmer && (
+          <div className="fixed inset-0 z-[60] bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-slate-900 w-full max-w-sm rounded-3xl border border-rose-500/30 shadow-2xl p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <h4 className="text-base font-black text-white font-display">Delete this farmer?</h4>
+              </div>
+
+              <p className="text-xs text-slate-300 leading-relaxed">
+                <span className="font-bold text-white">{confirmDeleteFarmer.farmer_name}</span>{' '}
+                (<span className="font-mono text-emerald-400">{confirmDeleteFarmer.farmer_id}</span>)
+                will be permanently removed from the farmer database. This cannot be undone.
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => handleDeleteFarmer(confirmDeleteFarmer)}
+                  disabled={farmerBusyId === confirmDeleteFarmer.id}
+                  className="flex-1 bg-rose-600 hover:bg-rose-500 disabled:opacity-60 text-white font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-2"
+                >
+                  {farmerBusyId === confirmDeleteFarmer.id && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                  Yes, delete it
+                </button>
+                <button
+                  onClick={() => setConfirmDeleteFarmer(null)}
+                  className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs py-2.5 rounded-xl"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* TAB 4: IMAGE MANAGER */}
         {activeTab === 'images' && (
           <div className="space-y-6">
