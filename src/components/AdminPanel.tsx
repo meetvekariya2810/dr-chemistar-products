@@ -406,12 +406,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
       setLoginId('');
       setPassword('');
     } catch (err: any) {
-      if (err?.status === 401) {
+      if (err?.status === 400) {
+        setLoginError('Please enter your Login ID and Password.');
+      } else if (err?.status === 401) {
         setLoginError('Invalid Login ID or Password.');
+      } else if (err?.status === 403) {
+        setLoginError('You are not authorized to access the CMS.');
       } else if (err?.status === 404) {
-        setLoginError('Admin login API route was not found.');
+        setLoginError('Admin login service is not configured.');
       } else if (err?.status === 500) {
-        setLoginError('Admin server error. Please try again.');
+        setLoginError('Admin service error. Please try again.');
       } else {
         setLoginError('Unable to connect to the admin service. Please try again.');
       }

@@ -589,7 +589,7 @@ export interface AdminUser {
 }
 
 export async function adminLogin(username: string, password: string): Promise<AdminUser> {
-  const payload = await apiRequest('/api/auth/admin/login', {
+  const payload = await apiRequest('/api/admin/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password }),
@@ -605,7 +605,7 @@ export async function adminLogin(username: string, password: string): Promise<Ad
 
 /** Confirm a token kept from an earlier page load is still good. */
 export async function adminMe(): Promise<AdminUser> {
-  const payload = await apiRequest('/api/auth/admin/me', { method: 'GET' }, { auth: true });
+  const payload = await apiRequest('/api/admin/me', { method: 'GET' }, { auth: true });
   return { username: '', role: 'admin', farmerPermissions: [], ...(payload.user || {}) };
 }
 
