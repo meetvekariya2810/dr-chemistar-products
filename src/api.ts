@@ -39,9 +39,8 @@ const API_URL = CONFIGURED_API_URL || LOCAL_FALLBACK_API_URL;
  * Whether a backend is expected to be reachable at all.
  *
  * In development it always is (the proxy points at the local server). In a
- * production build it is only true when an API origin was baked in - the static
- * Vercel deployment ships without a backend, and calling /api there would just
- * hit the SPA rewrite and return index.html.
+ * production build, we reverse-proxy all relative /api requests to the Render
+ * backend via vercel.json rewrite rules, so a backend is always reachable.
  */
 export const isApiConfigured = true;
 
