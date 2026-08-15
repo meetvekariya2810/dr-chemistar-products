@@ -1,4 +1,4 @@
-import { Product, DealerRequest, ProductEnquiry } from './types';
+﻿import { Product, DealerRequest, ProductEnquiry } from './types';
 
 /**
  * Base URL for the API.
@@ -638,3 +638,4 @@ export async function triggerRematch(): Promise<any> {
   if (!res.ok) throw new Error('Failed to trigger image re-match');
   return res.json();
 }
+
