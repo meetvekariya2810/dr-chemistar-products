@@ -81,17 +81,18 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads'), {
 }));
 
 // Routes
-app.use('/api/auth', authRoutes);
+app.use('/api', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/dealers', dealerRoutes);
 app.use('/api/enquiries', enquiryRoutes);
 app.use('/api/farmers', farmerRoutes);
 
-// Lets the frontend tell "the API is down" apart from "the API is up but the
+// Lets the frontend tell "the API is down" apart from "the API is down but the
 // database is not", which are very different messages for the admin.
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
+    service: 'dr-chemist-backend',
     status: 'ok',
     database: global.isMongoConnected ? 'mongodb' : 'local-json-fallback'
   });
