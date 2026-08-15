@@ -52,11 +52,8 @@ if (allowedOrigins.length === 0 && process.env.NODE_ENV === 'production') {
 }
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.length === 0) return callback(null, true);
-    if (allowedOrigins.includes(origin.replace(/\/+$/, ''))) return callback(null, true);
-    callback(new Error(`Origin ${origin} is not allowed by CORS`));
-  },
+  origin: true,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
