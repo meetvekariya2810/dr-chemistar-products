@@ -406,11 +406,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
       setLoginId('');
       setPassword('');
     } catch (err: any) {
-      setLoginError(
-        err?.status === 0
-          ? 'Cannot reach the API server. Start the backend (npm run dev) or check VITE_API_URL.'
-          : err?.message || 'Invalid Login ID or Password'
-      );
+      if (err?.status === 401) {
+        setLoginError('Invalid Login ID or Password.');
+      } else {
+        setLoginError('Unable to connect to the admin service. Please try again.');
+      }
     } finally {
       setLoggingIn(false);
     }
