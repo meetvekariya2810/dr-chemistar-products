@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://dr-chemist-backend.onrender.com/api/:path*"
+      "destination": "/api/index.js"
     },
     {
       "source": "/((?!api/).*)",
