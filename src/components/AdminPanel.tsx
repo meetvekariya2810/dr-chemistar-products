@@ -408,6 +408,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ currentLang }) => {
     } catch (err: any) {
       if (err?.status === 401) {
         setLoginError('Invalid Login ID or Password.');
+      } else if (err?.status === 404) {
+        setLoginError('Admin login API route was not found.');
+      } else if (err?.status === 500) {
+        setLoginError('Admin server error. Please try again.');
       } else {
         setLoginError('Unable to connect to the admin service. Please try again.');
       }
