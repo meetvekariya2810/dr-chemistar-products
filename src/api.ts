@@ -43,7 +43,7 @@ const API_URL = CONFIGURED_API_URL || LOCAL_FALLBACK_API_URL;
  * Vercel deployment ships without a backend, and calling /api there would just
  * hit the SPA rewrite and return index.html.
  */
-export const isApiConfigured = Boolean(API_URL) || import.meta.env.DEV;
+export const isApiConfigured = true;
 
 /**
  * Kill switch for the website enquiry form.
