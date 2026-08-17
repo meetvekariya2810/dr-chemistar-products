@@ -1,8 +1,12 @@
+import express from 'express';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+
 let app;
 try {
   app = require('../server/server.js');
 } catch (err) {
-  const express = require('express');
   app = express();
   app.use(express.json());
   app.all('*', (req, res) => {
@@ -10,9 +14,9 @@ try {
       success: false,
       error: 'Serverless initialization failed',
       message: err.message,
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+      stack: err.stack
     });
   });
 }
 
-module.exports = app;
+export default app;
