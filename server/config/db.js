@@ -4,6 +4,8 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 global.isMongoConnected = false;
 
+const DEFAULT_MONGO_URI = 'mongodb://vekariyameet674_db_user:Meet%402810@ac-2mfxrpy-shard-00-00.bj0ygan.mongodb.net:27017,ac-2mfxrpy-shard-00-01.bj0ygan.mongodb.net:27017,ac-2mfxrpy-shard-00-02.bj0ygan.mongodb.net:27017/dr_chemist_agro?ssl=true&replicaSet=atlas-554h72-shard-0&authSource=admin&retryWrites=true&w=majority&appName=Cluster28';
+
 let connPromise = null;
 
 const connectDB = async () => {
@@ -12,19 +14,12 @@ const connectDB = async () => {
     return mongoose.connection;
   }
 
-  const mongoURI = process.env.MONGO_URI;
-  if (!mongoURI && process.env.NODE_ENV === 'production') {
-    console.warn('[db] MONGO_URI is not set in production.');
-    global.isMongoConnected = false;
-    return null;
-  }
-
-  const targetURI = mongoURI || 'mongodb://127.0.0.1:27017/dr_chemist_agro';
+  const targetURI = process.env.MONGO_URI || DEFAULT_MONGO_URI;
 
   if (!connPromise) {
-    console.log('[db] Connecting to MongoDB...');
+    console.log('[db] Connecting to MongoDB Atlas...');
     connPromise = mongoose.connect(targetURI, {
-      serverSelectionTimeoutMS: 5000
+      serverSelectionTimeoutMS: 8000
     }).then((conn) => {
       console.log(`[db] Successfully connected to MongoDB: ${conn.connection.host}`);
       global.isMongoConnected = true;
