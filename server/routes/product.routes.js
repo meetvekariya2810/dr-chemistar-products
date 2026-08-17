@@ -2,13 +2,13 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const os = require('os');
 const productController = require('../controllers/product.controller');
 
 // Configure multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadTempDir = path.join(__dirname, '../uploads/temp');
+    const uploadTempDir = path.join(os.tmpdir(), 'dr_chemist_uploads');
     if (!fs.existsSync(uploadTempDir)) {
       fs.mkdirSync(uploadTempDir, { recursive: true });
     }
