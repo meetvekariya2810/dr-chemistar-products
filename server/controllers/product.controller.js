@@ -12,11 +12,14 @@ const {
 } = require('../utils/productImages');
 
 const productsFilePath = path.join(__dirname, '../data/products.json');
-// Shared with the frontend build - see server/utils/productImages.js
-const uploadsDir = path.join(__dirname, '../../public/uploads');
-const tempDir = path.join(__dirname, '../../public/uploads/temp');
+const os = require('os');
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const baseUploadDir = isServerless ? os.tmpdir() : path.join(__dirname, '../../public');
 
-// Ensure upload directories exist (safely ignored if read-only on Vercel)
+const uploadsDir = path.join(baseUploadDir, 'uploads');
+const tempDir = path.join(baseUploadDir, 'uploads/temp');
+
+// Ensure upload directories exist
 try {
   if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
@@ -28,7 +31,7 @@ try {
     fs.mkdirSync(tempDir, { recursive: true });
   }
 } catch (err) {
-  // Serverless environment with read-only filesystem
+  /* serverless environment */
 }
 
 const getLocalProducts = () => {
