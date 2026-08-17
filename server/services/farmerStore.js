@@ -119,6 +119,8 @@ const toApiShape = (doc) => {
 
 const formatFarmerId = (year, seq) => `FMR-${year}-${String(seq).padStart(6, '0')}`;
 
+const isMongoConnected = () => global.isMongoConnected || mongoose.connection.readyState === 1;
+
 /**
  * Next registration number for the given year, e.g. FMR-2026-000123.
  *
@@ -128,7 +130,7 @@ const formatFarmerId = (year, seq) => `FMR-${year}-${String(seq).padStart(6, '0'
  * write lock above.
  */
 const nextFarmerId = async (year) => {
-  if (global.isMongoConnected) {
+  if (isMongoConnected()) {
     const doc = await Counter.findByIdAndUpdate(
       `farmer-${year}`,
       { $inc: { seq: 1 } },
@@ -264,7 +266,7 @@ const isMongoId = (id) =>
 const create = async (payload) => {
   const year = new Date().getFullYear();
 
-  if (global.isMongoConnected || mongoose.connection.readyState === 1) {
+  if (isMongoConnected()) {
     const farmer_id = await nextFarmerId(year);
     return toApiShape(await new Farmer({ ...payload, farmer_id }).save());
   }
@@ -298,7 +300,7 @@ const query = async (rawQuery) => {
   const filters = parseFilters(rawQuery);
   let records;
 
-  if (global.isMongoConnected) {
+  if (isMongoConnected()) {
     const docs = await Farmer.find(toMongoQuery(filters)).sort({ created_at: -1 });
     records = docs.map(toApiShape);
   } else {
@@ -314,7 +316,7 @@ const query = async (rawQuery) => {
 };
 
 const getById = async (id) => {
-  if (global.isMongoConnected) {
+  if (isMongoConnected()) {
     const doc = isMongoId(id)
       ? await Farmer.findById(id)
       : await Farmer.findOne({ farmer_id: String(id) });
@@ -328,7 +330,7 @@ const getById = async (id) => {
 };
 
 const update = async (id, changes) => {
-  if (global.isMongoConnected) {
+  if (isMongoConnected()) {
     const filter = isMongoId(id) ? { _id: id } : { farmer_id: String(id) };
     const doc = await Farmer.findOneAndUpdate(filter, changes, { new: true, runValidators: true });
     return toApiShape(doc);
@@ -347,7 +349,7 @@ const update = async (id, changes) => {
 };
 
 const remove = async (id) => {
-  if (global.isMongoConnected) {
+  if (isMongoConnected()) {
     const filter = isMongoId(id) ? { _id: id } : { farmer_id: String(id) };
     const doc = await Farmer.findOneAndDelete(filter);
     return toApiShape(doc);
@@ -376,7 +378,7 @@ const findRecentByMobile = async (mobile, windowMs) => {
   if (!cleaned) return null;
   const since = new Date(Date.now() - windowMs);
 
-  if (global.isMongoConnected) {
+  if (isMongoConnected()) {
     const doc = await Farmer.findOne({ mobile: cleaned, created_at: { $gte: since } })
       .sort({ created_at: -1 });
     return toApiShape(doc);

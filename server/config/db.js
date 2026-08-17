@@ -7,7 +7,8 @@ global.isMongoConnected = false;
 let connPromise = null;
 
 const connectDB = async () => {
-  if (global.isMongoConnected && mongoose.connection.readyState === 1) {
+  if (mongoose.connection.readyState === 1) {
+    global.isMongoConnected = true;
     return mongoose.connection;
   }
 
@@ -37,8 +38,13 @@ const connectDB = async () => {
   }
 
   try {
-    return await connPromise;
+    const conn = await connPromise;
+    if (mongoose.connection.readyState === 1) {
+      global.isMongoConnected = true;
+    }
+    return conn;
   } catch (err) {
+    global.isMongoConnected = false;
     return null;
   }
 };
