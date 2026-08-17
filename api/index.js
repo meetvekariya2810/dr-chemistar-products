@@ -3,20 +3,23 @@ import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 
-let app;
+let serverApp;
 try {
-  app = require('../server/server.js');
+  serverApp = require('../server/server.js');
 } catch (err) {
-  app = express();
-  app.use(express.json());
-  app.all('*', (req, res) => {
-    res.status(500).json({
-      success: false,
-      error: 'Serverless initialization failed',
-      message: err.message,
-      stack: err.stack
-    });
-  });
+  console.error('[vercel-api] Error loading server.js:', err);
 }
+
+const app = express();
+app.use((req, res, next) => {
+  if (serverApp) {
+    return serverApp(req, res, next);
+  }
+  res.status(500).json({
+    success: false,
+    error: 'Serverless initialization failed',
+    message: 'Backend server failed to initialize on Vercel'
+  });
+});
 
 export default app;
