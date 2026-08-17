@@ -1,46 +1,17 @@
-﻿import { Product, DealerRequest, ProductEnquiry } from './types';
+import { Product, DealerRequest, ProductEnquiry } from './types';
 
 /**
  * Base URL for the API.
  *
- * Empty means "same origin", which is what we want almost everywhere:
- *   - dev:  Vite proxies /api to the Express backend (see vite.config.ts)
- *   - prod: works as-is if the API is served from the site's own domain
- * VITE_API_URL is only needed when the API lives on a different origin than the
- * site (e.g. a separate Render service).
+ * Defaults to empty string, which uses relative same-origin requests (e.g. /api/admin/login).
+ * - In development (`npm run dev`), Vite proxies /api to the local Express server.
+ * - In production on Vercel, requests to /api are handled by Vercel Serverless Functions.
  */
-const CONFIGURED_API_URL = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
+const API_URL = (import.meta.env.VITE_API_URL || '').trim().replace(/\/+$/, '');
 
 /**
- * Local fallback for a PRODUCTION bundle opened on localhost.
- *
- * `npm run preview` (and any `serve dist`) hands out the built files as plain
- * static assets with no dev proxy, so a same-origin POST /api/farmers is
- * answered by the file server with 405 Method Not Allowed and never reaches
- * Express - identical symptoms to an unconfigured deployment, but with a purely
- * local cause. Pointing at the backend's own port makes previewing a real build
- * work the way `npm run dev` already does.
- *
- * Scoped to loopback hostnames only, so this can never send a deployed site's
- * farmer data to a machine that happens to be running something on port 5001.
- */
-const isLoopback =
-  typeof window !== 'undefined' &&
-  ['localhost', '127.0.0.1', '[::1]', '::1'].includes(window.location.hostname);
-
-const LOCAL_FALLBACK_API_URL =
-  !CONFIGURED_API_URL && isLoopback && !import.meta.env.DEV
-    ? `http://localhost:${import.meta.env.VITE_DEV_API_PORT || 5001}`
-    : '';
-
-const API_URL = CONFIGURED_API_URL || LOCAL_FALLBACK_API_URL;
-
-/**
- * Whether a backend is expected to be reachable at all.
- *
- * In development it always is (the proxy points at the local server). In a
- * production build, we reverse-proxy all relative /api requests to the Render
- * backend via vercel.json rewrite rules, so a backend is always reachable.
+ * Whether a backend is expected to be reachable.
+ * In a same-origin Vercel deployment, the API is always available on the same domain.
  */
 export const isApiConfigured = true;
 
