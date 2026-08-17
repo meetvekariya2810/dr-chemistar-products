@@ -10,6 +10,13 @@ function getApp() {
 module.exports = (req, res) => {
   try {
     const expressApp = getApp();
+
+    // Vercel sends the original requested path in x-matched-path (e.g. /api/health or /api/admin/login)
+    const matchedPath = req.headers['x-matched-path'];
+    if (matchedPath && matchedPath.startsWith('/api')) {
+      req.url = matchedPath;
+    }
+
     return expressApp(req, res);
   } catch (err) {
     console.error('[vercel-api-error]', err);
