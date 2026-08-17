@@ -4,30 +4,42 @@ require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 global.isMongoConnected = false;
 
-let isConnecting = false;
+let connPromise = null;
 
 const connectDB = async () => {
-  if (global.isMongoConnected || isConnecting) return;
-  if (!process.env.MONGO_URI && process.env.NODE_ENV === 'production') {
-    console.warn('[db] MONGO_URI is not set in production. Using local JSON fallback.');
-    global.isMongoConnected = false;
-    return;
+  if (global.isMongoConnected && mongoose.connection.readyState === 1) {
+    return mongoose.connection;
   }
-  isConnecting = true;
-  try {
-    const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/dr_chemist_agro';
-    console.log('Connecting to MongoDB...');
-    const conn = await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 3000
-    });
-    console.log(`Successfully connected to MongoDB: ${conn.connection.host}`);
-    global.isMongoConnected = true;
-  } catch (err) {
-    console.error(`MongoDB database connection failed: ${err.message}`);
-    console.warn('Falling back to local JSON file-based database storage.');
+
+  const mongoURI = process.env.MONGO_URI;
+  if (!mongoURI && process.env.NODE_ENV === 'production') {
+    console.warn('[db] MONGO_URI is not set in production.');
     global.isMongoConnected = false;
-  } finally {
-    isConnecting = false;
+    return null;
+  }
+
+  const targetURI = mongoURI || 'mongodb://127.0.0.1:27017/dr_chemist_agro';
+
+  if (!connPromise) {
+    console.log('[db] Connecting to MongoDB...');
+    connPromise = mongoose.connect(targetURI, {
+      serverSelectionTimeoutMS: 5000
+    }).then((conn) => {
+      console.log(`[db] Successfully connected to MongoDB: ${conn.connection.host}`);
+      global.isMongoConnected = true;
+      return conn;
+    }).catch((err) => {
+      console.error(`[db] MongoDB database connection failed: ${err.message}`);
+      global.isMongoConnected = false;
+      connPromise = null;
+      return null;
+    });
+  }
+
+  try {
+    return await connPromise;
+  } catch (err) {
+    return null;
   }
 };
 

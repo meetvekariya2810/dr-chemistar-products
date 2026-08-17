@@ -46,17 +46,20 @@ const readLocal = () => {
 };
 
 const writeLocal = (records) => {
+  const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+  if (isServerless && !global.isMongoConnected) {
+    console.warn('[farmerStore] Write to local file bypassed in serverless environment.');
+    return;
+  }
   const dir = path.dirname(farmersFilePath);
   try {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    const tmp = `${farmersFilePath}.tmp`;
+    fs.writeFileSync(tmp, JSON.stringify(records, null, 2), 'utf8');
+    fs.renameSync(tmp, farmersFilePath);
   } catch (err) {
-    /* read-only serverless environment */
+    console.warn('[farmerStore] Local JSON write skipped (read-only filesystem):', err.message);
   }
-  // Write-then-rename so a crash mid-write cannot leave a truncated file that
-  // would read back as "no farmers at all".
-  const tmp = `${farmersFilePath}.tmp`;
-  fs.writeFileSync(tmp, JSON.stringify(records, null, 2), 'utf8');
-  fs.renameSync(tmp, farmersFilePath);
 };
 
 /**
@@ -261,7 +264,7 @@ const isMongoId = (id) =>
 const create = async (payload) => {
   const year = new Date().getFullYear();
 
-  if (global.isMongoConnected) {
+  if (global.isMongoConnected || mongoose.connection.readyState === 1) {
     const farmer_id = await nextFarmerId(year);
     return toApiShape(await new Farmer({ ...payload, farmer_id }).save());
   }

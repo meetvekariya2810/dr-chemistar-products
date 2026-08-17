@@ -1,3 +1,5 @@
+import connectDB from '../server/config/db.js';
+
 let app;
 
 async function getApp() {
@@ -10,6 +12,9 @@ async function getApp() {
 
 export default async function handler(req, res) {
   try {
+    // Ensure MongoDB connection is initialized before processing request
+    await connectDB();
+
     const expressApp = await getApp();
     return expressApp(req, res);
   } catch (err) {
