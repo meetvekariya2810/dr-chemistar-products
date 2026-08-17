@@ -86,12 +86,16 @@ app.use('/api/farmers', farmerRoutes);
 
 // Lets the frontend tell "the API is down" apart from "the API is down but the
 // database is not", which are very different messages for the admin.
-app.get('/api/health', (req, res) => {
+app.get('/api/health', async (req, res) => {
+  try {
+    await connectDB();
+  } catch (e) {}
   res.status(200).json({
     success: true,
     service: 'dr-chemist-backend',
     status: 'ok',
-    database: global.isMongoConnected ? 'mongodb' : 'local-json-fallback'
+    database: global.isMongoConnected ? 'mongodb' : 'local-json-fallback',
+    mongo_error: global.mongoError || null
   });
 });
 
