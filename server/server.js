@@ -103,11 +103,16 @@ app.use((req, res, next) => {
 // Central Error Handler Middleware
 app.use(errorHandler);
 
-if (require.main === module) {
-  const PORT = process.env.PORT || 5001;
-  app.listen(PORT, () => {
-    console.log(`Backend API Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-  });
-}
+// Bind unconditionally. This used to be guarded by `require.main === module`,
+// which was correct only while the app was also being imported as a Vercel
+// serverless function. That entrypoint is gone (api/index.js was removed), and
+// the guard silently broke Render: the root server.js shim imports this file,
+// so this module is no longer the main one, app.listen() never ran, no port was
+// ever opened, and Render failed the deploy with "no open ports detected" -
+// leaving the hostname answering `x-render-routing: no-server` on every path.
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
+  console.log(`Backend API Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
 
 module.exports = app;

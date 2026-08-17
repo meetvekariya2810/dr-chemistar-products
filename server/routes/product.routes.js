@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const os = require('os');
+const fs = require('fs');
 const productController = require('../controllers/product.controller');
 
 // Configure multer storage
