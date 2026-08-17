@@ -6,8 +6,12 @@ const dealersFilePath = path.join(__dirname, '../data/dealers.json');
 
 const getLocalDealers = () => {
   const dir = path.dirname(dealersFilePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  try {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  } catch (err) {
+    /* read-only serverless environment */
   }
   if (fs.existsSync(dealersFilePath)) {
     try {

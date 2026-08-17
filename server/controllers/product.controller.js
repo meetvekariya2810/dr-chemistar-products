@@ -16,15 +16,19 @@ const productsFilePath = path.join(__dirname, '../data/products.json');
 const uploadsDir = path.join(__dirname, '../../public/uploads');
 const tempDir = path.join(__dirname, '../../public/uploads/temp');
 
-// Ensure upload directories exist
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-if (!fs.existsSync(path.join(uploadsDir, 'thumbnails'))) {
-  fs.mkdirSync(path.join(uploadsDir, 'thumbnails'), { recursive: true });
-}
-if (!fs.existsSync(tempDir)) {
-  fs.mkdirSync(tempDir, { recursive: true });
+// Ensure upload directories exist (safely ignored if read-only on Vercel)
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  if (!fs.existsSync(path.join(uploadsDir, 'thumbnails'))) {
+    fs.mkdirSync(path.join(uploadsDir, 'thumbnails'), { recursive: true });
+  }
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true });
+  }
+} catch (err) {
+  // Serverless environment with read-only filesystem
 }
 
 const getLocalProducts = () => {

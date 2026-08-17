@@ -30,7 +30,11 @@ const farmersFilePath = path.join(__dirname, '../data/farmers.json');
 
 const readLocal = () => {
   const dir = path.dirname(farmersFilePath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  try {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    /* read-only serverless environment */
+  }
   if (!fs.existsSync(farmersFilePath)) return [];
   try {
     const parsed = JSON.parse(fs.readFileSync(farmersFilePath, 'utf8'));
@@ -43,7 +47,11 @@ const readLocal = () => {
 
 const writeLocal = (records) => {
   const dir = path.dirname(farmersFilePath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  try {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    /* read-only serverless environment */
+  }
   // Write-then-rename so a crash mid-write cannot leave a truncated file that
   // would read back as "no farmers at all".
   const tmp = `${farmersFilePath}.tmp`;

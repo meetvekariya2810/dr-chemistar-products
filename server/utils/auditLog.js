@@ -36,7 +36,11 @@ const readLocal = () => {
 
 const writeLocal = (entries) => {
   const dir = path.dirname(auditFilePath);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  try {
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  } catch (err) {
+    /* read-only serverless environment */
+  }
   const tmp = `${auditFilePath}.tmp`;
   fs.writeFileSync(tmp, JSON.stringify(entries, null, 2), 'utf8');
   fs.renameSync(tmp, auditFilePath);

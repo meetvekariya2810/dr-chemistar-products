@@ -17,8 +17,12 @@ const enquiriesFilePath = path.join(__dirname, '../data/enquiries.json');
 
 const getLocalEnquiries = () => {
   const dir = path.dirname(enquiriesFilePath);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+  try {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+  } catch (err) {
+    /* read-only serverless environment */
   }
   if (fs.existsSync(enquiriesFilePath)) {
     try {
